@@ -1,0 +1,24 @@
+{
+  "name": "sinri/database-hub",
+  "description": "Review and execute on mysql databases",
+  "type": "project",
+  "license": "GPLv3.0",
+  "authors": [
+    {
+      "name": "Sinri Edogawa",
+      "email": "everstray@yeah.net"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "sinri/ark": "^2.0",
+    "sinri/ark-pdo": "^1.0",
+    "sinri/ark-mysqli": "^1.0"
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}
