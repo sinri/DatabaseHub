@@ -11,7 +11,7 @@ require_once __DIR__ . '/autoload.php';
 Ark()->webService()->getRouter()->setErrorHandler(
     \sinri\ark\web\ArkRouteErrorHandler::buildWithCallback(
         function ($error_message, $status_code) {
-            Ark()->webOutput()->sendHTTPCode($status_code);
+            Ark()->webOutput()->sendHTTPCode($status_code ? $status_code : 200);
             Ark()->webOutput()->setContentTypeHeader("application/json");
             Ark()->webOutput()->jsonForAjax(
                 \sinri\ark\io\ArkWebOutput::AJAX_JSON_CODE_FAIL,

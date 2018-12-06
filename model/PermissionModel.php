@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: sinri
- * Date: 2018/12/4
- * Time: 11:43 AM
+ * Date: 2018/12/6
+ * Time: 4:13 PM
  */
 
 namespace sinri\databasehub\model;
@@ -13,23 +13,20 @@ use sinri\ark\database\model\ArkDatabaseTableModel;
 use sinri\ark\database\pdo\ArkPDO;
 use sinri\databasehub\core\HubCore;
 
-class UserModel extends ArkDatabaseTableModel
+class PermissionModel extends ArkDatabaseTableModel
 {
-    const USER_TYPE_ADMIN = "ADMIN";
-    const USER_TYPE_USER = "USER";
-
-    const USER_STATUS_NORMAL = "NORMAL";
-    const USER_STATUS_DISABLED = "DISABLED";
-    const USER_STATUS_FROZEN = "FROZEN";
-
-    const USER_ORG_FREE = "FREE";
+    const PERMISSION_APPROVE_READ = "APPROVE_READ";
+    const PERMISSION_APPROVE_MODIFY = "APPROVE_MODIFY";
+    const PERMISSION_APPROVE_DDL = "APPROVE_DDL";
+    const PERMISSION_QUICK_QUERY = "QUICK_QUERY";
+    const PERMISSION_KILL = "KILL";
 
     /**
      * @return string
      */
     protected function mappingTableName()
     {
-        return "user";
+        return "permission";
     }
 
     /**

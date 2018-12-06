@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Configure - Database Hub</title>
+    <script src="https://unpkg.com/axios@0.18.0/dist/axios.js"></script>
+    <script src="https://unpkg.com/js-cookie@2.2.0/src/js.cookie.js"></script>
+    <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/iview/dist/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview/dist/styles/iview.css">
+    <script src="https://www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+
+    <script src="static/component/TopBanner.js"></script>
+</head>
+<body>
+<div id="app">
+    <top-banner opened="configPage"></top-banner>
+    <Row>
+        <i-col span="24" style="margin: 10px">
+            <Tabs>
+                <Tab-Pane label="Users">
+                    <p>
+                        According to the policy of user, the user management varies.
+                        Please contact the administrator for details.
+                    </p>
+                </Tab-Pane>
+                <Tab-Pane label="Privileges">
+                    <p>
+                        Here you can decide what jobs one can do.
+                    </p>
+                </Tab-Pane>
+                <Tab-Pane label="Databases">
+                    <p>
+                        Here register your databases and accounts.
+                        <!--<i-button type="text" @click="submitDatabaseEditModal"></i-button>-->
+                    </p>
+                    <Modal v-model="openDatabaseEditModal" :title="databaseEditModalTitle"
+                           :loading="databaseEditModalLoading" @on-ok="submitDatabaseEditModal">
+                        <p>After you click ok, the dialog box will close in 2 seconds.</p>
+                    </Modal>
+                </Tab-Pane>
+            </Tabs>
+        </i-col>
+    </Row>
+</div>
+<script>
+    Vue.component("top-banner", TopBannerComponent);
+    new Vue({
+        el: '#app',
+        data: {
+            databaseEditData: null,
+            openDatabaseEditModal: false,
+            databaseEditModalTitle: '',
+            databaseEditModalLoading: true,
+        },
+        methods: {
+            openNewDatabaseEditModal: function () {
+                this.databaseEditData = {
+                    database_id: null,
+                    database_name: '',
+                    host: '',
+                    port: '3306',
+                    status: 'NORMAL',
+                    engine: 'MYSQL',
+                };
+                this.openDatabaseEditModal = true;
+            },
+            submitDatabaseEditModal: function () {
+                SinriQF.api.call(
+                    "DatabaseManageController/add"
+                )
+            }
+        },
+        mounted: function () {
+            SinriQF.config.TokenName = "database_hub_token";
+            SinriQF.config.vueInstance = this;
+        }
+    });
+</script>
+</body>
+</html>

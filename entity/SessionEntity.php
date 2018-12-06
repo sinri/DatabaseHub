@@ -11,10 +11,14 @@ namespace sinri\databasehub\entity;
 
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\model\SessionModel;
+use sinri\databasehub\model\UserModel;
 
 class SessionEntity
 {
     public $sessionId;
+    /**
+     * @var UserEntity
+     */
     public $user;
     public $token;
     public $since;
@@ -41,6 +45,10 @@ class SessionEntity
         $session->since = $row['since'];
         $session->expire = $row['expire'];
         $session->user = UserEntity::instanceByUserId($row['user_id']);
+
+        if ($session->user->status !== UserModel::USER_STATUS_NORMAL) {
+            throw new \Exception("User is not normal!");
+        }
 
         return $session;
     }
