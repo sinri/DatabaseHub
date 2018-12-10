@@ -10,6 +10,7 @@ namespace sinri\databasehub\core;
 
 
 use sinri\ark\core\ArkHelper;
+use sinri\ark\core\ArkLogger;
 use sinri\ark\database\pdo\ArkPDO;
 use sinri\ark\database\pdo\ArkPDOConfig;
 
@@ -38,12 +39,31 @@ class HubCore
      */
     public static function getDB()
     {
-        if (!self::$mainDB) {
+        if (!self::$mainDB || ArkHelper::isCLI()) {
+            self::$mainDB = null;
             $pdoConfig = new ArkPDOConfig(self::getConfig(['pdo']));
             self::$mainDB = new ArkPDO($pdoConfig);
             self::$mainDB->connect();
         }
         return self::$mainDB;
+    }
+
+    /**
+     * @var ArkLogger
+     */
+    protected static $logger;
+
+    /**
+     * @return ArkLogger
+     */
+    public static function getLogger()
+    {
+        if (!self::$logger) {
+            $logPath = self::getConfig(['logger', 'path'], __DIR__ . '/../log');
+            self::$logger = new ArkLogger($logPath);
+            self::$logger->setIgnoreLevel(self::getConfig(['logger', 'level', 'info']));
+        }
+        return self::$logger;
     }
 
 }

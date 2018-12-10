@@ -28,6 +28,9 @@ class ApplicationModel extends ArkDatabaseTableModel
     const STATUS_DONE = "DONE";
     const STATUS_ERROR = "ERROR";
 
+    const PARALLELABLE_YES = "YES";
+    const PARALLELABLE_NO = "NO";
+
     /**
      * @return string
      */
@@ -44,4 +47,5 @@ class ApplicationModel extends ArkDatabaseTableModel
     {
         return HubCore::getDB();
     }
+
 }

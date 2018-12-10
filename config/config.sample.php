@@ -16,6 +16,13 @@ $config = [
         "charset" => \sinri\ark\database\pdo\ArkPDOConfig::CHARSET_UTF8,
         "engine" => \sinri\ark\database\pdo\ArkPDOConfig::ENGINE_MYSQL,
     ],
+    "logger" => [
+        "path" => __DIR__ . '/../log',
+        "level" => "info",
+    ],
+    "store" => [
+        "path" => __DIR__ . '/../store',
+    ],
     "plugins" => [
         "login" => "LoginPluginStandalone",
     ],

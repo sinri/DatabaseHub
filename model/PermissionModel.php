@@ -15,9 +15,11 @@ use sinri\databasehub\core\HubCore;
 
 class PermissionModel extends ArkDatabaseTableModel
 {
-    const PERMISSION_APPROVE_READ = "APPROVE_READ";
-    const PERMISSION_APPROVE_MODIFY = "APPROVE_MODIFY";
-    const PERMISSION_APPROVE_DDL = "APPROVE_DDL";
+
+    const PERMISSION_APPROVE_READ = "READ";
+    const PERMISSION_APPROVE_MODIFY = "MODIFY";
+    const PERMISSION_APPROVE_DDL = "DDL";
+    const PERMISSION_APPROVE_EXECUTE = "EXECUTE";
     const PERMISSION_QUICK_QUERY = "QUICK_QUERY";
     const PERMISSION_KILL = "KILL";
 

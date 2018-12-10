@@ -7,3 +7,5 @@ composer.phar
 
 /.idea/
 /config/config.php
+/log/
+/store/
