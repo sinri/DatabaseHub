@@ -15,6 +15,7 @@ use sinri\databasehub\entity\DatabaseEntity;
 use sinri\databasehub\entity\DatabaseMySQLiEntity;
 use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\PermissionModel;
+use sinri\databasehub\model\QuickQueryModel;
 
 class QuickQueryController extends AbstractAuthController
 {
@@ -40,6 +41,8 @@ class QuickQueryController extends AbstractAuthController
         $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
         if (!$x) throw new \Exception("Not Permitted");
 
+        $databaseEntity = DatabaseEntity::instanceById($database_id);
+
         $maxRows = 512;
 
         $sql = $this->_readRequest('sql', '');
@@ -49,11 +52,31 @@ class QuickQueryController extends AbstractAuthController
             throw new \Exception("Not a read statement");
         }
 
+        $quickQueryId = (new QuickQueryModel())->insert([
+            'database_id' => $databaseEntity->databaseId,
+            'sql' => $processedSQL,
+            'raw_sql' => $sql,
+            'apply_user' => $this->session->user->userId,
+            'apply_time' => QuickQueryModel::now(),
+            'type' => QuickQueryModel::TYPE_SYNC,
+        ]);
+        if (empty($quickQueryId)) {
+            throw new \Exception("Cannot register task");
+        }
+
         $t1 = microtime(true);
-        $done = (new DatabaseMySQLiEntity(DatabaseEntity::instanceById($database_id)))->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
+        $done = (new DatabaseMySQLiEntity($databaseEntity))->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
         $t2 = microtime(true);
 
-        // TODO record quick queries
+        // record quick queries
+        (new QuickQueryModel())->update(
+            ['id' => $quickQueryId],
+            [
+                'duration' => ($t2 - $t1),
+                'remark' => ($done ? "DONE, fetched " . count($data) . " rows." : "FAILED.") . PHP_EOL . implode(PHP_EOL, $error),
+            ]
+        );
+
 
         $this->_sayOK([
             'done' => $done,
