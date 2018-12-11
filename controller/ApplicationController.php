@@ -195,6 +195,7 @@ class ApplicationController extends AbstractAuthController
     public function deny()
     {
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
+        $reason = $this->_readRequest("reason", 'Who knows?');
 
         $applicationEntity = ApplicationEntity::instanceById($application_id);
 
@@ -221,7 +222,7 @@ class ApplicationController extends AbstractAuthController
         }
 
         $applicationEntity->refresh();
-        $applicationEntity->writeRecord($this->session->user->userId, "DENY", "");
+        $applicationEntity->writeRecord($this->session->user->userId, "DENY", $reason);
 
         $this->_sayOK(['afx' => $afx]);
     }

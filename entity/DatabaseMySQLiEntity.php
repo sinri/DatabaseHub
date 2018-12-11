@@ -234,6 +234,25 @@ class DatabaseMySQLiEntity
             return false;
         }
 
+    }
 
+    /**
+     * @return bool|array
+     */
+    public function showFullProcessList()
+    {
+        $done = $this->quickQuery("show full processlist", $data, $error, 0, $duration);
+        if (!$done) return false;
+
+        return $data;
+    }
+
+    /**
+     * @param $tid
+     * @return bool
+     */
+    public function kill($tid)
+    {
+        return $this->mysqliAgent->getInstanceOfMySQLi()->kill($tid);
     }
 }
