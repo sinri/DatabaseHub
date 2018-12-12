@@ -263,22 +263,15 @@ class ApplicationController extends AbstractAuthController
         $this->_sayOK(['afx' => $afx]);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function search()
+    protected function buildFetchConditions()
     {
+        $conditions = [];
         // search with any conditions
         $title = $this->_readRequest('title', '');
         $database_id = $this->_readRequest('database_id', '');
         $type = $this->_readRequest('type', []);
         $apply_user = $this->_readRequest('apply_user', '');
         $status = $this->_readRequest('status', []);
-
-        $pageSize = $this->_readRequest('page_size', 10);
-        $page = $this->_readRequest('page', 1);
-
-        $conditions = [];
 
         if ($title !== '') {
             $conditions['title'] = ArkSQLCondition::makeStringContainsText('title', $title);
@@ -295,6 +288,19 @@ class ApplicationController extends AbstractAuthController
         if (!empty($status)) {
             $conditions['status'] = $status;
         }
+
+        return $conditions;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function search()
+    {
+        $pageSize = $this->_readRequest('page_size', 10);
+        $page = $this->_readRequest('page', 1);
+
+        $conditions = $this->buildFetchConditions();
 
         $total = (new ApplicationModel())->selectRowsForCount($conditions);
         $rows = (new ApplicationModel())->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
@@ -317,7 +323,9 @@ class ApplicationController extends AbstractAuthController
         $pageSize = $this->_readRequest('page_size', 10);
         $page = $this->_readRequest('page', 1);
 
-        $conditions = ['status' => ApplicationModel::STATUS_APPLIED];
+        $conditions = $this->buildFetchConditions();
+
+        $conditions['status'] = ApplicationModel::STATUS_APPLIED;
         if ($this->session->user->userType !== UserModel::USER_TYPE_ADMIN) {
             $conditions['permitted_user'] = $this->session->user->userId;
         }

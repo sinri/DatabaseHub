@@ -161,7 +161,10 @@ REQ:
 List permitted applications for approving.
 
 REQ:
-
+* title
+* database_id
+* type (array)
+* apply_user
 * page_size
 * page (since 1)
 
