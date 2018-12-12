@@ -54,7 +54,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
             $user_info = ArkHelper::readTarget($json, ['data', 'user_info']);
 
             $row = (new UserModel())->selectRow(['user_name' => $user_info['user_name'], "user_org" => "LEQEE"]);
-            if (!empty($row)) {
+            if (empty($row)) {
                 $replaced = (new UserModel())->replace([
                     "username" => $user_info['user_name'],
                     "realname" => $user_info['real_name'],
