@@ -53,7 +53,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
             //$token_life=ArkHelper::readTarget($json,['data','token_life']);
             $user_info = ArkHelper::readTarget($json, ['data', 'user_info']);
 
-            $row = (new UserModel())->selectRow(['user_name' => $user_info['user_name'], "user_org" => "LEQEE"]);
+            $row = (new UserModel())->selectRow(['username' => $user_info['user_name'], "user_org" => "LEQEE"]);
             if (empty($row)) {
                 $user_data = [
                     "username" => $user_info['user_name'],
@@ -66,7 +66,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
                 $replaced = (new UserModel())->replace($user_data);
                 HubCore::getLogger()->info("REPLACED USER CACHE", ['afx' => $replaced, 'data' => $user_data]);
                 ArkHelper::quickNotEmptyAssert("Cannot update user from Leqee AAv3", $replaced);
-                $row = (new UserModel())->selectRow(['user_name' => $user_info['user_name'], "user_org" => "LEQEE"]);
+                $row = (new UserModel())->selectRow(['username' => $user_info['user_name'], "user_org" => "LEQEE"]);
             }
             HubCore::getLogger()->info("validateAuthPair finally get user row", ["row" => $row]);
             $userEntity = UserEntity::instanceByRow($row);
