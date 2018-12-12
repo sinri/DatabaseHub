@@ -34,13 +34,14 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
     {
         $up_checksum = md5($username . '#' . md5($password));
         $curl = new ArkCurl();
+        $curl->setLogger(HubCore::getLogger());
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Login/requestWithUsername"))
             ->setPostFormField("username", $username)
             ->setPostFormField("up_checksum", $up_checksum)
             // tp_code is neglected now
             ->execute(true);
 
-        HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username, 'password' => $password]]);
+        //HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username, 'password' => $password]]);
 
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API is sleeping.", $result);
         $json = json_decode($result, true);
