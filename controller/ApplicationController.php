@@ -342,8 +342,31 @@ class ApplicationController extends AbstractAuthController
     {
         // fetch application detail
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
-        $detail = ApplicationEntity::instanceById($application_id)->getDetail();
-        $this->_sayOK(['application' => $detail]);
+        $applicationEntity = ApplicationEntity::instanceById($application_id);
+        $detail = $applicationEntity->getDetail();
+
+        $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
+                ApplicationModel::STATUS_DENIED,
+                ApplicationModel::STATUS_CANCELLED,
+                ApplicationModel::STATUS_ERROR,
+            ]);
+        $canCancel = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
+                ApplicationModel::STATUS_APPLIED
+            ]);
+
+        $canDecide = in_array($applicationEntity->status, [
+            ApplicationModel::STATUS_APPLIED
+        ]);
+        if ($canDecide) {
+            $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+            $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+            if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                $canDecide = false;
+            }
+        }
+
+
+        $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
     }
 
     /**
