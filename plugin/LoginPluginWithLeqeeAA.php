@@ -45,7 +45,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
 
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API is sleeping.", $result);
         $json = json_decode($result, true);
-        ArkHelper::quickNotEmptyAssert("Leqee AAv3 API responded wrong thing", empty($json));
+        ArkHelper::quickNotEmptyAssert("Leqee AAv3 API responded wrong thing", !empty($json));
 
         $code = ArkHelper::readTarget($json, 'code');
         if ($code === 'OK') {
