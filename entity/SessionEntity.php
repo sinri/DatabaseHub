@@ -67,6 +67,8 @@ class SessionEntity
         $session->expire = time() + 8 * 3600;
         $session->user = $user;
 
+        ArkHelper::quickNotEmptyAssert("Cannot create session for user", $user->userId, $user->status === UserModel::USER_STATUS_NORMAL);
+
         $sessionId = (new SessionModel())->insert([
             'user_id' => $user->userId,
             'token' => $session->token,
