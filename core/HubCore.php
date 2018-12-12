@@ -61,7 +61,7 @@ class HubCore
         if (!self::$logger) {
             $logPath = self::getConfig(['logger', 'path'], __DIR__ . '/../log');
             self::$logger = new ArkLogger($logPath);
-            self::$logger->setIgnoreLevel(self::getConfig(['logger', 'level', 'info']));
+            self::$logger->setIgnoreLevel(self::getConfig(['logger', 'level'], 'info'));
         }
         return self::$logger;
     }
