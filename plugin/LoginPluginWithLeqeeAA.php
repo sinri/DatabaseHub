@@ -32,12 +32,16 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
      */
     public function validateAuthPair($username, $password)
     {
+        $up_checksum = md5($username . '#' . md5($password));
         $curl = new ArkCurl();
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Login/requestWithUsername"))
             ->setPostFormField("username", $username)
-            ->setPostFormField("up_checksum", md5($username . '#' . md5($password)))
+            ->setPostFormField("up_checksum", $up_checksum)
             // tp_code is neglected now
             ->execute(true);
+
+        HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username, 'password' => $password]]);
+
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API is sleeping.", $result);
         $json = json_decode($result, true);
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API responded wrong thing", empty($json));
@@ -66,7 +70,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
         } elseif ($code === 'FAIL') {
             throw new \Exception(ArkHelper::readTarget($json, ['failed_info', 'failed_info']));
         } else {
-            throw new \Exception("Unknown AAv3 API Code");
+            throw new \Exception("Unknown AAv3 API Code: " . json_encode($code));
         }
     }
 }
