@@ -108,6 +108,42 @@ class ApplicationEntity
         ]);
     }
 
+    /**
+     * @return array
+     */
+    public function getRecords()
+    {
+        $rows = (new RecordModel())->selectRowsWithSort(['application_id' => $this->applicationId], "record_id desc");
+        $records = [];
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $records[] = RecordEntity::instanceByRow($row);
+            }
+        }
+        return $records;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExportedFileInfo()
+    {
+        $should_have_file = ($this->type === ApplicationModel::TYPE_READ && $this->status === ApplicationModel::STATUS_DONE);
+        $info = [
+            "should_have_file" => $should_have_file,
+        ];
+        if (!$should_have_file) return $info;
+
+        $path = $this->getExportedFilePath();
+        if (file_exists($path)) {
+            $info["path"] = $path;
+            $info["size"] = filesize($path);
+        } else {
+            $info['error'] = "File Not Exist";
+        }
+        return $info;
+    }
+
     public function getAbstractForList()
     {
         $abstract = json_decode(json_encode($this), true);
@@ -118,6 +154,8 @@ class ApplicationEntity
     {
         $detail = json_decode(json_encode($this), true);
         $detail['preview_table'] = $this->getExportedContentPreview();
+        $detail['history'] = $this->getRecords();
+        $detail['result_file'] = $this->getExportedFileInfo();
         return $detail;
     }
 
@@ -308,4 +346,6 @@ class ApplicationEntity
         fclose($handle);
         return $rows;
     }
+
+
 }
