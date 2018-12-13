@@ -3,75 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Database Hub</title>
-    <script src="https://unpkg.com/axios@0.18.0/dist/axios.js"></script>
-    <script src="https://unpkg.com/js-cookie@2.2.0/src/js.cookie.js"></script>
-    <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/iview/dist/iview.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview/dist/styles/iview.css">
-    <script src="https://www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="./static/styles/login.css">
 </head>
 <body>
-<div id="app">
-    <Row style="width:30%;min-width: 200px;margin: 60px auto;text-align: center">
-        <i-col span="24">
-            <h1>Login - Database Hub</h1>
-            <p style="line-height: 50px">
-                Open the door towards the new world.
-            </p>
-        </i-col>
-        <i-col span="24">
-            <i-form :label-width="80">
-                <form-item label="Username">
-                    <i-input type="text" v-model="login_info.username"></i-input>
-                </form-item>
-                <form-item label="Password">
-                    <i-input type="password" v-model="login_info.password"></i-input>
-                </form-item>
-            </i-form>
-        </i-col>
-        <i-col span="24">
-            <i-button type="primary" @click="login" :loading="loginApiRequesting">Sign in</i-button>
-        </i-col>
-    </Row>
+<div id="app" class="page bg">
+    <main>
+        <Row class="login">
+            <i-col class="text-shadow" span="24">
+                <h1>Login - Database Hub</h1>
+                <p style="line-height: 50px">
+                    Open the door towards the new world.
+                </p>
+            </i-col>
+            <i-col span="24">
+                <i-form :label-width="80">
+                    <form-item label="Username">
+                        <i-input type="text" v-model="login_info.username"></i-input>
+                    </form-item>
+                    <form-item label="Password">
+                        <i-input type="password" v-model="login_info.password"></i-input>
+                    </form-item>
+                </i-form>
+            </i-col>
+            <i-col span="24">
+                <i-button type="primary" @click="login" :loading="loginApiRequesting">Sign in</i-button>
+            </i-col>
+        </Row>
+    </main>
+    <footer>
+        <p class="copyright text-center text-shadow">Leqee业务工作平台由产品技术部维护与更新 &copy; 2018</p>
+        <p class="text-center text-shadow">本系统仅支持 Chrome 浏览器 62 版本及以上，下载地址下载地址：
+            <a href="http://www.leqeewechat.com/vainity/chrome/ChromeStandaloneSetup64_68_64bit.exe">64位</a>
+            <a href="http://www.leqeewechat.com/vainity/chrome/ChromeStandaloneSetup-68-32bit.exe">32位</a>
+        </p>
+    </footer>
 </div>
+<script src="//unpkg.com/axios@0.18.0/dist/axios.js"></script>
+<script src="//unpkg.com/js-cookie@2.2.0/src/js.cookie.js"></script>
+<script src="//unpkg.com/vue@2.5.17/dist/vue.js"></script>
+<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+<script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+<script src="./static/config/api.js"></script>
 <script>
-    new Vue({
-        el: '#app',
-        data: {
-            login_info: {
-                username: '',
-                password: ''
-            },
-            loginApiRequesting: false,
+new Vue({
+    el: '#app',
+    data: {
+        login_info: {
+            username: '',
+            password: ''
         },
-        methods: {
-            login: function () {
-                this.loginApiRequesting = true;
-                let api = "LoginController/login";
-                SinriQF.api.call(
-                    "LoginController/login",
-                    this.login_info,
-                    (data) => {
-                        let session = data.session;
+        loginApiRequesting: false,
+    },
+    methods: {
+        login () {
+            this.loginApiRequesting = true;
 
-                        SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
-                        SinriQF.cookies.setCookie("DatabaseHubUser", session.user);
+            SinriQF.api.call(
+                API.login,
+                this.login_info,
+                ({session}) => {
+                    SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
+                    SinriQF.cookies.setCookie('DatabaseHubUser', session.user);
 
-                        window.location.href = "index.html";
-                        this.loginApiRequesting = false;
-                    },
-                    (error, status) => {
-                        SinriQF.iview.showErrorMessage("Login Error. Feedback: " + error + " Status: " + status, 5);
-                        this.loginApiRequesting = false;
-                    }
-                )
-            }
-        },
-        mounted: function () {
-            SinriQF.config.TokenName = "database_hub_token";
-            SinriQF.config.vueInstance = this;
+                    window.location.href = 'index.html';
+                    this.loginApiRequesting = false;
+                },
+                (error, status) => {
+                    SinriQF.iview.showErrorMessage('Login Error. Feedback: ' + error + ' Status: ' + status, 5);
+                    this.loginApiRequesting = false;
+                }
+            )
         }
-    });
+    },
+    mounted () {
+        SinriQF.config.TokenName = 'database_hub_token';
+        SinriQF.config.vueInstance = this;
+    }
+});
 </script>
 </body>
 </html>
