@@ -3,36 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Database Hub</title>
-    <link rel="stylesheet" type="text/css" href="//unpkg.com/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="//unpkg.com/iview@3.1.5/dist/styles/iview.css">
     <link rel="stylesheet" href="./static/styles/index.css">
 </head>
 <body>
 <div id="app">
-    <top-banner opened="indexPage"></top-banner>
-    <Row>
-        <i-col span="24" style="margin: 10px">
-            <p>Welcome!</p>
-        </i-col>
-    </Row>
+    <top-banner></top-banner>
+    <router-view></router-view>
 </div>
+<!--依赖库-->
 <script src="//unpkg.com/axios@0.18.0/dist/axios.js"></script>
 <script src="//unpkg.com/js-cookie@2.2.0/src/js.cookie.js"></script>
 <script src="//unpkg.com/vue@2.5.17/dist/vue.js"></script>
-<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+<script src="//unpkg.com/vue-router@3.0.2/dist/vue-router.js"></script>
+<script src="//unpkg.com/iview@3.1.5/dist/iview.min.js"></script>
 <script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
 
+<!--配置-->
 <script src="./static/config/api.js"></script>
-<script src="./static/component/TopBanner.js"></script>
+
+<!--组件-->
+<script src="static/component/top-banner.js"></script>
+
+<!--页面-->
+<script src="static/views/welcome.js"></script>
+<script src="static/views/config.js"></script>
+<script src="static/views/query.js"></script>
+<script src="static/views/request.js"></script>
+<script src="static/views/task.js"></script>
 <script>
-    Vue.component('top-banner', TopBannerComponent);
+    const routes = [
+        { path: '/', name: 'indexPage', component: WelcomePage },
+        { path: '/query', name: 'queryPage', component: QueryPage },
+        { path: '/config', name: 'configPage', component: ConfigPage },
+        { path: '/request', name: 'requestPage', component: RequestPage },
+        { path: '/task', name: 'taskPage', component: TaskPage }
+    ];
+
+    const router = new VueRouter({
+        routes
+    });
 
     new Vue({
         el: '#app',
+        router,
         data: {},
         methods: {
-            login: function () {
-                let api = 'LoginController/login';
-            }
+
         },
         mounted: function () {
             SinriQF.config.TokenName = 'database_hub_token';

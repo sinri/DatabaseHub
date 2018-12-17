@@ -1,27 +1,21 @@
-let TopBannerComponent = {
+Vue.component('top-banner', {
     template: `
         <i-menu mode="horizontal" theme="dark"
-            :active-name="opened"
+            :active-name="activeMenuName"
             @on-select="onMenuItemSelected">
             <template v-for="item in menuItems">
                 <menu-item
+                    :key="item.name"
                     :name="item.name"
-                    :style="item.style + (item.name===opened ? 'background: rgb(91, 100, 120);' : '')">
+                    :style="item.style + (item.name === activeMenuName ? 'background: rgb(91, 100, 120);' : '')">
                     <Icon :type="item.icon" /> {{item.text}}
                 </menu-item>
             </template>
-            <menu-item name="userInfo" style="width: 20%;text-align: right;">
-                <Icon type="ios-people" />{{currentUser.realname}}
-            </menu-item>
-            <menu-item name="logout" style="width: 10%;text-align: right;">
-                <Icon type="ios-exit-outline" /> Logout
-            </menu-item>
         </i-menu>
     `,
-    props: ['opened'],
-    data: function () {
+    data () {
         return {
-            currentUser: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')),
+            activeMenuName: 'indexPage',
             menuItems: [
                 {
                     name: 'indexPage',
@@ -52,6 +46,18 @@ let TopBannerComponent = {
                     style: 'width: 10%;text-align: center;',
                     icon: 'ios-nuclear',
                     text: 'Quick Query'
+                },
+                {
+                    name: 'userInfo',
+                    style: 'width: 20%;text-align: right;',
+                    icon: 'ios-people',
+                    text: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).realname
+                },
+                {
+                    name: 'logout',
+                    style: 'width: 10%;text-align: right;',
+                    icon: 'ios-exit-outline',
+                    text: 'Logout'
                 }
             ]
         };
@@ -63,30 +69,19 @@ let TopBannerComponent = {
             }
         },
         onMenuItemSelected (name) {
-            console.log('onMenuItemSelected', name);
+            this.activeMenuName = name;
+
             switch (name) {
-                case 'indexPage':
-                    window.location.href = 'index.html';
-                    break;
-                case 'requestPage':
-                    window.location.href = 'index.html';
-                    break;
-                case 'taskPage':
-                    window.location.href = 'index.html';
-                    break;
-                case 'configPage':
-                    window.location.href = 'configure.html';
-                    break;
-                case 'queryPage':
-                    window.location.href = 'index.html';
-                    break;
                 case 'userInfo':
                     break;
                 case 'logout':
                     SinriQF.cookies.cleanCookie('DatabaseHubUser');
                     SinriQF.cookies.cleanCookie(SinriQF.config.TokenName);
                     window.location.href = 'login.html';
+
                     break;
+                default:
+                    router.push({name});
             }
         }
     },
@@ -95,5 +90,7 @@ let TopBannerComponent = {
         SinriQF.config.vueInstance = this;
 
         this.ensureLogin();
+
+        this.activeMenuName = router.currentRoute.name || 'indexPage'
     }
-};
+});
