@@ -39,16 +39,19 @@
         { path: '/request', name: 'requestPage', component: RequestPage },
         { path: '/task', name: 'taskPage', component: TaskPage }
     ];
-
     const router = new VueRouter({
         routes
     });
+
+    SinriQF.config.TokenName = 'database_hub_token';
 
     router.beforeEach((to, from, next) => {
         // 检测登录状态
         if (!SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
             window.location.href = 'login.html';
         }
+
+        next()
     })
 
     new Vue({
@@ -59,7 +62,6 @@
 
         },
         mounted: function () {
-            SinriQF.config.TokenName = 'database_hub_token';
             SinriQF.config.vueInstance = this;
         }
     });

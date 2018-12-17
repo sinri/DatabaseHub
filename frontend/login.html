@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Database Hub</title>
-    <link rel="stylesheet" type="text/css" href="//unpkg.com/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="//unpkg.com/iview@3.1.5/dist/styles/iview.css">
     <link rel="stylesheet" href="./static/styles/login.css">
 </head>
 <body>
@@ -42,18 +42,22 @@
 <script src="//unpkg.com/axios@0.18.0/dist/axios.js"></script>
 <script src="//unpkg.com/js-cookie@2.2.0/src/js.cookie.js"></script>
 <script src="//unpkg.com/vue@2.5.17/dist/vue.js"></script>
-<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+<script src="//unpkg.com/iview@3.1.5/dist/iview.min.js"></script>
 <script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+
+<!--配置-->
 <script src="./static/config/api.js"></script>
 <script>
 new Vue({
     el: '#app',
-    data: {
-        login_info: {
-            username: '',
-            password: ''
-        },
-        loginApiRequesting: false,
+    data () {
+        return {
+            login_info: {
+                username: '',
+                password: ''
+            },
+            loginApiRequesting: false
+        }
     },
     methods: {
         login () {
