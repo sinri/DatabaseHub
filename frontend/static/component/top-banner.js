@@ -63,11 +63,6 @@ Vue.component('top-banner', {
         };
     },
     methods: {
-        ensureLogin () {
-            if (!SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
-                window.location.href = 'login.html';
-            }
-        },
         onMenuItemSelected (name) {
             this.activeMenuName = name;
 
@@ -86,11 +81,6 @@ Vue.component('top-banner', {
         }
     },
     mounted () {
-        SinriQF.config.TokenName = 'database_hub_token';
-        SinriQF.config.vueInstance = this;
-
-        this.ensureLogin();
-
         this.activeMenuName = router.currentRoute.name || 'indexPage'
     }
 });

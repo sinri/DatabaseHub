@@ -44,6 +44,13 @@
         routes
     });
 
+    router.beforeEach((to, from, next) => {
+        // 检测登录状态
+        if (!SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
+            window.location.href = 'login.html';
+        }
+    })
+
     new Vue({
         el: '#app',
         router,
