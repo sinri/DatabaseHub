@@ -24,10 +24,10 @@ Vue.component('top-banner', {
                     text: 'DatabaseHub'
                 },
                 {
-                    name: 'requestPage',
+                    name: 'approvalsPage',
                     style: 'width: 10%;text-align: center;',
                     icon: 'ios-nuclear',
-                    text: 'Requests'
+                    text: 'Approvals'
                 },
                 {
                     name: 'taskPage',

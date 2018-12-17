@@ -8,8 +8,12 @@
 </head>
 <body>
 <div id="app">
-    <top-banner></top-banner>
-    <router-view></router-view>
+    <header>
+        <top-banner></top-banner>
+    </header>
+    <main>
+        <router-view></router-view>
+    </main>
 </div>
 <!--依赖库-->
 <script src="//unpkg.com/axios@0.18.0/dist/axios.js"></script>
@@ -29,14 +33,14 @@
 <script src="static/views/welcome.js"></script>
 <script src="static/views/config.js"></script>
 <script src="static/views/query.js"></script>
-<script src="static/views/request.js"></script>
+<script src="static/views/approvals.js"></script>
 <script src="static/views/task.js"></script>
 <script>
     const routes = [
         { path: '/', name: 'indexPage', component: WelcomePage },
+        { path: '/approvals', name: 'approvalsPage', component: ApprovalsPage },
         { path: '/query', name: 'queryPage', component: QueryPage },
         { path: '/config', name: 'configPage', component: ConfigPage },
-        { path: '/request', name: 'requestPage', component: RequestPage },
         { path: '/task', name: 'taskPage', component: TaskPage }
     ];
     const router = new VueRouter({

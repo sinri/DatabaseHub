@@ -1,3 +1,5 @@
 const API = {
-    login: 'LoginController/login'
+    login: 'LoginController/login',
+
+    myApprovals: 'ApplicationController/myApprovals'
 }
