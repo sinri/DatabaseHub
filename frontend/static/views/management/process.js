@@ -1,11 +1,11 @@
-const ApprovalsPage = {
+const ProcessPage = {
     template: `
-    <i-table border :columns="myApprovalsTable.columns" :data="myApprovalsTable.data"></i-table>
+        <i-table border :columns="myApprovals.columns" :data="myApprovals.data"></i-table>
     `,
     data () {
         return {
             query: {},
-            myApprovalsTable: {
+            myApprovals: {
                 columns: [
                     {
                         title: 'Application ID',
@@ -44,9 +44,16 @@ const ApprovalsPage = {
     },
     methods: {
         search () {
-            ajax('myApprovals').then(({list}) => {
-                this.myApprovalsTable.data = list
-            })
+            SinriQF.api.call(
+                API.myApprovals,
+                this.login_info,
+                ({list}) => {
+                    this.myApprovals.data = list
+                },
+                (error, status) => {
+                    SinriQF.iview.showErrorMessage('Login Error. Feedback: ' + error + ' Status: ' + status, 5);
+                }
+            )
         }
     },
     mounted () {
