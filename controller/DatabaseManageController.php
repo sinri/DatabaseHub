@@ -156,17 +156,23 @@ class DatabaseManageController extends AbstractAuthController
      */
     public function setDefaultAccount()
     {
-        $this->onlyAdminCanDoThis();
-        $account_id = $this->_readRequest("account_id", '', '/^[\d]+$/');
-        $database_id = $this->_readRequest("database_id", '', '/^[\d]+$/');
+        try {
+            $this->onlyAdminCanDoThis();
+            $account_id = $this->_readRequest("account_id", '', '/^[\d]+$/');
+            $database_id = $this->_readRequest("database_id", '', '/^[\d]+$/');
 
-        $databaseRow = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
-        if (empty($databaseRow) || $databaseRow['status'] !== DatabaseModel::STATUS_NORMAL) {
-            throw new \Exception("It is not a normal database.");
-        }
-        $accountRow = (new AccountModel())->selectRow(['account_id' => $account_id, 'database_id' => $database_id]);
-        if (empty($accountRow)) {
-            throw new \Exception("It is not a correct account.");
+            $databaseRow = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
+            if (empty($databaseRow) || $databaseRow['status'] !== DatabaseModel::STATUS_NORMAL) {
+                throw new \Exception("It is not a normal database.");
+            }
+            $accountRow = (new AccountModel())->selectRow(['account_id' => $account_id, 'database_id' => $database_id]);
+            if (empty($accountRow)) {
+                throw new \Exception("It is not a correct account.");
+            }
+            (new DatabaseModel())->update(['database_id' => $database_id], ['default_account_id' => $account_id]);
+            $this->_sayOK();
+        } catch (\Exception $e) {
+            $this->_sayFail($e->getMessage());
         }
     }
 
