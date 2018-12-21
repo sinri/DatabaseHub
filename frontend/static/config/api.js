@@ -5,7 +5,31 @@ const API = {
     },
 
     // ApplicationController
-    myApprovals: {
+    createApplication: {
+        desc: '',
+        url: 'ApplicationController/create'
+    },
+    editApplication: {
+        desc: '',
+        url: 'ApplicationController/update'
+    },
+    cancelApplication: {
+        desc: '',
+        url: 'ApplicationController/cancel'
+    },
+    denyApplication: {
+        desc: '',
+        url: 'ApplicationController/deny'
+    },
+    approveApplication: {
+        desc: '',
+        url: 'ApplicationController/approve'
+    },
+    searchApplication: {
+        desc: '',
+        url: 'ApplicationController/search'
+    },
+    myApplicationApprovals: {
         desc: '',
         url: 'ApplicationController/myApprovals'
     },

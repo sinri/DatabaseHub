@@ -8,20 +8,20 @@ Vue.component('top-banner', {
                     :key="item.name"
                     :name="item.name">
                     <template slot="title">
-                        <Icon :type="item.icon" v-if="item.icon" /> {{item.text}}
+                        <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
                     </template>
                     <menu-item v-for="subItem in item.children"
                         :key="subItem.name"
                         :name="subItem.name"
                         :style="subItem.style">
-                        <Icon :type="subItem.icon" v-if="subItem.icon" /> {{subItem.text}}
+                        <Icon :type="subItem.icon" v-if="subItem.icon" /> {{ subItem.text }}
                     </menu-item>
                 </submenu>
                 <menu-item v-else
                     :key="item.name"
                     :name="item.name"
                     :style="item.style">
-                    <Icon :type="item.icon" v-if="item.icon" /> {{item.text}}
+                    <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
                 </menu-item>
             </template>
         </i-menu>
@@ -32,14 +32,14 @@ Vue.component('top-banner', {
             menuItems: [
                 {
                     name: 'dashboardPage',
-                    style: 'width: 30%;text-align: left;',
+                    style: 'width: 20%;text-align: left;',
                     icon: 'ios-nuclear',
                     text: 'DatabaseHub'
                 },
                 {
-                    name: 'approvalsPage',
-                    icon: 'ios-nuclear',
-                    text: 'Approvals'
+                    name: 'applicationsPage',
+                    icon: 'ios-beaker',
+                    text: 'Applications'
                 },
                 {
                     name: 'managementPage',
@@ -64,16 +64,16 @@ Vue.component('top-banner', {
                     text: 'Quick Query'
                 },
                 {
-                    name: 'userInfo',
-                    style: 'width: 20%;text-align: right;',
-                    icon: 'md-person',
-                    text: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).realname
-                },
-                {
                     name: 'logout',
-                    style: 'width: 10%;text-align: right;',
+                    style: 'float: right;',
                     icon: 'ios-exit-outline',
                     text: 'Logout'
+                },
+                {
+                    name: 'userInfo',
+                    style: 'float: right;',
+                    icon: 'md-person',
+                    text: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).realname
                 }
             ]
         };

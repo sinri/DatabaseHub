@@ -42,6 +42,8 @@
 <script src="static/views/dashboard.js"></script>
 <script src="static/views/config.js"></script>
 
+<script src="static/views/applications/list.js"></script>
+
 <script src="static/views/management/permissions.js"></script>
 <script src="static/views/management/databases/accounts.js"></script>
 <script src="static/views/management/databases/create.js"></script>
@@ -50,12 +52,23 @@
 <script src="static/views/management/process.js"></script>
 
 <script src="static/views/query.js"></script>
-<script src="static/views/approvals.js"></script>
 <script src="static/views/task.js"></script>
 <script>
 const routes = [
     { path: '/', name: 'dashboardPage', component: DashboardPage },
-    { path: '/approvals', name: 'approvalsPage', component: ApprovalsPage },
+    { path: '/applications', name: 'applicationsPage', component: { template: `<router-view></router-view>`},
+        children: [
+            {
+                path: '',
+                redirect: 'list'
+            },
+            {
+                path: 'list',
+                name: 'applicationsPage',
+                component: ApplicationListPage
+            }
+        ]
+    },
     { path: '/management', name: 'managementPage', component: { template: `<router-view></router-view>` },
         children: [
             {
@@ -101,7 +114,8 @@ const routes = [
                 name: 'processPage',
                 component: ProcessPage
             }
-        ]},
+        ]
+    },
     { path: '/query', name: 'queryPage', component: QueryPage },
     { path: '/config', name: 'configPage', component: ConfigPage },
     { path: '/task', name: 'taskPage', component: TaskPage }

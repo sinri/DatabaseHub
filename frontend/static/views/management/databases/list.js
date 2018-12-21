@@ -95,8 +95,8 @@ const DatabaseListPage = {
 
             ajax(this.searchUrl, query).then(({list}) => {
                 this.databaseTable.data = list;
-            }).catch((error, status) => {
-                SinriQF.iview.showErrorMessage('Get Database List Error. Feedback: ' + error + ' Status: ' + status, 5);
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
             });
         },
         goCreateDatabase () {
