@@ -15,35 +15,31 @@ Vue.component('top-banner', {
     `,
     data () {
         return {
-            activeMenuName: 'indexPage',
+            activeMenuName: 'DatabaseHub',
             menuItems: [
                 {
-                    name: 'indexPage',
+                    name: 'dashboardPage',
                     style: 'width: 30%;text-align: left;',
                     icon: 'ios-nuclear',
                     text: 'DatabaseHub'
                 },
                 {
                     name: 'approvalsPage',
-                    style: 'width: 10%;text-align: center;',
                     icon: 'ios-nuclear',
                     text: 'Approvals'
                 },
                 {
-                    name: 'taskPage',
-                    style: 'width: 10%;text-align: center;',
+                    name: 'managementPage',
                     icon: 'ios-nuclear',
-                    text: 'Tasks'
+                    text: 'Management'
                 },
                 {
                     name: 'configPage',
-                    style: 'width: 10%;text-align: center;',
                     icon: 'ios-nuclear',
                     text: 'Configure'
                 },
                 {
                     name: 'queryPage',
-                    style: 'width: 10%;text-align: center;',
                     icon: 'ios-nuclear',
                     text: 'Quick Query'
                 },

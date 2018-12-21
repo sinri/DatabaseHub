@@ -1,8 +1,8 @@
-const WelcomePage = {
+const DashboardPage = {
     template: `
         <Row>
             <i-col span="24" style="margin: 10px">
-                <p>Welcome Page!</p>
+                <p>Dashboard Page!</p>
             </i-col>
         </Row>
     `,

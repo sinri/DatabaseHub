@@ -1,4 +1,16 @@
+#app {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+header {
+
+}
+
 main {
+    flex: 1;
     overflow: hidden;
     padding: 15px;
+    background-color: #f2f2f2;
 }

@@ -1,0 +1,18 @@
+.layout {
+    padding: 15px 20px;
+    background-color: #fff;
+}
+
+
+.layout-search-bar {
+    padding: 10px 0;
+}
+.layout-handle-bar {
+    /*padding: 10px 0;*/
+}
+.layout-table {
+    padding: 10px 0;
+}
+.layout-pagination {
+    padding: 10px 0;
+}
