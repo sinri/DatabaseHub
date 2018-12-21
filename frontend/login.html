@@ -74,7 +74,7 @@ new Vue({
 
             ajax('login', data).then(({session}) => {
                 SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
-                SinriQF.cookies.setCookie('DatabaseHubUser', session.user);
+                SinriQF.cookies.setCookie('DatabaseHubUser', session.user, session.expire);
 
                 const targetHref = localStorage.getItem('target_href') || 'index.html';
 

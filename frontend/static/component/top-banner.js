@@ -4,11 +4,24 @@ Vue.component('top-banner', {
             :active-name="activeMenuName"
             @on-select="onMenuItemSelected">
             <template v-for="item in menuItems">
-                <menu-item
+                <submenu v-if="item.children"
+                    :key="item.name"
+                    :name="item.name">
+                    <template slot="title">
+                        <Icon :type="item.icon" v-if="item.icon" /> {{item.text}}
+                    </template>
+                    <menu-item v-for="subItem in item.children"
+                        :key="subItem.name"
+                        :name="subItem.name"
+                        :style="subItem.style">
+                        <Icon :type="subItem.icon" v-if="subItem.icon" /> {{subItem.text}}
+                    </menu-item>
+                </submenu>
+                <menu-item v-else
                     :key="item.name"
                     :name="item.name"
-                    :style="item.style + (item.name === activeMenuName ? 'background: rgb(91, 100, 120);' : '')">
-                    <Icon :type="item.icon" /> {{item.text}}
+                    :style="item.style">
+                    <Icon :type="item.icon" v-if="item.icon" /> {{item.text}}
                 </menu-item>
             </template>
         </i-menu>
@@ -30,8 +43,15 @@ Vue.component('top-banner', {
                 },
                 {
                     name: 'managementPage',
-                    icon: 'ios-nuclear',
-                    text: 'Management'
+                    icon: 'ios-flask',
+                    text: 'Management',
+                    children: [
+                        {
+                            name: 'databaseListPage',
+                            icon: 'ios-cube',
+                            text: 'Databases'
+                        }
+                    ]
                 },
                 {
                     name: 'configPage',
@@ -46,7 +66,7 @@ Vue.component('top-banner', {
                 {
                     name: 'userInfo',
                     style: 'width: 20%;text-align: right;',
-                    icon: 'ios-people',
+                    icon: 'md-person',
                     text: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).realname
                 },
                 {
@@ -74,9 +94,15 @@ Vue.component('top-banner', {
                 default:
                     router.push({name});
             }
+        },
+        updateActiveMenuName (to) {
+            this.activeMenuName = to.name
         }
     },
-    mounted () {
-        this.activeMenuName = router.currentRoute.name || 'indexPage'
+    watch: {
+        $route: {
+            handler: 'updateActiveMenuName',
+            immediate: true
+        }
     }
 });

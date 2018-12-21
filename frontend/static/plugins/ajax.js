@@ -1,21 +1,25 @@
 function ajax (apiName, data = {}) {
-    const api = API[apiName]
+    const api = API[apiName];
 
     return new Promise((resolve, reject) => {
         SinriQF.api.call(api.url, data, (res) => {
             resolve(res);
         }, (error, status) => {
-            if (typeof error === 'object' && error.response.status === 403) {
-                localStorage.setItem('target_href', window.location.href)
+            console.log('------')
+            console.log('-', error, '-')
+            console.log(status)
+
+            if (typeof error.response !== 'undefined' && error.response.status === 403) {
+                localStorage.setItem('target_href', window.location.href);
                 window.location.href = 'login.html';
 
-                return
+                return;
             }
 
             reject({
                 error,
                 status,
-                message: `${apiName} Error. Feedback: ${error} Status: ${status}`
+                message: `${apiName} Error. Feedback: ${JSON.stringify(error)} Status: ${status}`
             });
         });
     });

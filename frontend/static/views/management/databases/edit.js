@@ -1,7 +1,7 @@
-const CreateDatabasePage = {
+const EditDatabasePage = {
     template: `
         <layout>
-            <h2 class="title">Create Database</h2>
+            <h2 class="title">Edit Database</h2>
             <divider></divider>
             <i-form ref="form" style="width: 640px;"
                 :label-width="120"
@@ -71,32 +71,38 @@ const CreateDatabasePage = {
                     ]
                 }
             }
-        };
+        }
     },
     methods: {
         back () {
             this.$router.replace({
                 name: 'databaseListPage'
-            });
+            })
         },
         onSubmit () {
            this.$refs.form.validate((valid) => {
                if (valid) {
-                   this.save();
+                   this.save()
                }
-           });
+           })
         },
         save () {
-            const data = JSON.parse(JSON.stringify(this.form.model));
+            const data = JSON.parse(JSON.stringify(this.form.model))
 
-            ajax('createDatabase', {
+            ajax('editDatabase', {
+                database_id: data.database_id,
                 database_info: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Create Database Success!', 3);
-                this.back();
+                SinriQF.iview.showSuccessMessage('Edit Database Success!', 3)
+                this.back()
             }).catch(({msg}) => {
                 SinriQF.iview.showErrorMessage(msg, 5);
             })
         }
+    },
+    created () {
+        const query = JSON.parse(JSON.stringify(this.$route.query))
+
+        Object.assign(this.form.model, query)
     }
 };

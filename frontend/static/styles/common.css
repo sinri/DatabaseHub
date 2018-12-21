@@ -1,8 +1,12 @@
+.ivu-menu > .ivu-menu-item-selected,
+.ivu-menu > .ivu-menu-child-item-active {
+    background: rgb(91, 100, 120);
+}
+
 .layout {
     padding: 15px 20px;
     background-color: #fff;
 }
-
 
 .layout-search-bar {
     padding: 10px 0;
@@ -15,4 +19,26 @@
 }
 .layout-pagination {
     padding: 10px 0;
+}
+
+.btn-group button + button {
+    margin-left: 5px;
+}
+
+
+.c-status {
+    display: inline-block;
+    margin: 0 5px;
+    width: 9px;
+    height: 9px;
+    border: 1px solid #eee;
+    border-radius: 50%;
+}
+.c-status.NORMAL {
+    background-color: rgba(25, 190, 107, .9);
+    box-shadow: 0 0 8px rgb(25, 190, 10);
+}
+.c-status.DISABLED {
+    background-color: rgba(187, 190, 196, .9);
+    box-shadow: 0 0 8px rgb(187, 190, 196);
 }

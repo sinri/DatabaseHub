@@ -30,5 +30,21 @@ const API = {
     advanceDatabaseList: {
         desc: '',
         url: 'DatabaseManageController/advanceList'
+    },
+    createDatabaseAccount: {
+        desc: '',
+        url: 'DatabaseManageController/editAccount'
+    },
+    removeDatabaseAccount: {
+        desc: '',
+        url: 'DatabaseManageController/removeAccount'
+    },
+    setDatabaseDefaultAccount: {
+        desc: 'Set one account as default of database.',
+        url: 'DatabaseManageController/setDefaultAccount'
+    },
+    databaseAccountList: {
+        desc: 'Fetch the accounts of database.',
+        url: 'DatabaseManageController/databaseAccountList'
     }
 }
