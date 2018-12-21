@@ -99,13 +99,14 @@ class DatabaseManageController extends AbstractAuthController
     {
         $this->onlyAdminCanDoThis();
         $list = (new DatabaseModel())->selectRows([
-//            'status'=>DatabaseModel::USER_STATUS_NORMAL
+////            'status'=>DatabaseModel::USER_STATUS_NORMAL
         ]);
-        $databases = [];
-        foreach ($list as $item) {
-            $databases[] = DatabaseEntity::instanceByRow($item);
-        }
-        $this->_sayOK(['list' => $databases]);
+//        $databases = [];
+//        foreach ($list as $item) {
+//            $databases[] = DatabaseEntity::instanceByRow($item);
+//        }
+//        $this->_sayOK(['list' => $databases]);
+        $this->_sayOK(['list' => $list]);
     }
 
     /**
