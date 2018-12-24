@@ -81,6 +81,10 @@ REQ:
 * username
 * password
 
+### getAllUser
+
+get all user ever logined.
+
 ## ApplicationController
 
 ### create

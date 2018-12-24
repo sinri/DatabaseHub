@@ -22,9 +22,9 @@ class DatabaseEntity
     public $status;
     public $engine;
     /**
-     * @var AccountEntity
+     * @var AccountEntity | null
      */
-    protected $defaultAccount;
+    protected $defaultAccount = null;
     /**
      * @var AccountEntity[]
      */
@@ -39,7 +39,7 @@ class DatabaseEntity
     }
 
     /**
-     * @return AccountEntity
+     * @return AccountEntity|null
      */
     public function getDefaultAccount()
     {

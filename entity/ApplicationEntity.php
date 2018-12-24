@@ -53,12 +53,12 @@ class ApplicationEntity
         $entity->applicationId = $row['application_id'];
         $entity->title = $row['title'];
         $entity->description = $row['description'];
-        $entity->database = DatabaseEntity::instanceById($row['database']);
+        $entity->database = DatabaseEntity::instanceById($row['database_id']);
         $entity->sql = $row['sql'];
         $entity->type = $row['type'];
         $entity->status = $row['status'];
         $entity->applyUser = UserEntity::instanceByUserId($row['apply_user']);
-        $entity->approveUser = UserEntity::instanceByUserId($row['approve_user']);
+        $entity->approveUser = empty($row['approve_user']) ? null : UserEntity::instanceByUserId($row['approve_user']);
         $entity->createTime = $row['create_time'];
         $entity->editTime = $row['edit_time'];
         $entity->executeTime = $row['execute_time'];
@@ -346,6 +346,4 @@ class ApplicationEntity
         fclose($handle);
         return $rows;
     }
-
-
 }

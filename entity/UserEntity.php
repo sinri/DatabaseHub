@@ -82,4 +82,18 @@ class UserEntity
         }
         return $dict;
     }
+
+    /**
+     * 获取全部用户
+     * @return array
+     */
+    public function getAllUser()
+    {
+        $all_user =  (new UserModel())->selectRow([]);
+        return array_map(function ($row) {
+            $entity = self::instanceByRow($row);
+            $entity->passwordHash = null;
+            return $entity;
+        }, $all_user);
+    }
 }

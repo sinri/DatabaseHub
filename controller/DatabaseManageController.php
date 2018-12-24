@@ -89,7 +89,11 @@ class DatabaseManageController extends AbstractAuthController
     public function commonList()
     {
         $list = (new DatabaseModel())->selectRows(['status' => DatabaseModel::STATUS_NORMAL]);
-        $this->_sayOK(['list' => $list]);
+        $databases = [];
+        foreach ($list as $item) {
+            $databases[] = DatabaseEntity::instanceByRow($item);
+        }
+        $this->_sayOK(['list' => $databases]);
     }
 
     /**
@@ -101,12 +105,11 @@ class DatabaseManageController extends AbstractAuthController
         $list = (new DatabaseModel())->selectRows([
 ////            'status'=>DatabaseModel::USER_STATUS_NORMAL
         ]);
-//        $databases = [];
-//        foreach ($list as $item) {
-//            $databases[] = DatabaseEntity::instanceByRow($item);
-//        }
-//        $this->_sayOK(['list' => $databases]);
-        $this->_sayOK(['list' => $list]);
+        $databases = [];
+        foreach ($list as $item) {
+            $databases[] = DatabaseEntity::instanceByRow($item);
+        }
+        $this->_sayOK(['list' => $databases]);
     }
 
     /**
