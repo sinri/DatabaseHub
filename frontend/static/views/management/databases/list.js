@@ -20,12 +20,12 @@ const DatabaseListPage = {
                 columns: [
                     {
                         title: 'Database ID',
-                        key: 'database_id',
+                        key: 'databaseId',
                         width: 120
                     },
                     {
                         title: 'Name',
-                        key: 'database_name'
+                        key: 'databaseName'
                     },
                     {
                         title: 'Connection',
@@ -118,7 +118,7 @@ const DatabaseListPage = {
             this.$router.push({
                 name: 'databaseAccountsPage',
                 params: {
-                    databaseId: query.database_id
+                    databaseId: query.databaseId
                 },
                 query
             });

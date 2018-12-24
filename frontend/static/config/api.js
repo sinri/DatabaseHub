@@ -29,6 +29,10 @@ const API = {
         desc: '',
         url: 'ApplicationController/search'
     },
+    detailApplication: {
+        desc: '',
+        url: 'ApplicationController/detail'
+    },
     myApplicationApprovals: {
         desc: '',
         url: 'ApplicationController/myApprovals'

@@ -25,16 +25,27 @@ const ApplicationListPage = {
                             :value="item">{{ item }}</i-option>
                     </i-select>
                  </form-item>
+                 <form-item>
+                    <i-button type="primary" icon="ios-search" @click="search">Search</i-button>
+                 </form-item>
             </i-form>
             </div>
             <div slot="handle">
-                <i-button type="primary" @click="search">Search</i-button>
                 <i-button type="primary" @click="goCreateApplication">Create Application</i-button>
             </div>
             
             <i-table border :columns="applicationTable.columns" :data="applicationTable.data"></i-table>
             
-            <page slot="pagination" :total="applicationTable.total" />
+            <drawer width="700"
+                :mask="false"
+                v-model="previewer.drawerVisible">
+                <application-detail :data="previewer.application"></application-detail>
+            </drawer>
+            
+            <page slot="pagination" show-total show-elevator
+                :total="applicationTable.total"
+                @on-change="changePage"
+                v-show="applicationTable.total > 0" />
         </layout-list>
     `,
     data () {
@@ -52,47 +63,88 @@ const ApplicationListPage = {
                 columns: [
                     {
                         title: 'Application ID',
-                        key: ''
+                        key: 'applicationId',
+                        width: 120
                     },
                     {
                         title: 'Title',
-                        key: ''
+                        key: 'title'
                     },
                     {
                         title: 'Database',
-                        key: ''
+                        render: (h, {row}) => {
+                            return h('div', row.database.databaseName)
+                        }
                     },
                     {
                         title: 'Type',
-                        key: ''
+                        key: 'type'
                     },
                     {
                         title: 'Status',
-                        key: ''
+                        key: 'status'
                     },
                     {
                         title: 'Applicant',
-                        key: ''
+                        render: (h, {row}) => {
+                            return h('div', row.applyUser.realname)
+                        }
                     },
                     {
-                        title: 'Applied Time'
+                        title: 'Applied Time',
+                        width: 150,
+                        key: 'createTime'
                     },
                     {
-                        title: 'Action'
+                        title: 'Action',
+                        width: 150,
+                        render: (h, {row}) => {
+                            return h('div', {
+                                class: 'btn-group'
+                            }, [
+                                h('i-button', {
+                                    props: {
+                                        size: 'small',
+                                        type: 'primary'
+                                    }
+                                }, 'Open'),
+                                h('i-button', {
+                                    on: {
+                                        click: () => {
+                                            this.previewApplication(row)
+                                        }
+                                    },
+                                    props: {
+                                        size: 'small',
+                                        type: 'success'
+                                    }
+                                }, 'Preview')
+                            ])
+                        }
                     }
                 ],
                 data: [],
                 total: 0
+            },
+            databaseList: [],
+            previewer: {
+                drawerVisible: false,
+                application: {}
             }
         };
     },
     methods: {
-        search () {
+        changePage (page) {
+            this.search({page});
+        },
+        search (params = {}) {
             const query = JSON.parse(JSON.stringify(this.query));
+
+            Object.assign(query, params);
 
             ajax('searchApplication', query).then(({list, total}) => {
                 this.applicationTable.data = list;
-                this.applicationTable.total = list;
+                this.applicationTable.total = total;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
@@ -108,6 +160,24 @@ const ApplicationListPage = {
             this.$router.push({
                 name: 'editApplicationPage',
                 query
+            });
+        },
+        previewApplication (item) {
+            this.previewer.drawerVisible = true;
+
+            ajax('detailApplication', {
+                application_id: item.applicationId
+            }).then(({application}) => {
+                this.previewer.application = application
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
+        getDatabaseList () {
+            ajax('commonDatabaseList').then(({list}) => {
+                this.databaseList = list;
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
             });
         }
     },
