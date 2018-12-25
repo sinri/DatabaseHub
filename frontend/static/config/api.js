@@ -3,6 +3,9 @@ const API = {
     login: {
         url: 'LoginController/login'
     },
+    getAllUser: {
+        url: 'LoginController/getAllUser'
+    },
 
     // ApplicationController
     createApplication: {

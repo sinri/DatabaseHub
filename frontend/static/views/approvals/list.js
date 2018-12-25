@@ -1,56 +1,7 @@
-const ApplicationListPage = {
+const ApprovalListPage = {
     template: `
         <layout-list>
-            <div slot="search">
-                <div style="margin-bottom: 20px;">
-                    <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS"
-                            :key="item"
-                            :content="item">
-                        <i-button shape="circle" 
-                            :icon="CONSTANTS.APPLICATION_STATUS_ICON_TYPE_MAP[item]" 
-                            type="primary"></i-button>
-                    </tooltip>
-                </div>
-                <i-form inline>
-                     <form-item>
-                         <i-input type="text" placeholder="Title" />
-                     </form-item>
-                     <form-item>
-                         <i-input type="text" placeholder="Database ID" />
-                     </form-item>
-                     <form-item>
-                         <i-select>
-                            <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
-                                :key="item" 
-                                :value="item">{{ item }}</i-option>
-                        </i-select>
-                     </form-item>
-                     <form-item>
-                         <i-input type="text" placeholder="Apply User" />
-                     </form-item>
-                     <form-item>
-                        <i-select>
-                            <i-option v-for="item in CONSTANTS.APPLICATION_STATUS" 
-                                :key="item" 
-                                :value="item">{{ item }}</i-option>
-                        </i-select>
-                     </form-item>
-                     <form-item>
-                        <i-button type="primary" icon="ios-search" @click="search">Search</i-button>
-                     </form-item>
-                </i-form>
-            </div>
-            <div slot="handle">
-                <i-button type="primary" @click="goCreateApplication">Create Application</i-button>
-            </div>
-            
             <i-table border :columns="applicationTable.columns" :data="applicationTable.data"></i-table>
-            
-            <drawer width="700" :styles="{padding: 0}"
-                :mask="false"
-                v-model="previewer.drawerVisible">
-                <application-detail ref="applicationDetail" :application-id="previewer.applicationId"></application-detail>
-            </drawer>
             
             <page slot="pagination" show-total show-elevator
                 :total="applicationTable.total"
@@ -141,12 +92,6 @@ const ApplicationListPage = {
                 ],
                 data: [],
                 total: 0
-            },
-            allUserList: [],
-            databaseList: [],
-            previewer: {
-                applicationId: 0,
-                drawerVisible: false
             }
         };
     },
@@ -159,44 +104,9 @@ const ApplicationListPage = {
 
             Object.assign(query, params);
 
-            ajax('searchApplication', query).then(({list, total}) => {
+            ajax('myApplicationApprovals', query).then(({list, total}) => {
                 this.applicationTable.data = list;
                 this.applicationTable.total = total;
-            }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
-            });
-        },
-        goCreateApplication () {
-            this.$router.push({
-                name: 'createApplicationPage'
-            });
-        },
-        goEditApplication (item) {
-            const query = JSON.parse(JSON.stringify(item));
-
-            this.$router.push({
-                name: 'editApplicationPage',
-                query
-            });
-        },
-        previewApplication (item) {
-            this.previewer.applicationId = item.applicationId;
-            this.previewer.drawerVisible = true;
-
-            this.$nextTick(() => {
-                this.$refs.applicationDetail.init()
-            })
-        },
-        getAllUserList () {
-            ajax('getAllUser').then(({list}) => {
-                this.allUserList = list;
-            }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
-            });
-        },
-        getDatabaseList () {
-            ajax('commonDatabaseList').then(({list}) => {
-                this.databaseList = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
@@ -204,7 +114,5 @@ const ApplicationListPage = {
     },
     mounted () {
         this.search();
-        // this.getAllUserList();
-        this.getDatabaseList();
     }
 };

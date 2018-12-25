@@ -87,7 +87,7 @@ const CreateApplicationPage = {
     methods: {
         back () {
             this.$router.replace({
-                name: 'applicationsPage'
+                name: 'applicationListPage'
             });
         },
         onSubmit () {

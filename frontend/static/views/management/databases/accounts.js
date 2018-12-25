@@ -2,7 +2,7 @@ const DatabaseAccountsPage = {
     template: `
         <layout-list>
             <div slot="header">
-                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.database_name }}</h2>
+                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }}</h2>
                 <divider></divider>
             </div>
             
@@ -66,7 +66,7 @@ const DatabaseAccountsPage = {
                             if (row.accountId === this.databaseAccountTable.defaultAccount.accountId)
                                 return h('tag', {
                                     props: {
-                                        color: 'primary'
+                                        color: 'success'
                                     }
                                 }, 'Yes')
                             else
