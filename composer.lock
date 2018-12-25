@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "84d46d222624fac2da468043c4eea873",
+  "content-hash": "4d494c7bb60946fa5e0b192425ae2708",
     "packages": [
         {
           "name": "analog/analog",
@@ -18,7 +18,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/jbroadway/analog/zipball/f04906be5a740794959ecceaaae307792cfe3b58",
             "reference": "f04906be5a740794959ecceaaae307792cfe3b58",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+              {
+                "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                "preferred": true
+              }
+            ]
           },
           "require": {
             "php": ">=5.3.2",
@@ -60,17 +66,23 @@
         },
       {
         "name": "greenlion/php-sql-parser",
-        "version": "v4.1.2",
+        "version": "4.2.1",
         "source": {
           "type": "git",
           "url": "https://github.com/greenlion/PHP-SQL-Parser.git",
-          "reference": "b4e8522ebca3e5c8bbd4e2c25edaef155a96db20"
+          "reference": "249e8342c9b29e7444090bc66da5e870a0b28b8c"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/greenlion/PHP-SQL-Parser/zipball/b4e8522ebca3e5c8bbd4e2c25edaef155a96db20",
-          "reference": "b4e8522ebca3e5c8bbd4e2c25edaef155a96db20",
-          "shasum": ""
+          "url": "https://api.github.com/repos/greenlion/PHP-SQL-Parser/zipball/249e8342c9b29e7444090bc66da5e870a0b28b8c",
+          "reference": "249e8342c9b29e7444090bc66da5e870a0b28b8c",
+          "shasum": "",
+          "mirrors": [
+            {
+              "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+              "preferred": true
+            }
+          ]
         },
         "require": {
           "analog/analog": "^1.0.6",
@@ -112,21 +124,27 @@
           "parser",
           "sql"
         ],
-        "time": "2017-05-16T21:20:45+00:00"
+        "time": "2018-12-23T05:09:55+00:00"
       },
       {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.74",
+        "version": "v1.2.76",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "e5fbc685383a4b8f49183b3a646b193491cc14c5"
+              "reference": "728dd7f210819ccafbf008a6ef7956f4f3c3571c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/e5fbc685383a4b8f49183b3a646b193491cc14c5",
-                "reference": "e5fbc685383a4b8f49183b3a646b193491cc14c5",
-                "shasum": ""
+              "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/728dd7f210819ccafbf008a6ef7956f4f3c3571c",
+              "reference": "728dd7f210819ccafbf008a6ef7956f4f3c3571c",
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "php": ">=5.3.0"
@@ -161,7 +179,7 @@
                 "crawlerdetect",
                 "php crawler detect"
             ],
-            "time": "2018-11-21T20:56:45+00:00"
+        "time": "2018-12-18T08:52:44+00:00"
         },
         {
           "name": "jdorn/sql-formatter",
@@ -175,7 +193,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/64990d96e0959dff8e059dfcdc1af130728d92bc",
             "reference": "64990d96e0959dff8e059dfcdc1af130728d92bc",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+              {
+                "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                "preferred": true
+              }
+            ]
           },
           "require": {
             "php": ">=5.2.4"
@@ -225,7 +249,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/jenssegers/agent/zipball/df71082ed2a95fc8a82ba30832ccf72df939f02a",
                 "reference": "df71082ed2a95fc8a82ba30832ccf72df939f02a",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "jaybizzle/crawler-detect": "^1.2",
@@ -291,7 +321,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/cd385290f9a0d609d2eddd165a1e44ec1bf12102",
                 "reference": "cd385290f9a0d609d2eddd165a1e44ec1bf12102",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "php": ">=5.0.0"
@@ -343,7 +379,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/phpmyadmin/sql-parser/zipball/a156028d60b4b9e11f43cc432f0a19507e87c658",
             "reference": "a156028d60b4b9e11f43cc432f0a19507e87c658",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+              {
+                "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                "preferred": true
+              }
+            ]
           },
           "require": {
             "php": ">=5.3.0",
@@ -404,7 +446,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
                 "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "php": ">=5.3.0"
@@ -451,7 +499,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
                 "reference": "5601c8a83fbba7ef674a7369456d12f1e0d0eafa",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "php": ">=5.3"
@@ -491,7 +545,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/ralouphie/mimey/zipball/d69688d4856daa13a9124c819d148ccc2235dea2",
                 "reference": "d69688d4856daa13a9124c819d148ccc2235dea2",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "php": "^5.3|^7.0"
@@ -531,7 +591,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sinri/Ark/zipball/fe76f9a261efce3fa43baa215788c7c597d1f115",
                 "reference": "fe76f9a261efce3fa43baa215788c7c597d1f115",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "jenssegers/agent": "^2.6",
@@ -591,7 +657,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sinri/Ark-Cache/zipball/975ca8182a124282ee97f27c11ecbe5610e23795",
                 "reference": "975ca8182a124282ee97f27c11ecbe5610e23795",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "type": "library",
             "autoload": {
@@ -624,7 +696,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sinri/Ark-Core/zipball/c272dd894883a820874b690cbf9d7a88b1c8ad68",
                 "reference": "c272dd894883a820874b690cbf9d7a88b1c8ad68",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "ext-json": "*",
@@ -661,7 +739,13 @@
             "type": "zip",
             "url": "https://api.github.com/repos/sinri/Ark-Curl/zipball/3f28ee12c11ff1f4cc492620b20d5b2a50a67754",
             "reference": "3f28ee12c11ff1f4cc492620b20d5b2a50a67754",
-            "shasum": ""
+            "shasum": "",
+            "mirrors": [
+              {
+                "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                "preferred": true
+              }
+            ]
           },
           "require": {
             "ext-curl": "*",
@@ -699,7 +783,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sinri/Ark-MySQLi/zipball/15cf8c37d7161d44be18b713c0b606be6bee7f4b",
                 "reference": "15cf8c37d7161d44be18b713c0b606be6bee7f4b",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "ext-mysqli": "*",
@@ -736,7 +826,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sinri/Ark-PDO/zipball/972f9099b81c3b657ec29c23f29234187c724517",
                 "reference": "972f9099b81c3b657ec29c23f29234187c724517",
-                "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "ext-json": "*",
@@ -764,17 +860,23 @@
         },
       {
         "name": "sinri/ark-queue",
-        "version": "1.1",
+        "version": "2.0",
         "source": {
           "type": "git",
           "url": "https://github.com/sinri/Ark-Queue.git",
-          "reference": "51c0902ed28c4a41e24c3d7fb56a5af7339aac24"
+          "reference": "64ca22cc2178705bfc8788cb58374cc94d08463f"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/51c0902ed28c4a41e24c3d7fb56a5af7339aac24",
-          "reference": "51c0902ed28c4a41e24c3d7fb56a5af7339aac24",
-          "shasum": ""
+          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/64ca22cc2178705bfc8788cb58374cc94d08463f",
+          "reference": "64ca22cc2178705bfc8788cb58374cc94d08463f",
+          "shasum": "",
+          "mirrors": [
+            {
+              "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+              "preferred": true
+            }
+          ]
         },
         "suggest": {
           "ext-pcntl": "*"
@@ -796,7 +898,7 @@
           }
         ],
         "description": "The queue component for Ark 2",
-        "time": "2018-09-07T15:18:40+00:00"
+        "time": "2018-12-22T13:30:56+00:00"
       },
       {
         "name": "symfony/polyfill-mbstring",
@@ -810,7 +912,13 @@
           "type": "zip",
           "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/c79c051f5b3a46be09205c73b80b346e4153e494",
           "reference": "c79c051f5b3a46be09205c73b80b346e4153e494",
-          "shasum": ""
+          "shasum": "",
+          "mirrors": [
+            {
+              "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+              "preferred": true
+            }
+          ]
         },
         "require": {
           "php": ">=5.3.3"

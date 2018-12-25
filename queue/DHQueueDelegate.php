@@ -2,41 +2,48 @@
 /**
  * Created by PhpStorm.
  * User: sinri
- * Date: 2018-12-10
- * Time: 20:14
+ * Date: 2018-12-25
+ * Time: 23:20
  */
 
 namespace sinri\databasehub\queue;
 
 
-use sinri\ark\queue\daemon\QueueDaemonConfiguration;
-use sinri\ark\queue\daemon\QueueDaemonDelegate;
+use sinri\ark\queue\parallel\ParallelQueueDaemonDelegate;
 use sinri\ark\queue\QueueTask;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\model\ApplicationModel;
 
-class SerialQueueDaemonDelegate extends QueueDaemonDelegate
+class DHQueueDelegate extends ParallelQueueDaemonDelegate
 {
-    protected $config;
+    const COMMAND_DEFAULT = "";
+    const COMMAND_CONTINUE = "CONTINUE";
+    const COMMAND_PAUSE = "PAUSE";
+    const COMMAND_STOP = "STOP";
 
     /**
      * QueueDaemon constructor.
-     * To make it more smooth to extend the config class, removed the config property definition.
-     * @param QueueDaemonConfiguration $config
+     * @param array $config Put any properties here
      */
-    public function __construct($config)
+    public function __construct($config = [])
     {
-        parent::__construct($config);
-        $this->config = $config;
     }
 
-    /**
-     * @return string
-     */
-    public function getDaemonStyle()
+    private function fetchRuntimeCommand()
     {
-        return $this->config->getDaemonStyle();
+        $path = __DIR__ . '/../runtime/queue.command';
+        if (file_exists($path)) return file_get_contents($path);
+        else return "";
+    }
+
+    public function clearRuntimeCommand()
+    {
+        $path = __DIR__ . '/../runtime/queue.command';
+        if (!file_exists(__DIR__ . '/../runtime')) {
+            mkdir(__DIR__ . '/../runtime', 0777, true);
+        }
+        return file_put_contents($path, "");
     }
 
     /**
@@ -44,9 +51,7 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenLoopReportError($error)
     {
-        HubCore::getLogger()->error(__METHOD__, ['error' => $error]);
-
-        // Do you want to send alert on Dingtalk or Email? Append here.
+        HubCore::getLogger()->error($error);
     }
 
     /**
@@ -55,7 +60,8 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function isRunnable()
     {
-        return true;
+        $command = $this->fetchRuntimeCommand();
+        return in_array($command, [self::COMMAND_DEFAULT, self::COMMAND_CONTINUE]);
     }
 
     /**
@@ -64,7 +70,8 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function shouldTerminate()
     {
-        return false;
+        $command = $this->fetchRuntimeCommand();
+        return in_array($command, [self::COMMAND_STOP]);
     }
 
     /**
@@ -74,22 +81,6 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
     public function whenLoopShouldNotRun()
     {
         sleep(60);
-    }
-
-    /**
-     * @return QueueTask|false
-     */
-    public function checkNextTask()
-    {
-        $row = (new ApplicationModel())->selectRow(['status' => ApplicationModel::STATUS_APPROVED]);
-        if (empty($row)) return false;
-        try {
-            $task = ApplicationExecuteTask::createTask($row['application_id']);
-            return $task;
-        } catch (\Exception $e) {
-            HubCore::getLogger()->error("Error when checkNextTask: " . $e->getMessage());
-            return false;
-        }
     }
 
     /**
@@ -106,8 +97,10 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenTaskNotExecutable($task)
     {
-        // when QueueTask::beforeExecute return false
-        sleep(5);
+        HubCore::getLogger()->error("whenTaskNotExecutable", [
+            "ID" => $task->getTaskReference(),
+            "TYPE" => $task->getTaskType(),
+        ]);
     }
 
     /**
@@ -116,7 +109,7 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenToExecuteTask($task)
     {
-        // Ga n ba re!
+        // do nothing
     }
 
     /**
@@ -124,7 +117,7 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenTaskExecuted($task)
     {
-        // O tsu ka re!
+        // do nothing
     }
 
     /**
@@ -134,7 +127,7 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
     public function whenTaskRaisedException($task, $exception)
     {
         HubCore::getLogger()->error("whenTaskRaisedException", ['application_id' => $task->getTaskReference(), 'error' => $exception->getMessage()]);
-        // TODO make application ERROR
+        // make application ERROR
         $afx = (new ApplicationModel())->update(
             ['application_id' => $task->getTaskReference(), 'status' => ApplicationModel::STATUS_EXECUTING],
             ['status' => ApplicationModel::STATUS_ERROR, 'duration' => -1]
@@ -151,12 +144,38 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
     }
 
     /**
+     * @return ApplicationExecuteTask|false
+     */
+    public function checkNextTaskImplement()
+    {
+        $row = (new ApplicationModel())->selectRow(['status' => ApplicationModel::STATUS_APPROVED]);
+        if (empty($row)) return false;
+        try {
+            $task = ApplicationExecuteTask::createTask($row['application_id']);
+            return $task;
+        } catch (\Exception $e) {
+            HubCore::getLogger()->error("Error when checkNextTask: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * The daemon would fork child processes up to the certain number
+     * @return int
+     */
+    public function maxChildProcessCountForSinglePooledStyle()
+    {
+        return HubCore::getConfig(['queue', 'max_worker'], 5);
+    }
+
+    /**
      * When a child process is forked
      * @param int $pid
      * @param string $note
      */
     public function whenChildProcessForked($pid, $note = '')
     {
+        HubCore::getLogger()->info("whenChildProcessForked", ["pid" => $pid, "note" => $note]);
     }
 
     /**
@@ -165,6 +184,7 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenChildProcessConfirmedDead($pid)
     {
+        HubCore::getLogger()->info("whenChildProcessConfirmedDead", ["pid" => $pid]);
     }
 
     /**
@@ -173,15 +193,8 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function whenPoolIsFull()
     {
-    }
-
-    /**
-     * 如果返回true，则在执行完whenPoolIsFull之后会进行阻塞wait子进程
-     * @return bool
-     */
-    public function shouldWaitForAnyWorkerDone()
-    {
-        return false;
+        HubCore::getLogger()->warning("whenPoolIsFull, sleep for 10 seconds");
+        sleep(10);
     }
 
     /**
@@ -189,13 +202,6 @@ class SerialQueueDaemonDelegate extends QueueDaemonDelegate
      */
     public function beforeFork()
     {
-    }
-
-    /**
-     * When the loop gets ready to terminate by shouldTerminate instructed, execute this
-     */
-    public function whenLoopTerminates()
-    {
-        HubCore::getLogger()->info("We die with honor!");
+        // DatabaseHub has considered it
     }
 }
