@@ -14,6 +14,24 @@ const CONSTANTS = {
         'DONE',
         'ERROR'
     ],
+    APPLICATION_STATUS_ICON_TYPE_MAP: {
+        APPLIED: 'ios-help-buoy',
+        DENIED: 'ios-hand',
+        CANCELLED: 'ios-build',
+        APPROVED: 'ios-color-wand',
+        EXECUTING: 'ios-bug',
+        DONE: 'ios-checkmark-circle-outline',
+        ERROR: 'ios-close-circle-outline'
+    },
+    APPLICATION_STATUS_TAG_COLOR_MAP: {
+        APPLIED: 'blue',
+        DENIED: 'error',
+        CANCELLED: 'default',
+        APPROVED: 'success',
+        EXECUTING: 'blue',
+        DONE: 'default',
+        ERROR: 'error'
+    },
     APPLICATION_PARALLELABLE: [
         'YES',
         'NO'
