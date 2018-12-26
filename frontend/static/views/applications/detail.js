@@ -5,13 +5,11 @@ Vue.component('application-detail', {
                 Application #{{ applicationId }}
                 <tag :color="detail.application.status | getApplicationStatusTagColor">{{ detail.application.status }}</tag>
             </h2>
-            <h3 style="padding: 10px 0">{{ detail.application.title }}</h3>
-            <div>
-                <span>Type: {{ detail.application.type }}</span>
-                &ensp;|&ensp;
-                <span>Database: {{ detail.application.database.databaseName }}</span>
-                &ensp;|&ensp;
-                <span>CreateTime: {{ detail.application.createTime }}</span>
+            <h3 style="margin-bottom: 20px;padding: 10px 0;border-bottom: 1px solid #e8eaec">{{ detail.application.title }}</h3>
+            <div style="display: flex;">
+                <span style="flex: 1;">Type: {{ detail.application.type }}</span>
+                <span style="flex: 1;">Database: {{ detail.application.database.databaseName }}</span>
+                <span style="flex: 1;">CreateTime: {{ detail.application.createTime }}</span>
             </div>
             <p style="margin: 10px 0;padding: 5px;border-left: 2px solid #e8eaec;background-color: #f2f2f2;">{{ detail.application.description }}</p>
             <codemirror style="font-size: 14px;"

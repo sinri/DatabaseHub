@@ -1,12 +1,15 @@
 const ApprovalListPage = {
     template: `
         <layout-list>
-            <i-table border :columns="applicationTable.columns" :data="applicationTable.data"></i-table>
+            <i-table border
+                :loading="approvalTable.isLoading"
+                :columns="approvalTable.columns"
+                :data="approvalTable.data"></i-table>
             
             <page slot="pagination" show-total show-elevator
-                :total="applicationTable.total"
+                :total="approvalTable.total"
                 @on-change="changePage"
-                v-show="applicationTable.total > 0" />
+                v-show="approvalTable.total > 0" />
         </layout-list>
     `,
     data () {
@@ -20,7 +23,7 @@ const ApprovalListPage = {
                 page: 1,
                 page_size: 10
             },
-            applicationTable: {
+            approvalTable: {
                 columns: [
                     {
                         title: 'Application ID',
@@ -99,16 +102,23 @@ const ApprovalListPage = {
         changePage (page) {
             this.search({page});
         },
+        setLoading (bool) {
+            this.approvalTable.isLoading = bool;
+        },
         search (params = {}) {
+            Object.assign(this.query, params);
+
             const query = JSON.parse(JSON.stringify(this.query));
 
-            Object.assign(query, params);
+            this.setLoading(true);
 
             ajax('myApplicationApprovals', query).then(({list, total}) => {
-                this.applicationTable.data = list;
-                this.applicationTable.total = total;
+                this.approvalTable.data = list;
+                this.approvalTable.total = total;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.setLoading(false);
             });
         }
     },

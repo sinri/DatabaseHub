@@ -3,35 +3,38 @@ const ApplicationListPage = {
     template: `
         <layout-list>
             <div slot="search">
-                <i-form inline>
+                <div>
+                    <i-button type="primary" @click="goCreateApplication">Create Application</i-button>
+                    <divider dashed></divider>
+                </div>
+                <i-form action="javascript:;" inline style="float: right;">
                      <form-item>
                          <i-input type="text" placeholder="Title" v-model.trim="queryForm.title" />
                      </form-item>
                      <form-item>
-                         <i-select v-model.trim="queryForm.database_id">
+                         <i-select placeholder="Database" style="width: 160px;"
+                                   v-model.trim="queryForm.database_id">
                              <i-option v-for="item in databaseList"
                                        :key="item.databaseId"
                                        :value="item.databaseId">{{ item.databaseName }}</i-option>
                          </i-select>
                      </form-item>
                      <form-item>
-                         <i-select v-model.trim="queryForm.apply_user">
+                         <i-select placeholder="Apply User" style="width: 160px;"
+                                   v-model.trim="queryForm.apply_user">
                             <i-option v-for="item in allUserList" 
                                 :key="item" 
                                 :value="item">{{ item }}</i-option>
                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-button type="primary" icon="ios-search" @click="onSearch">Search</i-button>
-                         <i-button @click="goCreateApplication">Create Application</i-button>
+                         <i-button type="primary" html-type="submit" icon="ios-search" @click="onSearch">Search</i-button>
                      </form-item>
                 </i-form>
-            </div>
-            <div slot="handle">
                 <div style="display: flex;margin-bottom: -10px;">
                     <div class="filter-btn-group" style="margin-right: 40px;">
                         Type：
-                        <tooltip v-for="item in CONSTANTS.APPLICATION_TYPES"
+                        <tooltip v-for="item in CONSTANTS.APPLICATION_TYPES" placement="top"
                                  :key="item"
                                  :content="item">
                             <i-button shape="circle"
@@ -42,7 +45,7 @@ const ApplicationListPage = {
                     </div>
                     <div class="filter-btn-group">
                         Status：
-                        <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS"
+                        <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS" placement="top"
                                  :key="item"
                                  :content="item">
                             <i-button shape="circle"
@@ -53,8 +56,10 @@ const ApplicationListPage = {
                     </div>
                 </div>
             </div>
-            
-            <i-table border :columns="applicationTable.columns" :data="applicationTable.data"></i-table>
+            <i-table border 
+                     :loading="applicationTable.isLoading"
+                     :columns="applicationTable.columns" 
+                     :data="applicationTable.data"></i-table>
             
             <drawer width="700" :styles="{padding: 0}"
                 :mask="false"
@@ -113,6 +118,7 @@ const ApplicationListPage = {
                 page_size: 10
             },
             applicationTable: {
+                isLoading: false,
                 columns: [
                     {
                         title: 'Application ID',
@@ -214,16 +220,22 @@ const ApplicationListPage = {
         changePage (page) {
             this.search({page});
         },
+        setLoading (bool) {
+            this.applicationTable.isLoading = bool;
+        },
         search (params = {}) {
             Object.assign(this.query, params);
 
             const query = JSON.parse(JSON.stringify(this.query));
 
+            this.setLoading(true);
             ajax('searchApplication', query).then(({list, total}) => {
                 this.applicationTable.data = list;
                 this.applicationTable.total = total;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.setLoading(false);
             });
         },
         goCreateApplication () {
@@ -264,7 +276,7 @@ const ApplicationListPage = {
     },
     mounted () {
         this.search();
-        this.getAllUserList();
+        // this.getAllUserList();
         this.getDatabaseList();
     }
 };

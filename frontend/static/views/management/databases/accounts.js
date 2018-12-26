@@ -25,7 +25,10 @@ const DatabaseAccountsPage = {
                 </i-form>
             </div>
             
-            <i-table border :columns="databaseAccountTable.columns" :data="databaseAccountTable.data"></i-table>
+            <i-table border
+                :loading="databaseAccountTable.isLoading"
+                :columns="databaseAccountTable.columns"
+                :data="databaseAccountTable.data"></i-table>
             
             <!--<page slot="pagination" :total="100" />-->
         </layout-list>
@@ -51,6 +54,7 @@ const DatabaseAccountsPage = {
                 }
             },
             databaseAccountTable: {
+                isLoading: false,
                 columns: [
                     {
                         title: 'Account ID',
@@ -121,14 +125,20 @@ const DatabaseAccountsPage = {
                 name: 'databaseListPage'
             });
         },
+        setLoading (bool) {
+            this.databaseAccountTable.isLoading = bool;
+        },
         search () {
             const query = JSON.parse(JSON.stringify(this.query));
 
+            this.setLoading(true);
             ajax('databaseAccountList', query).then((res) => {
                 this.databaseAccountTable.data = res.accounts;
                 this.databaseAccountTable.defaultAccount = res.default || {};
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.setLoading(false);
             });
         },
         onDatabaseAccountFormSubmit () {
