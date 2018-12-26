@@ -83,11 +83,17 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
         sleep(60);
     }
 
+    public function whenLoopTerminates()
+    {
+        HubCore::getLogger()->info("Stop command is confirmed.");
+    }
+
     /**
      * When the loop cannot check for a task to do next, execute this
      */
     public function whenNoTaskToDo()
     {
+        HubCore::getLogger()->info("whenNoTaskToDo, sleep 60s");
         sleep(60);
     }
 
