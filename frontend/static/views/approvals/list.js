@@ -24,6 +24,7 @@ const ApprovalListPage = {
                 page_size: 10
             },
             approvalTable: {
+                isLoading: false,
                 columns: [
                     {
                         title: 'Application ID',
@@ -111,7 +112,6 @@ const ApprovalListPage = {
             const query = JSON.parse(JSON.stringify(this.query));
 
             this.setLoading(true);
-
             ajax('myApplicationApprovals', query).then(({list, total}) => {
                 this.approvalTable.data = list;
                 this.approvalTable.total = total;
