@@ -41,6 +41,7 @@
     border-top: 1px solid #e8eaec;
 }
 
+.filter-btn-group .ivu-tooltip + .ivu-tooltip,
 .btn-group button + button {
     margin-left: 5px;
 }

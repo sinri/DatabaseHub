@@ -3,8 +3,14 @@ const CONSTANTS = {
         'READ',
         'MODIFY',
         'EXECUTE',
-        'DDL',
+        'DDL'
     ],
+    APPLICATION_TYPES_ICON_TYPE_MAP: {
+        READ: 'md-color-filter',
+        MODIFY: 'md-code-working',
+        EXECUTE: 'ios-build',
+        DDL: 'md-filing'
+    },
     APPLICATION_STATUS: [
         'APPLIED',
         'DENIED',
@@ -15,13 +21,13 @@ const CONSTANTS = {
         'ERROR'
     ],
     APPLICATION_STATUS_ICON_TYPE_MAP: {
-        APPLIED: 'ios-help-buoy',
-        DENIED: 'ios-hand',
-        CANCELLED: 'ios-build',
-        APPROVED: 'ios-color-wand',
-        EXECUTING: 'ios-bug',
-        DONE: 'ios-checkmark-circle-outline',
-        ERROR: 'ios-close-circle-outline'
+        APPLIED: 'ios-send',
+        DENIED: 'ios-thumbs-down',
+        CANCELLED: 'ios-pause',
+        APPROVED: 'ios-thumbs-up',
+        EXECUTING: 'ios-flash',
+        DONE: 'md-checkmark',
+        ERROR: 'md-close'
     },
     APPLICATION_STATUS_TAG_COLOR_MAP: {
         APPLIED: 'blue',
