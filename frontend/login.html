@@ -7,29 +7,28 @@
     <link rel="stylesheet" href="./static/styles/login.css">
 </head>
 <body>
-<div id="app" class="page bg">
+<div id="app" class="page">
+    <div id="particles" class="bg"></div>
     <main>
-        <Row class="login">
-            <i-col span="24">
-                <h1>Login - Database Hub</h1>
-                <p style="line-height: 50px">
-                    Open the door towards the new world.
-                </p>
-            </i-col>
-            <i-col span="24">
-                <i-form :label-width="80">
-                    <form-item label="Username">
-                        <i-input type="text" v-model="form.model.username"></i-input>
-                    </form-item>
-                    <form-item label="Password">
-                        <i-input type="password" v-model="form.model.password"></i-input>
-                    </form-item>
-                </i-form>
-            </i-col>
-            <i-col span="24">
-                <i-button type="primary" @click="login" :loading="loginApiRequesting">Sign in</i-button>
-            </i-col>
-        </Row>
+        <div class="login">
+            <h1 class="title">Login - Database Hub</h1>
+            <p class="slogan">
+                Open the door towards the new world.
+            </p>
+            <i-form action="javascript:;">
+                <form-item>
+                    <i-input type="text" placeholder="Username" v-model="form.model.username"></i-input>
+                </form-item>
+                <form-item>
+                    <i-input type="password" placeholder="Password" v-model="form.model.password"></i-input>
+                </form-item>
+                <form-item>
+                    <i-button type="primary" html-type="submit" size="long"
+                              @click="login"
+                              :loading="loginApiRequesting">Sign in</i-button>
+                </form-item>
+            </i-form>
+        </div>
     </main>
     <footer>
         <p class="copyright text-center">Leqee业务工作平台由产品技术部维护与更新 &copy; 2018</p>
@@ -45,6 +44,7 @@
 <script src="./static/libs/vue@2.5.17/vue.min.js"></script>
 <script src="./static/libs/vue-router@3.0.2/vue-router.min.js"></script>
 <script src="./static/libs/iview@3.1.5/iview.min.js"></script>
+<script src="./static/libs/particles@2.0.0/particles.min.js"></script>
 <script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
 
 <!--Config-->
@@ -90,6 +90,7 @@ new Vue({
     mounted () {
         SinriQF.config.TokenName = 'database_hub_token';
         SinriQF.config.vueInstance = this;
+        particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json')
     }
 });
 </script>

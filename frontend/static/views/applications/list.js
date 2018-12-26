@@ -1,47 +1,57 @@
 const ApplicationListPage = {
+    // language=HTML
     template: `
         <layout-list>
             <div slot="search">
-                <div style="margin-bottom: 20px;">
-                    <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS"
-                            :key="item"
-                            :content="item">
-                        <i-button shape="circle" 
-                            :icon="CONSTANTS.APPLICATION_STATUS_ICON_TYPE_MAP[item]" 
-                            type="primary"></i-button>
-                    </tooltip>
-                </div>
                 <i-form inline>
                      <form-item>
-                         <i-input type="text" placeholder="Title" />
+                         <i-input type="text" placeholder="Title" v-model.trim="queryForm.title" />
                      </form-item>
                      <form-item>
-                         <i-input type="text" placeholder="Database ID" />
+                         <i-select v-model.trim="queryForm.database_id">
+                             <i-option v-for="item in databaseList"
+                                       :key="item.databaseId"
+                                       :value="item.databaseId">{{ item.databaseName }}</i-option>
+                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-select>
-                            <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
+                         <i-select v-model.trim="queryForm.apply_user">
+                            <i-option v-for="item in allUserList" 
                                 :key="item" 
                                 :value="item">{{ item }}</i-option>
                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-input type="text" placeholder="Apply User" />
-                     </form-item>
-                     <form-item>
-                        <i-select>
-                            <i-option v-for="item in CONSTANTS.APPLICATION_STATUS" 
-                                :key="item" 
-                                :value="item">{{ item }}</i-option>
-                        </i-select>
-                     </form-item>
-                     <form-item>
-                        <i-button type="primary" icon="ios-search" @click="search">Search</i-button>
+                         <i-button type="primary" icon="ios-search" @click="onSearch">Search</i-button>
+                         <i-button @click="goCreateApplication">Create Application</i-button>
                      </form-item>
                 </i-form>
             </div>
             <div slot="handle">
-                <i-button type="primary" @click="goCreateApplication">Create Application</i-button>
+                <div style="display: flex;margin-bottom: -10px;">
+                    <div class="filter-btn-group" style="margin-right: 40px;">
+                        Type：
+                        <tooltip v-for="item in CONSTANTS.APPLICATION_TYPES"
+                                 :key="item"
+                                 :content="item">
+                            <i-button shape="circle"
+                                      :icon="CONSTANTS.APPLICATION_TYPES_ICON_TYPE_MAP[item]"
+                                      :type="queryForm.type.indexOf(item) !== -1 ? 'primary' : 'default'"
+                                      @click="toggleQueryForm('type', item)"></i-button>
+                        </tooltip>
+                    </div>
+                    <div class="filter-btn-group">
+                        Status：
+                        <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS"
+                                 :key="item"
+                                 :content="item">
+                            <i-button shape="circle"
+                                      :icon="CONSTANTS.APPLICATION_STATUS_ICON_TYPE_MAP[item]"
+                                      :type="queryForm.status.indexOf(item) !== -1 ? 'primary' : 'default'"
+                                      @click="toggleQueryForm('status', item)"></i-button>
+                        </tooltip>
+                    </div>
+                </div>
             </div>
             
             <i-table border :columns="applicationTable.columns" :data="applicationTable.data"></i-table>
@@ -60,12 +70,45 @@ const ApplicationListPage = {
     `,
     data () {
         return {
+            queryForm: {
+                title: '',
+                database_id: '',
+                type: [
+                    'READ',
+                    'MODIFY',
+                    'EXECUTE',
+                    'DDL'
+                ],
+                apply_user: '',
+                status: [
+                    'APPLIED',
+                    'DENIED',
+                    'CANCELLED',
+                    'APPROVED',
+                    'EXECUTING',
+                    'DONE',
+                    'ERROR'
+                ]
+            },
             query: {
                 title: '',
                 database_id: '',
-                type: [],
+                type: [
+                    'READ',
+                    'MODIFY',
+                    'EXECUTE',
+                    'DDL'
+                ],
                 apply_user: '',
-                status: [],
+                status: [
+                    'APPLIED',
+                    'DENIED',
+                    'CANCELLED',
+                    'APPROVED',
+                    'EXECUTING',
+                    'DONE',
+                    'ERROR'
+                ],
                 page: 1,
                 page_size: 10
             },
@@ -151,13 +194,30 @@ const ApplicationListPage = {
         };
     },
     methods: {
+        toggleQueryForm (key, value) {
+            const index = this.queryForm[key].indexOf(value)
+
+            if (index === -1) {
+                this.queryForm[key].push(value)
+            } else {
+                this.queryForm[key].splice(index, 1)
+            }
+
+            this.onSearch();
+        },
+        onSearch () {
+            this.search({
+                ...JSON.parse(JSON.stringify(this.queryForm)),
+                page: 1
+            });
+        },
         changePage (page) {
             this.search({page});
         },
         search (params = {}) {
-            const query = JSON.parse(JSON.stringify(this.query));
+            Object.assign(this.query, params);
 
-            Object.assign(query, params);
+            const query = JSON.parse(JSON.stringify(this.query));
 
             ajax('searchApplication', query).then(({list, total}) => {
                 this.applicationTable.data = list;
@@ -204,7 +264,7 @@ const ApplicationListPage = {
     },
     mounted () {
         this.search();
-        // this.getAllUserList();
+        this.getAllUserList();
         this.getDatabaseList();
     }
 };
