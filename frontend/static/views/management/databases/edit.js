@@ -37,8 +37,8 @@ const EditDatabasePage = {
                 </form-item>
                 
                 <form-item>
-                    <i-button type="primary" @click="onSubmit">保存</i-button>
-                    <i-button @click="back">返回</i-button>
+                    <i-button type="primary" @click="onSubmit">Submit</i-button>
+                    <i-button @click="back">Back</i-button>
                 </form-item>
             </i-form>
         </layout>

@@ -5,12 +5,13 @@ function ajax (apiName, data = {}) {
         SinriQF.api.call(api.url, data, (res) => {
             resolve(res);
         }, (error, status) => {
-            if (typeof error.response !== 'undefined' && error.response.status === 403) {
-                localStorage.setItem('target_href', window.location.href);
-                window.location.href = 'login.html';
-
-                return;
-            }
+            // console.log(error)
+            // if (typeof error.response !== 'undefined' && error.response.status === 403) {
+            //     localStorage.setItem('target_href', window.location.href);
+            //     window.location.href = 'login.html';
+            //
+            //     return;
+            // }
 
             reject({
                 error,

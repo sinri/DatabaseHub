@@ -55,17 +55,22 @@ Vue.component('top-banner', {
                             name: 'databaseListPage',
                             icon: 'ios-cube',
                             text: 'Databases'
+                        },
+                        {
+                            name: 'permissionsPage',
+                            icon: 'ios-people',
+                            text: 'Permissions'
+                        },
+                        {
+                            name: 'processesPage',
+                            icon: 'md-pulse',
+                            text: 'Processes'
                         }
                     ]
                 },
                 {
-                    name: 'configPage',
-                    icon: 'ios-nuclear',
-                    text: 'Configure'
-                },
-                {
-                    name: 'queryPage',
-                    icon: 'ios-nuclear',
+                    name: 'quickQueryPage',
+                    icon: 'md-paper',
                     text: 'Quick Query'
                 },
                 {

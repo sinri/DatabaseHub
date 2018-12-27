@@ -2,7 +2,7 @@ const DatabaseAccountsPage = {
     template: `
         <layout-list>
             <div slot="header">
-                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }}</h2>
+                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }} - ({{ $route.query.host }}:{{ $route.query.port }})</h2>
                 <divider></divider>
             </div>
             

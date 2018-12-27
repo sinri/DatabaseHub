@@ -12,7 +12,7 @@ const ApplicationListPage = {
                          <i-input type="text" placeholder="Title" v-model.trim="queryForm.title" />
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Database" style="width: 160px;"
+                         <i-select placeholder="Database" style="width: 160px;" clearable
                                    v-model.trim="queryForm.database_id">
                              <i-option v-for="item in databaseList"
                                        :key="item.databaseId"
@@ -20,11 +20,11 @@ const ApplicationListPage = {
                          </i-select>
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Apply User" style="width: 160px;"
+                         <i-select placeholder="Apply User" style="width: 160px;" clearable
                                    v-model.trim="queryForm.apply_user">
                             <i-option v-for="item in allUserList" 
-                                :key="item" 
-                                :value="item">{{ item }}</i-option>
+                                :key="item.userId" 
+                                :value="item.userId">{{ item.realname }}({{ item.username }})</i-option>
                         </i-select>
                      </form-item>
                      <form-item>
@@ -276,7 +276,7 @@ const ApplicationListPage = {
     },
     mounted () {
         this.search();
-        // this.getAllUserList();
+        this.getAllUserList();
         this.getDatabaseList();
     }
 };

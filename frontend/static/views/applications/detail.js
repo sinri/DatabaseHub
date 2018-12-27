@@ -1,6 +1,7 @@
 Vue.component('application-detail', {
     template: `
-        <layout-drawer>
+        <spin fix v-if="isLoading"></spin>
+        <layout-drawer v-else>
             <h2 slot="header" class="title">
                 Application #{{ applicationId }}
                 <tag :color="detail.application.status | getApplicationStatusTagColor">{{ detail.application.status }}</tag>
@@ -38,6 +39,7 @@ Vue.component('application-detail', {
     },
     data () {
         return {
+            isLoading: false,
             detail: {
                 application: {
                     applyUser: {},
@@ -61,13 +63,20 @@ Vue.component('application-detail', {
         init () {
             this.getApplicationDetail()
         },
+        updateLoading (bool) {
+            this.isLoading = bool;
+        },
         getApplicationDetail () {
+            this.updateLoading(true);
+
             ajax('detailApplication', {
                 application_id: this.applicationId
             }).then((res) => {
                 this.detail = res
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.updateLoading(false);
             });
         },
         approveApplication () {

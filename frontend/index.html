@@ -46,7 +46,6 @@
 
 <!--Pages-->
 <script src="static/views/dashboard.js"></script>
-<script src="static/views/config.js"></script>
 
 <script src="static/views/applications/create.js"></script>
 <script src="static/views/applications/edit.js"></script>
@@ -60,10 +59,9 @@
 <script src="static/views/management/databases/create.js"></script>
 <script src="static/views/management/databases/edit.js"></script>
 <script src="static/views/management/databases/list.js"></script>
-<script src="static/views/management/process.js"></script>
+<script src="static/views/management/processes.js"></script>
 
-<script src="static/views/query.js"></script>
-<script src="static/views/task.js"></script>
+<script src="static/views/quick-query.js"></script>
 <script>
 Vue.use(VueCodemirror)
 Vue.filter('getApplicationStatusTagColor', (status) => {
@@ -149,15 +147,13 @@ const routes = [
                 component: PermissionsPage
             },
             {
-                path: 'process',
-                name: 'processPage',
-                component: ProcessPage
+                path: 'processes',
+                name: 'processesPage',
+                component: ProcessesPage
             }
         ]
     },
-    { path: '/query', name: 'queryPage', component: QueryPage },
-    { path: '/config', name: 'configPage', component: ConfigPage },
-    { path: '/task', name: 'taskPage', component: TaskPage }
+    { path: '/quickQuery', name: 'quickQueryPage', component: QuickQueryPage }
 ];
 const router = new VueRouter({
     routes

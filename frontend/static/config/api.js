@@ -77,5 +77,39 @@ const API = {
     databaseAccountList: {
         desc: 'Fetch the accounts of database.',
         url: 'DatabaseManageController/databaseAccountList'
+    },
+
+    // PermissionManageController
+    getUserPermission: {
+        desc: 'Fetch the permissions of user with databases.',
+        url: 'PermissionManageController/getUserPermission'
+    },
+    updateUserPermission: {
+        desc: 'Update the permissions of user with databases.',
+        url: 'PermissionManageController/updateUserPermission'
+    },
+
+    // QuickQueryController
+    permittedDatabases: {
+        desc: 'For quick query page, show the permitted databases.',
+        url: 'QuickQueryController/permittedDatabases'
+    },
+    syncExecute: {
+        desc: 'Run quick query sql as sync task.',
+        url: 'QuickQueryController/syncExecute'
+    },
+
+    // KillerController
+    // permittedDatabases: {
+    //     desc: 'List the permitted databases.',
+    //     url: 'KillerController/permittedDatabases'
+    // },
+    showProcessList: {
+        desc: 'Run `show full processlist` and fetch result. Kill would rely on the `ID` and `USER` (case might not determined).',
+        url: 'KillerController/showProcessList'
+    },
+    kill: {
+        desc: 'Kill one thread by tid, with certain account by username.',
+        url: 'KillerController/kill'
     }
 }
