@@ -26,4 +26,7 @@ $config = [
     "plugins" => [
         "login" => "LoginPluginStandalone",
     ],
+    "queue" => [
+        "max_worker" => 5,
+    ],
 ];

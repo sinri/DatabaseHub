@@ -2,7 +2,7 @@ const DatabaseAccountsPage = {
     template: `
         <layout-list>
             <div slot="header">
-                <h2 class="title">Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.database_name }}</h2>
+                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }}</h2>
                 <divider></divider>
             </div>
             
@@ -16,7 +16,7 @@ const DatabaseAccountsPage = {
                     </form-item>
                     
                     <form-item prop="password">
-                        <i-input clearable type="password" placeholder="Password" v-model.trim="databaseAccountForm.model.password" />
+                        <i-input autocomplete="new-password" clearable type="password" placeholder="Password" v-model.trim="databaseAccountForm.model.password" />
                     </form-item>
                     
                     <form-item>
@@ -25,7 +25,10 @@ const DatabaseAccountsPage = {
                 </i-form>
             </div>
             
-            <i-table border :columns="databaseAccountTable.columns" :data="databaseAccountTable.data"></i-table>
+            <i-table border
+                :loading="databaseAccountTable.isLoading"
+                :columns="databaseAccountTable.columns"
+                :data="databaseAccountTable.data"></i-table>
             
             <!--<page slot="pagination" :total="100" />-->
         </layout-list>
@@ -51,6 +54,7 @@ const DatabaseAccountsPage = {
                 }
             },
             databaseAccountTable: {
+                isLoading: false,
                 columns: [
                     {
                         title: 'Account ID',
@@ -63,7 +67,18 @@ const DatabaseAccountsPage = {
                     {
                         title: 'IS DEFAULT',
                         render: (h, {row}) => {
-                            return h('span', 'to do')
+                            if (row.accountId === this.databaseAccountTable.defaultAccount.accountId)
+                                return h('tag', {
+                                    props: {
+                                        color: 'success'
+                                    }
+                                }, 'Yes')
+                            else
+                                return h('tag', {
+                                    props: {
+                                        color: 'default'
+                                    }
+                                }, 'No')
                         }
                     },
                     {
@@ -99,18 +114,31 @@ const DatabaseAccountsPage = {
                         }
                     }
                 ],
-                data: []
+                data: [],
+                defaultAccount: {}
             }
         };
     },
     methods: {
+        back () {
+            this.$router.replace({
+                name: 'databaseListPage'
+            });
+        },
+        setLoading (bool) {
+            this.databaseAccountTable.isLoading = bool;
+        },
         search () {
             const query = JSON.parse(JSON.stringify(this.query));
 
-            ajax('databaseAccountList', query).then(({accounts}) => {
-                this.databaseAccountTable.data = accounts;
+            this.setLoading(true);
+            ajax('databaseAccountList', query).then((res) => {
+                this.databaseAccountTable.data = res.accounts;
+                this.databaseAccountTable.defaultAccount = res.default || {};
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.setLoading(false);
             });
         },
         onDatabaseAccountFormSubmit () {

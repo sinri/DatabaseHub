@@ -1,7 +1,7 @@
-const EditDatabasePage = {
+const EditApplicationPage = {
     template: `
         <layout>
-            <h2 class="title">Edit Database</h2>
+            <h2 class="title">Edit Application</h2>
             <divider></divider>
             <i-form ref="form" style="width: 640px;"
                 :label-width="120"
@@ -47,26 +47,26 @@ const EditDatabasePage = {
         return {
             form: {
                 model: {
-                    database_name: '',
-                    host: '',
-                    port: '',
-                    status: '',
-                    engine: ''
+                    title: '',
+                    description: '',
+                    database_id: '',
+                    type: '',
+                    sql: ''
                 },
                 rules: {
-                    database_name: [
+                    title: [
                         {required: true, message: '不能为空'}
                     ],
-                    host: [
+                    description: [
                         {required: true, message: '不能为空'}
                     ],
-                    port: [
+                    database_id: [
                         {required: true, message: '不能为空'}
                     ],
-                    status: [
+                    type: [
                         {required: true, message: '不能为空'}
                     ],
-                    engine: [
+                    sql: [
                         {required: true, message: '不能为空'}
                     ]
                 }
@@ -76,7 +76,7 @@ const EditDatabasePage = {
     methods: {
         back () {
             this.$router.replace({
-                name: 'databaseListPage'
+                name: 'applicationListPage'
             })
         },
         onSubmit () {
@@ -89,11 +89,11 @@ const EditDatabasePage = {
         save () {
             const data = JSON.parse(JSON.stringify(this.form.model))
 
-            ajax('editDatabase', {
-                database_id: data.database_id,
-                database_info: data
+            ajax('editApplication', {
+                application_id: data.application_id,
+                application: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Edit Database Success!', 3)
+                SinriQF.iview.showSuccessMessage('Edit Application Success!', 3)
                 this.back()
             }).catch(({msg}) => {
                 SinriQF.iview.showErrorMessage(msg, 5);
@@ -101,23 +101,8 @@ const EditDatabasePage = {
         }
     },
     created () {
-        const {
-            databaseId: database_id,
-            databaseName: database_name,
-            host,
-            port,
-            status,
-            engine
-        } = this.$route.query
+        const query = JSON.parse(JSON.stringify(this.$route.query))
 
-
-        Object.assign(this.form.model, {
-            database_id,
-            database_name,
-            host,
-            port,
-            status,
-            engine
-        })
+        Object.assign(this.form.model, query)
     }
 };

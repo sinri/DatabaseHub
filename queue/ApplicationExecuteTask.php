@@ -9,11 +9,11 @@
 namespace sinri\databasehub\queue;
 
 
-use sinri\ark\queue\QueueTask;
+use sinri\ark\queue\parallel\ParallelQueueTask;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\ApplicationEntity;
 
-class ApplicationExecuteTask extends QueueTask
+class ApplicationExecuteTask extends ParallelQueueTask
 {
     /**
      * @var ApplicationEntity
@@ -49,7 +49,16 @@ class ApplicationExecuteTask extends QueueTask
      */
     public function getTaskType()
     {
-        return "QUERY";
+        if ($this->isExclusive()) {
+            return "Exclusive-Query";
+        } else {
+            return "Parallelable-Query";
+        }
+    }
+
+    public function isExclusive()
+    {
+        return !$this->applicationEntity->parallelable;
     }
 
     /**

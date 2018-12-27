@@ -5,7 +5,9 @@ const DatabaseListPage = {
                 <i-button type="primary" @click="goCreateDatabase">Create Database</i-button>
             </div>
             
-            <i-table border :columns="databaseTable.columns" :data="databaseTable.data"></i-table>
+            <i-table border
+                :loading="databaseTable.isLoading"
+                :columns="databaseTable.columns" :data="databaseTable.data"></i-table>
             
             <!--<page slot="pagination" :total="100" />-->
         </layout-list>
@@ -17,15 +19,16 @@ const DatabaseListPage = {
                 page: 1
             },
             databaseTable: {
+                isLoading: false,
                 columns: [
                     {
                         title: 'Database ID',
-                        key: 'database_id',
+                        key: 'databaseId',
                         width: 120
                     },
                     {
                         title: 'Name',
-                        key: 'database_name'
+                        key: 'databaseName'
                     },
                     {
                         title: 'Connection',
@@ -90,13 +93,19 @@ const DatabaseListPage = {
         };
     },
     methods: {
+        setLoading (bool) {
+            this.databaseTable.isLoading = bool;
+        },
         search () {
             const query = JSON.parse(JSON.stringify(this.query));
 
+            this.setLoading(true);
             ajax(this.searchUrl, query).then(({list}) => {
                 this.databaseTable.data = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.setLoading(false);
             });
         },
         goCreateDatabase () {
@@ -118,7 +127,7 @@ const DatabaseListPage = {
             this.$router.push({
                 name: 'databaseAccountsPage',
                 params: {
-                    databaseId: query.database_id
+                    databaseId: query.databaseId
                 },
                 query
             });

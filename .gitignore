@@ -9,5 +9,6 @@ composer.phar
 /config/config.php
 /log/
 /store/
+/runtime/
 
 .DS_Store

@@ -3,6 +3,9 @@ const API = {
     login: {
         url: 'LoginController/login'
     },
+    getAllUser: {
+        url: 'LoginController/getAllUser'
+    },
 
     // ApplicationController
     createApplication: {
@@ -28,6 +31,10 @@ const API = {
     searchApplication: {
         desc: '',
         url: 'ApplicationController/search'
+    },
+    detailApplication: {
+        desc: '',
+        url: 'ApplicationController/detail'
     },
     myApplicationApprovals: {
         desc: '',

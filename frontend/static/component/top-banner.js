@@ -37,9 +37,14 @@ Vue.component('top-banner', {
                     text: 'DatabaseHub'
                 },
                 {
-                    name: 'applicationsPage',
+                    name: 'applicationListPage',
                     icon: 'ios-beaker',
                     text: 'Applications'
+                },
+                {
+                    name: 'approvalListPage',
+                    icon: 'md-nutrition',
+                    text: 'Approvals'
                 },
                 {
                     name: 'managementPage',

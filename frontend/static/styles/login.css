@@ -12,16 +12,22 @@
 main {
     flex: 1;
     position: relative;
-    color: #fff;
 }
 
 footer {
+    z-index: 1;
+    position: relative;
     padding: 20px 0;
     color: #fff;
 }
 
 .bg {
-    position: relative;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: rgba(19, 2, 47, 0.35);
 }
 
@@ -40,12 +46,21 @@ footer {
 
 .login {
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30%;
-    min-width: 200px;
-    text-align: center
+    width: 360px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #fff;
+}
+.login .title {
+
+}
+.login .slogan {
+    margin-bottom: 10px;
+    line-height: 40px;
 }
 
 .text-center {
