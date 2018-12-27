@@ -89,7 +89,7 @@ class UserEntity
      */
     public function getAllUser()
     {
-        $all_user =  (new UserModel())->selectRow([]);
+        $all_user =  (new UserModel())->selectRows([]);
         return array_map(function ($row) {
             $entity = self::instanceByRow($row);
             $entity->passwordHash = null;

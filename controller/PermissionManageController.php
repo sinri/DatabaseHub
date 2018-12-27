@@ -24,14 +24,20 @@ class PermissionManageController extends AbstractAuthController
     public function getUserPermission()
     {
         $this->onlyAdminCanDoThis();
-        $user_id = $this->_readRequest("user_id", '', '/^[\d]+$/');
+        $user_ids = $this->_readRequest("user_ids", '', '/^(\,|[\d])+$/');
         $database_id_list = $this->_readRequest("database_id_list", []);
 
         if (empty($database_id_list)) throw new \Exception("No target databases given.");
 
-        $dict = UserEntity::instanceByUserId($user_id)->getPermissionDictionary($database_id_list);
+        if (empty($user_ids)) throw new \Exception("No target user given.");
 
-        $this->_sayOK(['dict' => array_values($dict)]);
+        $users = explode(',', $user_ids);
+        $result = [];
+        foreach ($users as $user_id) {
+            $result[$user_id] = UserEntity::instanceByUserId($user_id)->getPermissionDictionary($database_id_list);
+        }
+
+        $this->_sayOK(['dict' => $result]);
     }
 
     /**
