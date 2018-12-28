@@ -21,14 +21,16 @@ const PermissionsPage = {
                      </form-item>
                     
                      <form-item>
-                         <i-button type="primary" html-type="submit" icon="ios-search" @click="search">Search</i-button>
+                         <i-button type="primary" html-type="submit"
+                            :loading="userPermissionTable.isLoading"
+                            @click="getUserPermission">Load</i-button>
                      </form-item>
                 </i-form>
             </div>
             <i-table border 
                      :loading="userPermissionTable.isLoading"
-                     :columns="userPermissionTableColumns" 
-                     :data="userPermissionTableData"></i-table>
+                     :columns="userPermissionTable.columns" 
+                     :data="userPermissionTable.data"></i-table>
         </layout-list>
     `,
     data () {
@@ -42,6 +44,7 @@ const PermissionsPage = {
                 columns: [],
                 data: []
             },
+            userPermissionMap: {},
             allUserList: [],
             permittedDatabases: []
         }
@@ -55,35 +58,96 @@ const PermissionsPage = {
             });
 
             return map;
-        },
-        userPermissionTableColumns () {
+        }
+    },
+    methods: {
+        makeUserPermissionTableColumns () {
             const columns = [{
                 title: 'User',
-                key: 'username'
+                key: 'username',
+                render: (h, {row}) => {
+                    return h('div', `${row.user.realname}(${row.user.username})`);
+                }
             }];
 
-            this.query.database_list.forEach((database) => {
+            this.query.database_list.forEach(({databaseId, databaseName}) => {
                 columns.push({
-                    title: database.databaseName
+                    title: databaseName,
+                    key: databaseId,
+                    render: (h, {row}) => {
+                        const {userId} = row.user;
+
+                        return h('div', [
+                            ...CONSTANTS.DATABASE_USER_PERMISSIONS.map((permission) => {
+                                const userPermission = this.userPermissionMap[userId]
+
+                                return (h('div', [
+                                    h('span', permission),
+                                    h('i-switch', {
+                                        on: {
+                                            'on-change': (status) => {
+                                                this.togglePermission({
+                                                    userId: row.user.userId,
+                                                    databaseId,
+                                                    permission
+                                                }, status);
+                                            }
+                                        },
+                                        props: {
+                                            value: typeof userPermission !== 'undefined' &&
+                                                typeof userPermission[databaseId] !== 'undefined' &&
+                                                userPermission[databaseId].permissions.includes(permission)
+                                        }
+                                    })
+                                ]))
+                            })
+                        ]);
+                    }
                 });
             });
 
             return columns;
         },
-        userPermissionTableData () {
+        makeUserPermissionTableData () {
             const data = [];
 
-            this.userPermissionTable.data.forEach((user) => {
+            this.query.user_list.forEach((user) => {
                 data.push({
                     user,
-                    username: user.username
+                    ...this.query.database_list.map((database) => {
+                        return {
+                            [database.databaseId]: database
+                        }
+                    })
                 });
             });
 
+            console.log(JSON.stringify(data, null, 4))
+
             return data;
-        }
-    },
-    methods: {
+        },
+        togglePermission ({userId, databaseId, permission}, on) {
+            const userPermission = this.userPermissionMap[userId]
+            const permissions = typeof userPermission !== 'undefined' &&
+                typeof userPermission[databaseId] !== 'undefined' &&
+                userPermission[databaseId].permissions || [];
+
+            if (on) {
+                permissions.push(permission);
+            } else {
+                permissions.splice(permissions.indexOf(permission), 1);
+            }
+
+            ajax('updateUserPermission', {
+                user_id: userId,
+                database_id: databaseId,
+                permissions
+            }).then((res) => {
+                console.log(res)
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
         setLoading (bool) {
             this.userPermissionTable.isLoading = bool;
         },
@@ -97,13 +161,15 @@ const PermissionsPage = {
                 })
             }
         },
-        search () {
+        getUserPermission () {
             const query = JSON.parse(JSON.stringify(this.query))
 
             this.setLoading(true);
 
-            ajax('getUserPermission', this.formatQuery(query)).then(({list}) => {
-                this.userPermissionTable.data = list;
+            ajax('getUserPermission', this.formatQuery(query)).then(({dict}) => {
+                this.userPermissionMap = dict;
+                this.userPermissionTable.columns = this.makeUserPermissionTableColumns();
+                this.userPermissionTable.data = this.makeUserPermissionTableData();
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             }).finally(() => {

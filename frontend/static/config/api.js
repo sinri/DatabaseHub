@@ -90,7 +90,7 @@ const API = {
     },
 
     // QuickQueryController
-    permittedDatabases: {
+    quickQueryPermittedDatabases: {
         desc: 'For quick query page, show the permitted databases.',
         url: 'QuickQueryController/permittedDatabases'
     },
@@ -100,10 +100,10 @@ const API = {
     },
 
     // KillerController
-    // permittedDatabases: {
-    //     desc: 'List the permitted databases.',
-    //     url: 'KillerController/permittedDatabases'
-    // },
+    killerPermittedDatabases: {
+        desc: 'List the permitted databases.',
+        url: 'KillerController/permittedDatabases'
+    },
     showProcessList: {
         desc: 'Run `show full processlist` and fetch result. Kill would rely on the `ID` and `USER` (case might not determined).',
         url: 'KillerController/showProcessList'

@@ -13,14 +13,16 @@ const ProcessesPage = {
                      </form-item>
                     
                      <form-item>
-                         <i-button type="primary" html-type="submit" icon="ios-search" @click="search">Search</i-button>
+                         <i-button type="primary" html-type="submit" icon="ios-search"
+                            :loading="processTable.isLoading"
+                            @click="search">Search</i-button>
                      </form-item>
                 </i-form>
             </div>
             <i-table border 
                      :loading="processTable.isLoading"
                      :columns="processTable.columns" 
-                     :data="processTable.data"></i-table>
+                     :data="noSleepProcessTable"></i-table>
         </layout-list>
     `,
     data () {
@@ -42,11 +44,37 @@ const ProcessesPage = {
                     },
                     {
                         title: 'Process ID',
-                        key: 'Id'
+                        key: 'Id',
+                        width: 100
                     },
                     {
-                        title: 'Account Username',
+                        title: 'User',
                         key: 'User'
+                    },
+                    {
+                        title: 'Host',
+                        key: 'Host',
+                        width: 160
+                    },
+                    {
+                        title: 'DB',
+                        key: 'db'
+                    },
+                    {
+                        title: 'Command',
+                        key: 'Command'
+                    },
+                    {
+                        title: 'Time',
+                        key: 'Time'
+                    },
+                    {
+                        title: 'State',
+                        key: 'State'
+                    },
+                    {
+                        title: 'Info',
+                        key: 'Info'
                     },
                     {
                         title: 'Action',
@@ -68,6 +96,13 @@ const ProcessesPage = {
             permittedDatabases: []
         }
     },
+    computed: {
+        noSleepProcessTable () {
+            return this.processTable.data.filter((item) => {
+                return !item.Command || item.Command.toLowerCase() !== 'sleep'
+            })
+        }
+    },
     methods: {
         setLoading (bool) {
             this.processTable.isLoading = bool;
@@ -86,7 +121,7 @@ const ProcessesPage = {
             });
         },
         getPermittedDatabases () {
-            ajax('permittedDatabases').then(({list}) => {
+            ajax('killerPermittedDatabases').then(({list}) => {
                 this.permittedDatabases = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

@@ -101,6 +101,12 @@ Vue.component('top-banner', {
                     window.location.href = 'login.html';
 
                     break;
+                case 'quickQueryPage':
+                    const {href} = router.resolve({name});
+
+                    window.open(href, '_blank');
+
+                    break;
                 default:
                     router.push({name});
             }

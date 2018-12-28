@@ -49,7 +49,7 @@ const CONSTANTS = {
         'NORMAL',
         'DISABLED'
     ],
-    DATABASE_USER_PERMISSION: [
+    DATABASE_USER_PERMISSIONS: [
         'READ',
         'MODIFY',
         'DDL',
@@ -57,11 +57,11 @@ const CONSTANTS = {
         'QUICK_QUERY',
         'KILL'
     ],
-    QUICK_QUERY_TYPE: [
+    QUICK_QUERY_TYPES: [
         'SYNC',
         'ASYNC'
         ],
-    USER_TYPE: [
+    USER_TYPES: [
         'ADMIN',
         'USER'
     ]

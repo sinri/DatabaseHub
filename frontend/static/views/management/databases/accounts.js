@@ -20,7 +20,9 @@ const DatabaseAccountsPage = {
                     </form-item>
                     
                     <form-item>
-                        <i-button type="primary" @click="onDatabaseAccountFormSubmit">Register new account</i-button>
+                        <i-button type="primary"
+                            :loading="databaseAccountTable.isLoading"
+                            @click="onDatabaseAccountFormSubmit">Register new account</i-button>
                     </form-item>
                 </i-form>
             </div>

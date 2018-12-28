@@ -3,6 +3,10 @@
     background: rgb(91, 100, 120);
 }
 
+.auto-size-code-mirror .CodeMirror {
+    height: auto;
+}
+
 .layout {
     padding: 15px 20px;
     background-color: #fff;

@@ -2,7 +2,8 @@ const DatabaseListPage = {
     template: `
         <layout-list>
             <div slot="handle">
-                <i-button type="primary" @click="goCreateDatabase">Create Database</i-button>
+                <i-button type="primary"
+                    @click="goCreateDatabase">Create Database</i-button>
             </div>
             
             <i-table border
@@ -14,7 +15,6 @@ const DatabaseListPage = {
     `,
     data () {
         return {
-            searchUrl: false ? 'advanceDatabaseList' : 'commonDatabaseList',
             query: {
                 page: 1
             },
@@ -100,7 +100,7 @@ const DatabaseListPage = {
             const query = JSON.parse(JSON.stringify(this.query));
 
             this.setLoading(true);
-            ajax(this.searchUrl, query).then(({list}) => {
+            ajax('advanceDatabaseList', query).then(({list}) => {
                 this.databaseTable.data = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

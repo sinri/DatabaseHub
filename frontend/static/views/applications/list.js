@@ -1,5 +1,4 @@
 const ApplicationListPage = {
-    // language=HTML
     template: `
         <layout-list>
             <div slot="search">
@@ -28,7 +27,9 @@ const ApplicationListPage = {
                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-button type="primary" html-type="submit" icon="ios-search" @click="onSearch">Search</i-button>
+                         <i-button type="primary" html-type="submit" icon="ios-search"
+                                   :loading="applicationTable.isLoading"
+                                   @click="onSearch">Search</i-button>
                      </form-item>
                 </i-form>
                 <div style="display: flex;margin-bottom: -10px;">
