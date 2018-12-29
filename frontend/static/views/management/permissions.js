@@ -12,7 +12,7 @@ const PermissionsPage = {
                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Database" style="width: 160px;" multiple clearable
+                         <i-select placeholder="Database" style="width: 160px;" multiple clearable filterable
                                    v-model="query.database_list">
                              <i-option v-for="item in permittedDatabases"
                                        :key="item.databaseId"
@@ -61,7 +61,12 @@ const PermissionsPage = {
         }
     },
     methods: {
+        /**
+         * 生成表格所需要的 title 数据映射关系
+         * @returns {{title: string, key: string, render: (function(*, {row: *}): *)}[]}
+         */
         makeUserPermissionTableColumns () {
+            // 用户列
             const columns = [{
                 title: 'User',
                 key: 'username',
@@ -70,6 +75,7 @@ const PermissionsPage = {
                 }
             }];
 
+            // 数据库列
             this.query.database_list.forEach(({databaseId, databaseName}) => {
                 columns.push({
                     title: databaseName,
@@ -77,12 +83,20 @@ const PermissionsPage = {
                     render: (h, {row}) => {
                         const {userId} = row.user;
 
-                        return h('div', [
+                        return h('div', {
+                            style: {
+                                padding: '10px 0'
+                            }
+                        }, [
+                            // 权限 switch 开关渲染
                             ...CONSTANTS.DATABASE_USER_PERMISSIONS.map((permission) => {
                                 const userPermission = this.userPermissionMap[userId]
 
-                                return (h('div', [
-                                    h('span', permission),
+                                return (h('div',{
+                                    style: {
+                                        padding: '5px 0'
+                                    }
+                                }, [
                                     h('i-switch', {
                                         on: {
                                             'on-change': (status) => {
@@ -98,7 +112,12 @@ const PermissionsPage = {
                                                 typeof userPermission[databaseId] !== 'undefined' &&
                                                 userPermission[databaseId].permissions.includes(permission)
                                         }
-                                    })
+                                    }),
+                                    h('span', {
+                                        style: {
+                                            marginLeft: '5px'
+                                        }
+                                    }, permission)
                                 ]))
                             })
                         ]);
@@ -122,15 +141,29 @@ const PermissionsPage = {
                 });
             });
 
-            console.log(JSON.stringify(data, null, 4))
-
             return data;
         },
         togglePermission ({userId, databaseId, permission}, on) {
             const userPermission = this.userPermissionMap[userId]
-            const permissions = typeof userPermission !== 'undefined' &&
-                typeof userPermission[databaseId] !== 'undefined' &&
-                userPermission[databaseId].permissions || [];
+
+            // 如果用户权限不存在
+            // 或者数据库权限不存在
+            // 则默认置空
+            if (typeof userPermission === 'undefined' || Array.isArray(userPermission)) {
+                this.userPermissionMap[userId] = {
+                    [databaseId]: {
+                        permissions: []
+                    }
+                }
+            } else if (typeof userPermission[databaseId] === 'undefined') {
+                this.userPermissionMap[userId][databaseId] = {
+                    database_id: databaseId,
+                    permissions: []
+                }
+            }
+
+            // 获得引用
+            const permissions = this.userPermissionMap[userId][databaseId].permissions;
 
             if (on) {
                 permissions.push(permission);
@@ -142,8 +175,8 @@ const PermissionsPage = {
                 user_id: userId,
                 database_id: databaseId,
                 permissions
-            }).then((res) => {
-                console.log(res)
+            }).then(() => {
+                SinriQF.iview.showSuccessMessage('Update success!', 2);
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
@@ -184,7 +217,7 @@ const PermissionsPage = {
             });
         },
         getPermittedDatabases () {
-            ajax('permittedDatabases').then(({list}) => {
+            ajax('commonDatabaseList').then(({list}) => {
                 this.permittedDatabases = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

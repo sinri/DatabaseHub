@@ -7,6 +7,18 @@
     height: auto;
 }
 
+.flex {
+    display: flex;
+}
+
+.flex.column {
+    flex-direction: column;
+}
+
+.flex-item {
+    flex: 1;
+}
+
 .layout {
     padding: 15px 20px;
     background-color: #fff;

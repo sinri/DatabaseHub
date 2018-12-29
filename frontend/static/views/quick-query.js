@@ -1,7 +1,7 @@
 const QuickQueryPage = {
     template: `
-        <layout-list>
-            <div slot="search">
+        <layout>
+            <div>
                 <i-form action="javascript:;" inline>
                      <form-item>
                          <i-select placeholder="Database" style="width: 160px;" clearable
@@ -27,16 +27,31 @@ const QuickQueryPage = {
             </div>
             
             <div class="query-result" v-if="!queryResult.isLoading && queryResult.data.data">
-                <div>
-                    <span>Done: {{ queryResult.data.done }}</span>
-                    <span>QueryTime:    {{ queryResult.data.query_time }}</span>
-                    <span>TotalTime:    {{ queryResult.data.total_time }}</span>
+                <divider style="color: #999;">Query result</divider>
+                <div style="margin-bottom: 20px;padding: 10px;background-color: #f7f7f9;text-transform: uppercase;">
+                    <span>
+                        <strong style="margin-right: 5px;">Done:</strong>
+                        <span style="color: #e83e8c;">{{ queryResult.data.done }}</span>
+                    </span>
+                    <divider type="vertical" />
+                    <span>
+                        <strong style="margin-right: 5px;">Query time:</strong>
+                        <span style="color: #e83e8c;">{{ queryResult.data.query_time }}</span>
+                    </span>
+                    <divider type="vertical" />
+                    <span>
+                        <strong style="margin-right: 5px;">Total time:</strong>
+                        <span style="color: #e83e8c;">{{ queryResult.data.total_time }}</span>
+                    </span>
                 </div>
-                <codemirror class="auto-size-code-mirror" style="font-size: 14px;"
+                <div class="error" v-if="!queryResult.data.done" style="margin-bottom: 20px;padding: 10px;color: #ed4014;background-color: #ffefe6;">
+                    <pre>{{ JSON.stringify(queryResult.data.error, null, 4) }}</pre>
+                </div>
+                <codemirror v-else class="auto-size-code-mirror" style="font-size: 14px;"
                             :options="codeMirrorOptions"
                             :value="JSON.stringify(queryResult.data.data, null, 4)"></codemirror>
             </div>
-        </layout-list>
+        </layout>
     `,
     data () {
         return {
