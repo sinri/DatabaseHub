@@ -41,6 +41,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: #fff;
 }
 .layout-drawer-header {
     padding: 14px 16px;
@@ -62,6 +63,27 @@
     margin-left: 5px;
 }
 
+.c-avatar {
+    display: inline-block;
+    text-align: center;
+    font-size: 13px;
+}
+.c-avatar-text {
+    border-radius: 50%;
+    color: #fff;
+    background-color: #4da9eb;
+}
+.c-avatar-username {
+    overflow: hidden;
+    display: inline-block;
+    margin: 2px auto 0;
+    max-width: 40px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    font-size: 12px;
+}
+
 .c-status {
     display: inline-block;
     margin: 0 5px;
@@ -77,4 +99,19 @@
 .c-status.DISABLED {
     background-color: rgba(187, 190, 196, .9);
     box-shadow: 0 0 8px rgb(187, 190, 196);
+}
+
+
+.text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+.text-ellipsis-4 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }

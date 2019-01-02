@@ -41,6 +41,7 @@
 <script src="static/component/layout/index.js"></script>
 <script src="static/component/layout/drawer.js"></script>
 <script src="static/component/layout/list.js"></script>
+<script src="static/component/avatar.js"></script>
 <script src="static/component/status.js"></script>
 <script src="static/component/top-banner.js"></script>
 
@@ -51,6 +52,7 @@
 <script src="static/views/applications/edit.js"></script>
 <script src="static/views/applications/list.js"></script>
 <script src="static/views/applications/detail.js"></script>
+<script src="static/views/applications/preview.js"></script>
 
 <script src="static/views/approvals/list.js"></script>
 
@@ -90,6 +92,11 @@ const routes = [
                 path: 'edit',
                 name: 'editApplicationPage',
                 component: EditApplicationPage
+            },
+            {
+                path: 'detail',
+                name: 'detailApplicationPage',
+                component: DetailApplicationPage
             }
         ]
     },

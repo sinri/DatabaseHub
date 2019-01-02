@@ -1,4 +1,4 @@
-const DetailApplicationPage = {
+Vue.component('application-preview', {
     template: `
         <spin fix v-if="isLoading"></spin>
         <layout-drawer v-else>
@@ -37,9 +37,13 @@ const DetailApplicationPage = {
             </div> 
         </layout-drawer>
     `,
+    props: {
+        applicationId: {
+            type: [Number, String]
+        }
+    },
     data () {
         return {
-            applicationId: 0,
             isLoading: false,
             detail: {
                 application: {
@@ -62,7 +66,7 @@ const DetailApplicationPage = {
     },
     methods: {
         init () {
-            this.getApplicationDetail();
+            this.getApplicationDetail()
         },
         updateLoading (bool) {
             this.isLoading = bool;
@@ -113,9 +117,5 @@ const DetailApplicationPage = {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         }
-    },
-    mounted () {
-        this.applicationId = this.$route.query.applicationId;
-        this.init();
     }
-};
+});

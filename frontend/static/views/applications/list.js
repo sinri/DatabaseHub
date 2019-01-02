@@ -63,9 +63,10 @@ const ApplicationListPage = {
                      :data="applicationTable.data"></i-table>
             
             <drawer width="700" :styles="{padding: 0}"
-                :mask="false"
                 v-model="previewer.drawerVisible">
-                <application-detail ref="applicationDetail" :application-id="previewer.applicationId"></application-detail>
+                <application-preview ref="applicationDetail"
+                    :application-id="previewer.applicationId"
+                    @update="search"></application-preview>
             </drawer>
             
             <page slot="pagination" show-total show-elevator
@@ -128,7 +129,15 @@ const ApplicationListPage = {
                     },
                     {
                         title: 'Title',
-                        key: 'title'
+                        key: 'title',
+                        render: (h, {row}) => {
+                            return h('div', {
+                                class: ['text-ellipsis'],
+                                attrs: {
+                                    title: row.title
+                                }
+                            }, row.title)
+                        }
                     },
                     {
                         title: 'Database',
@@ -153,7 +162,7 @@ const ApplicationListPage = {
                     {
                         title: 'Applicant',
                         render: (h, {row}) => {
-                            return h('div', row.applyUser.realname)
+                            return h('div', `${row.applyUser.realname}(${row.applyUser.username})`)
                         }
                     },
                     {
@@ -169,6 +178,11 @@ const ApplicationListPage = {
                                 class: 'btn-group'
                             }, [
                                 h('i-button', {
+                                    on: {
+                                        click: () => {
+                                            this.goDetailApplication(row)
+                                        }
+                                    },
                                     props: {
                                         size: 'small',
                                         type: 'primary'
@@ -251,6 +265,15 @@ const ApplicationListPage = {
                 name: 'editApplicationPage',
                 query
             });
+        },
+        goDetailApplication (item) {
+            const query = JSON.parse(JSON.stringify(item));
+            const {href} = router.resolve({
+                name: 'detailApplicationPage',
+                query
+            });
+
+            window.open(href, '_blank');
         },
         previewApplication (item) {
             this.previewer.applicationId = item.applicationId;
