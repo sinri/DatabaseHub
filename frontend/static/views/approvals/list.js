@@ -58,10 +58,11 @@ const ApprovalListPage = {
                      :columns="applicationTable.columns" 
                      :data="applicationTable.data"></i-table>
             
-            <drawer width="700" :styles="{padding: 0}"
-                :mask="false"
+            <drawer width="700" :styles="{padding: 0}" :closable="false"
                 v-model="previewer.drawerVisible">
-                <application-detail ref="applicationDetail" :application-id="previewer.applicationId"></application-detail>
+                <application-preview ref="applicationDetail"
+                    :application-id="previewer.applicationId"
+                    @update="search"></application-preview>
             </drawer>
             
             <page slot="pagination" show-total show-elevator
@@ -124,7 +125,15 @@ const ApprovalListPage = {
                     },
                     {
                         title: 'Title',
-                        key: 'title'
+                        key: 'title',
+                        render: (h, {row}) => {
+                            return h('div', {
+                                class: ['text-ellipsis'],
+                                attrs: {
+                                    title: row.title
+                                }
+                            }, row.title)
+                        }
                     },
                     {
                         title: 'Database',

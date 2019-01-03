@@ -118,7 +118,10 @@
 }
 .c-native-table th {
     overflow: hidden;
+    padding-left: 18px;
+    padding-right: 18px;
     height: 40px;
+    text-align: left;
     white-space: nowrap;
     background-color: #f8f8f9;
 }

@@ -47,9 +47,10 @@ const QuickQueryPage = {
                 <div class="error" v-if="!queryResult.data.done" style="margin-bottom: 20px;padding: 10px;color: #ed4014;background-color: #ffefe6;">
                     <pre>{{ JSON.stringify(queryResult.data.error, null, 4) }}</pre>
                 </div>
-                <codemirror v-else class="auto-size-code-mirror" style="font-size: 14px;"
-                            :options="codeMirrorOptions"
-                            :value="JSON.stringify(queryResult.data.data, null, 4)"></codemirror>
+                <native-table
+                    :columns="resultTableColumns"
+                    :data="this.queryResult.data.data"></native-table>
+          
             </div>
         </layout>
     `,
@@ -72,6 +73,22 @@ const QuickQueryPage = {
                 data: {}
             },
             permittedDatabases: []
+        }
+    },
+    computed: {
+        resultTableColumns () {
+            const columns = [];
+
+            if (this.queryResult.data.data.length > 0) {
+                Object.keys(this.queryResult.data.data[0]).forEach((key) => {
+                    columns.push({
+                        title: key,
+                        key
+                    })
+                })
+            }
+
+            return columns;
         }
     },
     methods: {
