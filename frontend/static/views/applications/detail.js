@@ -3,7 +3,6 @@ const DetailApplicationPage = {
         <spin fix v-if="isLoading"></spin>
         <layout-drawer v-else>
             <div slot="header" style="display: flex;align-items: center;">
-                <avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname"></avatar>
                 <div style="flex: 1;overflow: hidden;margin-left: 10px;">
                     <h2 class="title">
                         Application #{{ applicationId }}
@@ -11,6 +10,7 @@ const DetailApplicationPage = {
                     </h2>
                     <h3 class="sub-title text-ellipsis" :title="detail.application.title">{{ detail.application.title }}</h3>
                 </div>
+                <avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname"></avatar>
             </div>
             <div style="display: flex;padding: 10px;background-color: rgb(247, 247, 249);text-transform: uppercase;">
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Type:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.type }}</span></div>
@@ -21,9 +21,11 @@ const DetailApplicationPage = {
             <codemirror style="font-size: 14px;"
                         :options="codeMirrorOptions"
                         v-model="detail.application.sql"></codemirror>
-            <divider>result</divider>
-            <div>
-                
+            <div v-if="detail.application.status !== 'APPROVED'">
+                <divider>result</divider>
+                <codemirror style="font-size: 14px;"
+                        :options="codeMirrorOptions"
+                        :value="JSON.stringify(detail.application.history, null, 4)"></codemirror>
             </div>
             <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="primary" v-if="detail.can_decide"
@@ -33,7 +35,7 @@ const DetailApplicationPage = {
                 <i-button v-if="detail.can_cancel"
                     @click="cancelApplication">Cancel</i-button>
                 <i-button v-if="detail.can_edit"
-                    @click="cancelApplication">Edit</i-button>
+                    @click="goEditApplicationPage">Edit</i-button>
             </div> 
         </layout-drawer>
     `,
@@ -112,6 +114,21 @@ const DetailApplicationPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
+        },
+        goEditApplicationPage () {
+            const query = {
+                application_id: this.detail.application.applicationId,
+                title: this.detail.application.title,
+                description: this.detail.application.description,
+                database_id: this.detail.application.database.databaseId,
+                type: this.detail.application.type,
+                sql: this.detail.application.sql
+            }
+
+            this.$router.push({
+                name: 'editApplicationPage',
+                query
+            })
         }
     },
     mounted () {

@@ -62,7 +62,7 @@ const ApplicationListPage = {
                      :columns="applicationTable.columns" 
                      :data="applicationTable.data"></i-table>
             
-            <drawer width="700" :styles="{padding: 0}"
+            <drawer width="700" :styles="{padding: 0}" :closable="false"
                 v-model="previewer.drawerVisible">
                 <application-preview ref="applicationDetail"
                     :application-id="previewer.applicationId"

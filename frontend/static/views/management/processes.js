@@ -19,24 +19,9 @@ const ProcessesPage = {
                      </form-item>
                 </i-form>
             </div>
-            <div>{{noSleepProcessTable.length}}</div>
-            <!--<i-table border -->
-                     <!--:loading="processTable.isLoading"-->
-                     <!--:columns="processTable.columns" -->
-                     <!--:data="noSleepProcessTable"></i-table>-->
-            <table>
-                <thead>
-                    <tr>
-                        <th v-for="th in processTable.columns" :key="th.key">{{ th.title }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(tr, index) in noSleepProcessTable">
-                        <td v-for="td in processTable.columns" 
-                            :key="index">{{ tr[td.key] }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <native-table :loading="processTable.isLoading"
+                     :columns="processTable.columns" 
+                     :data="noSleepProcessTable"></native-table>
         </layout-list>
     `,
     data () {
@@ -49,13 +34,6 @@ const ProcessesPage = {
             processTable: {
                 isLoading: false,
                 columns: [
-                    {
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h('pre', JSON.stringify(params.row, null, 4))
-                        }
-                    },
                     {
                         title: 'Process ID',
                         key: 'Id',
@@ -91,7 +69,7 @@ const ProcessesPage = {
                         key: 'Info',
                         render: (h, {row}) => {
                             return h('div', {
-                                class: ['text-ellipsis-4']
+                                class: ['text-ellipsis-4', 'pre-line']
                             }, row.Info)
                         }
                     },
@@ -99,7 +77,20 @@ const ProcessesPage = {
                         title: 'Action',
                         width: 100,
                         render: (h, {row}) => {
-                            return h('div', [
+                            return h('div', {
+                                class: ['btn-group']
+                            }, [
+                                h('i-button', {
+                                    on: {
+                                        click: () => {
+                                            this.previewProcess(row)
+                                        }
+                                    },
+                                    props: {
+                                        size: 'small',
+                                        type: 'success'
+                                    }
+                                }, 'Detail'),
                                 h('i-button', {
                                     props: {
                                         size: 'small',
@@ -117,33 +108,9 @@ const ProcessesPage = {
     },
     computed: {
         noSleepProcessTable () {
-            // return this.processTable.data.filter((item) => {
-            //     return !item.Command || item.Command.toLowerCase() !== 'sleep'
-            // })
-
-            return this.processTable.data
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
-                .concat(this.processTable.data)
+            return this.processTable.data.filter((item) => {
+                return !item.Command || item.Command.toLowerCase() !== 'sleep'
+            })
         }
     },
     methods: {
@@ -176,6 +143,17 @@ const ProcessesPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
+        },
+        previewProcess (item) {
+            this.$Modal.info({
+                render: (h) => {
+                    return h('pre', {
+                        style: {
+                            overflow: 'auto'
+                        }
+                    }, JSON.stringify(item, null, 4))
+                }
+            })
         }
     },
     mounted () {

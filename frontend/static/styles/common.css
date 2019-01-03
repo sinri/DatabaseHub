@@ -101,6 +101,36 @@
     box-shadow: 0 0 8px rgb(187, 190, 196);
 }
 
+.c-native-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e8eaec;
+    border-right: 0;
+    border-bottom: 0;
+}
+.c-native-table th,
+.c-native-table td {
+    word-break: break-all;
+    border-right: 1px solid #e8eaec;
+    border-bottom: 1px solid #e8eaec;
+    vertical-align: middle;
+}
+.c-native-table th {
+    overflow: hidden;
+    height: 40px;
+    white-space: nowrap;
+    background-color: #f8f8f9;
+}
+.c-native-table td {
+    overflow: hidden;
+    padding-left: 18px;
+    padding-right: 18px;
+    height: 48px;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+}
 
 .text-ellipsis {
     overflow: hidden;
@@ -114,4 +144,8 @@
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
+}
+
+.pre-line {
+    white-space: pre-line;
 }
