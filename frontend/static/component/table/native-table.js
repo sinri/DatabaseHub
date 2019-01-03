@@ -9,7 +9,7 @@ Vue.component('native-table', {
                 </tr>
             </thead>
             <tbody>
-                <tr v-if="data.length === 0">
+                <tr class="c-native-table-tips" v-if="data.length === 0">
                     <td :colspan="columns.length" style="text-align: center;">暂无数据</td>
                 </tr>
                 <tr v-for="(row, rowIndex) in data"

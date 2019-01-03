@@ -116,6 +116,13 @@
     border-bottom: 1px solid #e8eaec;
     vertical-align: middle;
 }
+.c-native-table tbody tr:hover {
+    background-color: #ebf7ff;
+}
+.c-native-table .c-native-table-tips:hover {
+    background-color: #fff;
+}
+
 .c-native-table th {
     overflow: hidden;
     padding-left: 18px;
