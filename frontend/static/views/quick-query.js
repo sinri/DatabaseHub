@@ -47,7 +47,8 @@ const QuickQueryPage = {
                 <div class="error" v-if="!queryResult.data.done" style="margin-bottom: 20px;padding: 10px;color: #ed4014;background-color: #ffefe6;">
                     <pre>{{ JSON.stringify(queryResult.data.error, null, 4) }}</pre>
                 </div>
-                <native-table
+                <native-table v-else
+                    :loading="queryResult.isLoading"
                     :columns="resultTableColumns"
                     :data="this.queryResult.data.data"></native-table>
           
