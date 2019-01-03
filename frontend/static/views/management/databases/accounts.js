@@ -157,7 +157,7 @@ const DatabaseAccountsPage = {
             const data = JSON.parse(JSON.stringify(this.databaseAccountForm.model))
 
             ajax('createDatabaseAccount', data).then(() => {
-                SinriQF.iview.showSuccessMessage('Register New Account Success!', 3);
+                SinriQF.iview.showSuccessMessage('Register New Account Success!', 2);
                 this.resetDatabaseAccountForm();
                 this.search();
             }).catch(({message}) => {
@@ -169,7 +169,7 @@ const DatabaseAccountsPage = {
                 database_id: this.$route.params.databaseId,
                 account_id: item.accountId
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Remove Account Success!', 3);
+                SinriQF.iview.showSuccessMessage('Remove Account Success!', 2);
                 this.search();
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
@@ -180,7 +180,7 @@ const DatabaseAccountsPage = {
                 database_id: this.$route.params.databaseId,
                 account_id: item.accountId
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Set Default Account Success!', 3);
+                SinriQF.iview.showSuccessMessage('Set Default Account Success!', 2);
                 this.search();
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

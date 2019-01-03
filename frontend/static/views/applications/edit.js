@@ -105,10 +105,10 @@ const EditApplicationPage = {
                 application_id: data.application_id,
                 application: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Edit Application Success!', 3);
+                SinriQF.iview.showSuccessMessage('Edit Application Success!', 2);
                 this.back();
-            }).catch(({msg}) => {
-                SinriQF.iview.showErrorMessage(msg, 5);
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
             })
         },
         getDatabaseList () {

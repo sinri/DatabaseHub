@@ -92,7 +92,7 @@ const CreateDatabasePage = {
             ajax('createDatabase', {
                 database_info: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Create Database Success!', 3);
+                SinriQF.iview.showSuccessMessage('Create Database Success!', 2);
                 this.back();
             }).catch(({msg}) => {
                 SinriQF.iview.showErrorMessage(msg, 5);

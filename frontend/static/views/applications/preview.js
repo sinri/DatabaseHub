@@ -90,7 +90,7 @@ Vue.component('application-preview', {
             ajax('approveApplication', {
                 application_id: this.applicationId
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Approve Application Success!', 3);
+                SinriQF.iview.showSuccessMessage('Approve Application Success!', 2);
                 this.$emit('update')
                 this.getApplicationDetail();
             }).catch(({message}) => {
@@ -101,7 +101,7 @@ Vue.component('application-preview', {
             ajax('cancelApplication', {
                 application_id: this.applicationId
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Cancel Application Success!', 3);
+                SinriQF.iview.showSuccessMessage('Cancel Application Success!', 2);
                 this.$emit('update')
                 this.getApplicationDetail();
             }).catch(({message}) => {
@@ -112,7 +112,7 @@ Vue.component('application-preview', {
             ajax('denyApplication', {
                 application_id: this.applicationId
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Deny Application Success!', 3);
+                SinriQF.iview.showSuccessMessage('Deny Application Success!', 2);
                 this.$emit('update')
                 this.getApplicationDetail();
             }).catch(({message}) => {

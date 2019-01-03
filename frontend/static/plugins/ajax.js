@@ -5,22 +5,22 @@ function ajax (apiName, data = {}) {
         SinriQF.api.call(api.url, data, (res) => {
             resolve(res);
         }, (error, status) => {
-            const feedback = typeof error.response !== 'undefined' && error.response.data
-            // console.log(error)
-            // if (typeof error.response !== 'undefined' && error.response.status === 403) {
-            //     localStorage.setItem('target_href', window.location.href);
-            //     window.location.href = 'login.html';
-            //
-            //     return;
-            // }
+            // be has response
+            if (status !== -1) {
+                console.log(JSON.stringify(error, null, 4))
 
-            console.log(JSON.stringify(error, null, 4))
-
-            reject({
-                error,
-                status,
-                message: `${apiName} Error. Feedback: ${JSON.stringify(feedback, null, 4)} Status: ${status}`
-            });
+                reject({
+                    error,
+                    status,
+                    message: `[${apiName}] Error. Feedback: ${error.error}`
+                });
+            } else {
+                reject({
+                    error,
+                    status,
+                    message: `[${apiName}] Network Error. Status: ${error.response.status} ${error.response.statusText}`
+                });
+            }
         });
     });
 }

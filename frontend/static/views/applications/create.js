@@ -103,10 +103,10 @@ const CreateApplicationPage = {
             ajax('createApplication', {
                 application: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Create Application Success!', 3);
+                SinriQF.iview.showSuccessMessage('Create Application Success!', 2);
                 this.back();
-            }).catch(({msg}) => {
-                SinriQF.iview.showErrorMessage(msg, 5);
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
             })
         },
         getDatabaseList () {

@@ -82,7 +82,7 @@ new Vue({
                 window.location.href = targetHref;
                 this.loginApiRequesting = false;
             }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 50);
+                SinriQF.iview.showErrorMessage(message, 5);
                 this.loginApiRequesting = false;
             })
         }

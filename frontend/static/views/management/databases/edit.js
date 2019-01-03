@@ -93,7 +93,7 @@ const EditDatabasePage = {
                 database_id: data.database_id,
                 database_info: data
             }).then(() => {
-                SinriQF.iview.showSuccessMessage('Edit Database Success!', 3)
+                SinriQF.iview.showSuccessMessage('Edit Database Success!', 2)
                 this.back()
             }).catch(({msg}) => {
                 SinriQF.iview.showErrorMessage(msg, 5);
