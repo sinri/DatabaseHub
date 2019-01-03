@@ -23,9 +23,9 @@ const DetailApplicationPage = {
                         v-model="detail.application.sql"></codemirror>
             <div v-if="detail.application.status !== 'APPROVED'">
                 <divider>result</divider>
-                <codemirror style="font-size: 14px;"
-                        :options="codeMirrorOptions"
-                        :value="JSON.stringify(detail.application.history, null, 4)"></codemirror>
+                <native-table
+                    :columns="historyTableColumns"
+                    :data="detail.application.history"></native-table>
             </div>
             <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="primary" v-if="detail.can_decide"
@@ -61,6 +61,22 @@ const DetailApplicationPage = {
                 theme: 'panda-syntax'
             }
         };
+    },
+    computed: {
+        historyTableColumns () {
+            const columns = [];
+
+            if (this.detail.application.history.length > 0) {
+                Object.keys(this.detail.application.history[0]).forEach((key) => {
+                    columns.push({
+                        title: key,
+                        key
+                    });
+                });
+            }
+
+            return columns;
+        }
     },
     methods: {
         init () {
