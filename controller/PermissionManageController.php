@@ -66,6 +66,7 @@ class PermissionManageController extends AbstractAuthController
                 PermissionModel::PERMISSION_APPROVE_DDL,
                 PermissionModel::PERMISSION_APPROVE_MODIFY,
                 PermissionModel::PERMISSION_APPROVE_READ,
+                PermissionModel::PERMISSION_APPROVE_EXECUTE,
                 PermissionModel::PERMISSION_QUICK_QUERY,
                 PermissionModel::PERMISSION_KILL,
             ])) {

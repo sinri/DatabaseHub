@@ -64,7 +64,7 @@ class QuickQueryController extends AbstractAuthController
         $sql = $this->_readRequest('sql', '');
         $processedSQL = SQLChecker::processSqlForQuickQuery($sql, $maxRows);
         $type = SQLChecker::getTypeOfSingleSql($processedSQL);
-        if (!in_array($type, [ApplicationModel::TYPE_READ])) {
+        if (!in_array($type, ['SELECT', 'SHOW', 'EXPLAIN'])) {
             throw new \Exception("Not a read statement");
         }
 
