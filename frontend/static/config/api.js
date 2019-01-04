@@ -32,7 +32,7 @@ const API = {
         desc: '',
         url: 'ApplicationController/search'
     },
-    detailApplication: {
+    getApplicationDetail: {
         desc: '',
         url: 'ApplicationController/detail'
     },
@@ -50,6 +50,10 @@ const API = {
         desc: '',
         url: 'DatabaseManageController/edit'
     },
+    getDatabaseDetail: {
+        desc: '',
+        url: 'DatabaseManageController/getDatabaseDetail'
+    },
     removeDatabase: {
         desc: '',
         url: 'DatabaseManageController/remove'
@@ -65,6 +69,10 @@ const API = {
     createDatabaseAccount: {
         desc: '',
         url: 'DatabaseManageController/editAccount'
+    },
+    getDatabaseAccountDetail: {
+        desc: '',
+        url: 'DatabaseManageController/getDatabaseAccountDetail'
     },
     removeDatabaseAccount: {
         desc: '',
@@ -108,7 +116,7 @@ const API = {
         desc: 'Run `show full processlist` and fetch result. Kill would rely on the `ID` and `USER` (case might not determined).',
         url: 'KillerController/showProcessList'
     },
-    kill: {
+    killProcess: {
         desc: 'Kill one thread by tid, with certain account by username.',
         url: 'KillerController/kill'
     }

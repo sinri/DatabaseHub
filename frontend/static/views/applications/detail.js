@@ -88,7 +88,7 @@ const DetailApplicationPage = {
         getApplicationDetail () {
             this.updateLoading(true);
 
-            ajax('detailApplication', {
+            ajax('getApplicationDetail', {
                 application_id: this.applicationId
             }).then((res) => {
                 this.detail = res

@@ -69,7 +69,10 @@ const ProcessesPage = {
                         key: 'Info',
                         render: (h, {row}) => {
                             return h('div', {
-                                class: ['text-ellipsis-4', 'pre-line']
+                                class: ['text-ellipsis-4', 'pre-line'],
+                                style: {
+                                    maxWidth: '30vw'
+                                }
                             }, row.Info)
                         }
                     },
@@ -92,6 +95,11 @@ const ProcessesPage = {
                                     }
                                 }, 'Detail'),
                                 h('i-button', {
+                                    on: {
+                                        click: () => {
+                                            this.killProcess(row)
+                                        }
+                                    },
                                     props: {
                                         size: 'small',
                                         type: 'error'
@@ -140,6 +148,18 @@ const ProcessesPage = {
         getPermittedDatabases () {
             ajax('killerPermittedDatabases').then(({list}) => {
                 this.permittedDatabases = list;
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
+        killProcess (item) {
+            ajax('killProcess', {
+                database_id: this.query.database_id,
+                username: item.User,
+                tid: item.Id
+            }).then(() => {
+                this.search();
+                SinriQF.iview.showSuccessMessage('Kill Process Success!', 2);
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });

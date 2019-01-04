@@ -113,23 +113,27 @@ const DatabaseListPage = {
                 name: 'createDatabasePage'
             });
         },
-        goEditDatabase (item) {
-            const query = JSON.parse(JSON.stringify(item));
-
+        goEditDatabase ({databaseId}) {
             this.$router.push({
                 name: 'editDatabasePage',
-                query
+                query: {
+                    databaseId
+                }
             });
         },
         goDatabaseAccountsPage (item) {
-            const query = JSON.parse(JSON.stringify(item));
+            const {databaseId, databaseName, host, port} = JSON.parse(JSON.stringify(item));
 
             this.$router.push({
                 name: 'databaseAccountsPage',
                 params: {
-                    databaseId: query.databaseId
+                    databaseId: databaseId
                 },
-                query
+                query: {
+                    databaseName,
+                    host,
+                    port
+                }
             });
         }
     },

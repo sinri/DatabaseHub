@@ -45,6 +45,8 @@ const EditDatabasePage = {
     `,
     data () {
         return {
+            databaseId: 0,
+            isLoading: false,
             form: {
                 model: {
                     database_name: '',
@@ -86,11 +88,33 @@ const EditDatabasePage = {
                }
            })
         },
+        updateLoading (bool) {
+            this.isLoading = bool;
+        },
+        getDatabaseDetail () {
+            this.updateLoading(true);
+
+            ajax('getDatabaseDetail', {
+                database_id: this.databaseId
+            }).then(({database}) => {
+                this.form.model = {
+                    database_name: database.databaseName,
+                    host: database.host,
+                    port: database.port,
+                    status: database.status,
+                    engine: database.engine
+                }
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            }).finally(() => {
+                this.updateLoading(false);
+            });
+        },
         save () {
             const data = JSON.parse(JSON.stringify(this.form.model))
 
             ajax('editDatabase', {
-                database_id: data.database_id,
+                database_id: this.databaseId,
                 database_info: data
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Edit Database Success!', 2)
@@ -101,23 +125,8 @@ const EditDatabasePage = {
         }
     },
     created () {
-        const {
-            databaseId: database_id,
-            databaseName: database_name,
-            host,
-            port,
-            status,
-            engine
-        } = this.$route.query
+        this.databaseId = this.$route.query.databaseId;
 
-
-        Object.assign(this.form.model, {
-            database_id,
-            database_name,
-            host,
-            port,
-            status,
-            engine
-        })
+        this.getDatabaseDetail();
     }
 };
