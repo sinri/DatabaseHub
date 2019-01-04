@@ -25,7 +25,7 @@ const DetailApplicationPage = {
                 <divider>result</divider>
                 <native-table
                     :columns="historyTableColumns"
-                    :data="detail.application.history"></native-table>
+                    :data="detail.application.history.slice(0, 100)"></native-table>
             </div>
             <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="primary" v-if="detail.can_decide"
