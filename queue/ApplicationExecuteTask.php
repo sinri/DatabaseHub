@@ -65,12 +65,16 @@ class ApplicationExecuteTask extends ParallelQueueTask
      * To prepare and lock task before executing.
      * You should update property $readyToExecute as the result of this method
      * @return bool
+     * @throws \Exception
      */
     public function beforeExecute()
     {
         $afx = $this->applicationEntity->taskSeize();
         HubCore::getLogger()->info(__METHOD__, ["application_id" => $this->applicationEntity->applicationId, "afx" => $afx]);
         $this->readyToExecute = !!$afx;
+        if ($this->readyToExecute) {
+            $this->applicationEntity->refresh();
+        }
         return $this->readyToExecute;
     }
 
