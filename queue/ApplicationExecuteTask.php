@@ -74,6 +74,7 @@ class ApplicationExecuteTask extends ParallelQueueTask
         $this->readyToExecute = !!$afx;
         if ($this->readyToExecute) {
             $this->applicationEntity->refresh();
+            HubCore::getLogger()->info("Refreshed Task Application Entity, to be", ["application_id" => $this->applicationEntity->applicationId, "status" => $this->applicationEntity->status]);
         }
         return $this->readyToExecute;
     }
