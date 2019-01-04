@@ -23,6 +23,9 @@ const DetailApplicationPage = {
                         v-model="detail.application.sql"></codemirror>
             <div v-if="detail.application.status !== 'APPROVED'">
                 <divider>result</divider>
+                <i-button icon="md-cloud-download" type="success" size="small" style="margin-bottom: 5px;"
+                    @click="downloadExportedContentAsCSV"
+                    v-if="detail.application.result_file.should_have_file">下载</i-button>
                 <native-table
                     :columns="historyTableColumns"
                     :data="detail.application.history.slice(0, 100)"></native-table>
@@ -145,6 +148,17 @@ const DetailApplicationPage = {
                 name: 'editApplicationPage',
                 query
             })
+        },
+        downloadExportedContentAsCSV () {
+            const api = API.downloadExportedContentAsCSV;
+            const filename = this.detail.application.result_file.path.split('/').pop();
+
+            axios.post(SinriQF.config.ApiBase + api.url, {
+                application_id: this.applicationId,
+                token: SinriQF.api.getTokenFromCookie()
+            }).then(({data}) => {
+                exportCsv.download(filename, data);
+            });
         }
     },
     mounted () {
