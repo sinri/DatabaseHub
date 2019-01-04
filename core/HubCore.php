@@ -52,18 +52,31 @@ class HubCore
      * @var ArkLogger
      */
     protected static $logger;
+    /**
+     * @var ArkLogger
+     */
+    protected static $cliLogger;
 
     /**
      * @return ArkLogger
      */
     public static function getLogger()
     {
-        if (!self::$logger) {
-            $logPath = self::getConfig(['logger', 'path'], __DIR__ . '/../log');
-            self::$logger = new ArkLogger($logPath);
-            self::$logger->setIgnoreLevel(self::getConfig(['logger', 'level'], 'info'));
+        $logPath = self::getConfig(['logger', 'path'], __DIR__ . '/../log');
+
+        if (ArkHelper::isCLI()) {
+            if (!self::$cliLogger) {
+                self::$cliLogger = new ArkLogger($logPath, "cli");
+                self::$cliLogger->setIgnoreLevel(self::getConfig(['logger', 'level'], 'info'));
+            }
+            return self::$cliLogger;
+        } else {
+            if (!self::$logger) {
+                self::$logger = new ArkLogger($logPath, "web");
+                self::$logger->setIgnoreLevel(self::getConfig(['logger', 'level'], 'info'));
+            }
+            return self::$logger;
         }
-        return self::$logger;
     }
 
 }

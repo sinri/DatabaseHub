@@ -11,4 +11,7 @@ require_once __DIR__ . '/autoload.php';
 $delegate = new \sinri\databasehub\queue\DHQueueDelegate();
 $daemon = new \sinri\ark\queue\parallel\ParallelQueueDaemon($delegate);
 $delegate->clearRuntimeCommand();
+
+\sinri\databasehub\core\HubCore::getLogger()->info("Queue Begins");
+
 $daemon->loop();

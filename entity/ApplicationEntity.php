@@ -81,13 +81,25 @@ class ApplicationEntity
     }
 
     /**
-     * @return ApplicationEntity
      * @throws \Exception
      */
     public function refresh()
     {
         $row = (new ApplicationModel())->selectRow(['application_id' => $this->applicationId]);
-        return self::instanceByRow($row);
+        $this->title = $row['title'];
+        $this->description = $row['description'];
+        $this->database = DatabaseEntity::instanceById($row['database_id']);
+        $this->sql = $row['sql'];
+        $this->type = $row['type'];
+        $this->status = $row['status'];
+        $this->applyUser = UserEntity::instanceByUserId($row['apply_user']);
+        $this->approveUser = empty($row['approve_user']) ? null : UserEntity::instanceByUserId($row['approve_user']);
+        $this->createTime = $row['create_time'];
+        $this->editTime = $row['edit_time'];
+        $this->executeTime = $row['execute_time'];
+        $this->approveTime = $row['approve_time'];
+        $this->duration = $row['duration'];
+        $this->parallelable = $row['parallelable'];
     }
 
     /**
