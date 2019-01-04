@@ -12,7 +12,7 @@ function ajax (apiName, data = {}) {
                 reject({
                     error,
                     status,
-                    message: `[${apiName}] Error. Feedback: ${error.error}`
+                    message: `[${apiName}] Error. Feedback: ${error.error || error}`
                 });
             } else {
                 reject({

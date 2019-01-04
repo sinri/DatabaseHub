@@ -174,6 +174,11 @@ const ApprovalListPage = {
                                 class: 'btn-group'
                             }, [
                                 h('i-button', {
+                                    on: {
+                                        click: () => {
+                                            this.goDetailApplication(row)
+                                        }
+                                    },
                                     props: {
                                         size: 'small',
                                         type: 'primary'
@@ -243,6 +248,15 @@ const ApprovalListPage = {
             }).finally(() => {
                 this.setLoading(false);
             });
+        },
+        goDetailApplication (item) {
+            const query = JSON.parse(JSON.stringify(item));
+            const {href} = router.resolve({
+                name: 'detailApplicationPage',
+                query
+            });
+
+            window.open(href, '_blank');
         },
         goEditApplication (item) {
             const query = JSON.parse(JSON.stringify(item));
