@@ -23,8 +23,15 @@ class AccountEntity
         return $this->password;
     }
 
+    /**
+     * @param $row
+     * @return null|AccountEntity
+     */
     public static function instanceByRow($row)
     {
+        if (empty($row)) {
+            return null;
+        }
         $account = new AccountEntity();
         $account->accountId = $row['account_id'];
         $account->username = $row['username'];

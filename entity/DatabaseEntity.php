@@ -60,10 +60,13 @@ class DatabaseEntity
 
     /**
      * @param $row
-     * @return DatabaseEntity
+     * @return DatabaseEntity|null
      */
     public static function instanceByRow($row)
     {
+        if (empty($row)) {
+            return null;
+        }
         $database = new DatabaseEntity();
         $database->databaseId = $row['database_id'];
         $database->databaseName = $row['database_name'];

@@ -10,6 +10,7 @@ namespace sinri\databasehub\controller;
 
 
 use sinri\databasehub\core\AbstractAuthController;
+use sinri\databasehub\entity\AccountEntity;
 use sinri\databasehub\entity\DatabaseEntity;
 use sinri\databasehub\model\AccountModel;
 use sinri\databasehub\model\DatabaseModel;
@@ -192,5 +193,27 @@ class DatabaseManageController extends AbstractAuthController
         $default = $databaseEntity->getDefaultAccount();
 
         $this->_sayOK(['accounts' => $accounts, 'default' => $default]);
+    }
+
+    /**
+     * get database detail
+     */
+    public function getDatabaseDetail()
+    {
+        $database_id = $this->_readRequest("database_id", 0, '/^[\d]+$/');
+        $row = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
+        $this->_sayOK(['database' => DatabaseEntity::instanceByRow($row)]);
+    }
+
+    /**
+     * get account detail
+     */
+    public function getDatabaseAccountDetail()
+    {
+        $account_id = $this->_readRequest("account_id", 0, '/^[\d]+$/');
+        $database_id = $this->_readRequest("database_id", 0, '/^[\d]+$/');
+        $row = (new AccountModel())->selectRow(['account_id' => $account_id, 'database_id' => $database_id]);
+        $this->_sayOK(['account' => AccountEntity::instanceByRow($row)]);
+
     }
 }

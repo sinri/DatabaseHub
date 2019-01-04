@@ -279,6 +279,22 @@ REQ:
 
 * database_id
 
+### getDatabaseDetail
+
+Fetch the database's detail.
+
+REQ:
+
+* database_id
+
+### getDatabaseAccountDetail
+
+Fetch the account's detail of database.
+
+REQ:
+
+* database_id
+* account_id
 
 ## PermissionManageController
 
