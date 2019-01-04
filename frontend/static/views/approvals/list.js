@@ -163,7 +163,7 @@ const ApprovalListPage = {
                     },
                     {
                         title: 'Applied Time',
-                        width: 150,
+                        width: 180,
                         key: 'createTime'
                     },
                     {
@@ -249,21 +249,22 @@ const ApprovalListPage = {
                 this.setLoading(false);
             });
         },
-        goDetailApplication (item) {
-            const query = JSON.parse(JSON.stringify(item));
+        goDetailApplication ({applicationId}) {
             const {href} = router.resolve({
                 name: 'detailApplicationPage',
-                query
+                query: {
+                    applicationId
+                }
             });
 
             window.open(href, '_blank');
         },
-        goEditApplication (item) {
-            const query = JSON.parse(JSON.stringify(item));
-
+        goEditApplication ({applicationId}) {
             this.$router.push({
                 name: 'editApplicationPage',
-                query
+                query: {
+                    applicationId
+                }
             });
         },
         previewApplication (item) {
