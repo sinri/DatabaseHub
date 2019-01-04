@@ -40,6 +40,10 @@ const API = {
         desc: '',
         url: 'ApplicationController/myApprovals'
     },
+    downloadExportedContentAsCSV: {
+        desc: '',
+        url: 'ApplicationController/downloadExportedContentAsCSV'
+    },
 
     // DatabaseManageController
     createDatabase: {
