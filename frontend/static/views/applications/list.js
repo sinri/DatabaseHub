@@ -167,7 +167,7 @@ const ApplicationListPage = {
                     },
                     {
                         title: 'Applied Time',
-                        width: 150,
+                        width: 180,
                         key: 'createTime'
                     },
                     {
@@ -258,19 +258,20 @@ const ApplicationListPage = {
                 name: 'createApplicationPage'
             });
         },
-        goEditApplication (item) {
-            const query = JSON.parse(JSON.stringify(item));
-
+        goEditApplication ({applicationId}) {
             this.$router.push({
                 name: 'editApplicationPage',
-                query
+                query: {
+                    applicationId
+                }
             });
         },
-        goDetailApplication (item) {
-            const query = JSON.parse(JSON.stringify(item));
+        goDetailApplication ({applicationId}) {
             const {href} = router.resolve({
                 name: 'detailApplicationPage',
-                query
+                query: {
+                    applicationId
+                }
             });
 
             window.open(href, '_blank');
