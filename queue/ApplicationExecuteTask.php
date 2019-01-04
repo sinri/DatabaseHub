@@ -84,7 +84,7 @@ class ApplicationExecuteTask extends ParallelQueueTask
     public function execute()
     {
         $this->applicationEntity->writeRecord(0, "EXECUTE", "Task is ready to be executed");
-        $this->done = $this->execute();
+        $this->done = $this->applicationEntity->taskExecute();
         $this->executeFeedback = ($this->done ? "Executed" : "Failed");
         return $this->done;
     }
