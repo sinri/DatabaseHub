@@ -49,6 +49,9 @@ class ApplicationEntity
      */
     public static function instanceByRow($row)
     {
+        if (empty($row)) {
+            return null;
+        }
         $entity = new ApplicationEntity();
         $entity->applicationId = $row['application_id'];
         $entity->title = $row['title'];
@@ -158,13 +161,13 @@ class ApplicationEntity
 
     public function getAbstractForList()
     {
-        $abstract = json_decode(json_encode($this), true);
+        $abstract = (array)$this;
         return $abstract;
     }
 
     public function getDetail()
     {
-        $detail = json_decode(json_encode($this), true);
+        $detail = $this->getAbstractForList();
         $detail['preview_table'] = $this->getExportedContentPreview();
         $detail['history'] = $this->getRecords();
         $detail['result_file'] = $this->getExportedFileInfo();
@@ -293,7 +296,7 @@ class ApplicationEntity
         HubCore::getLogger()->info("Begin SQL Export", ['application_id' => $this->applicationId]);
         HubCore::getLogger()->info($this->sql);
         $csv_path = $this->getExportedFilePath();
-        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->sql, $csv_path, $error);
+        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->sql, $csv_path, $error, 'UTF-8');
         return $written;
     }
 
@@ -353,6 +356,18 @@ class ApplicationEntity
         for ($i = 0; $i < $maxRows; $i++) {
             $data = fgetcsv($handle, 1000, ",");
             if ($data === false) break;
+            if (is_array($data)) {
+                foreach ($data as $key => $value) {
+                    $encode = @mb_detect_encoding($value);
+                    if (!$value) {
+                        $data[$key] = '';
+                    } else if ($value !== 'UTF-8') {
+                        $data[$key] = mb_convert_encoding($value, 'UTF-8', $encode);
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }
             $rows[] = $data;
         }
         fclose($handle);
