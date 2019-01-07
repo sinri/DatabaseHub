@@ -167,8 +167,8 @@ class ApplicationEntity
 
     public function getDetail()
     {
-        //$detail = $this->getAbstractForList();
-        $detail['preview_table'] = $this->getExportedContentPreview();
+        $detail = $this->getAbstractForList();
+//        $detail['preview_table'] = $this->getExportedContentPreview();
         $detail['history'] = $this->getRecords();
         $detail['result_file'] = $this->getExportedFileInfo();
         return $detail;
