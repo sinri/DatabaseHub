@@ -363,6 +363,8 @@ class ApplicationEntity
                         $data[$key] = '';
                     } else if ($value !== 'UTF-8') {
                         $data[$key] = mb_convert_encoding($value, 'UTF-8', $encode);
+                    } else {
+                        $data[$key] = $value;
                     }
                 }
             }
