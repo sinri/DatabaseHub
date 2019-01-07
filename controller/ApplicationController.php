@@ -385,7 +385,8 @@ class ApplicationController extends AbstractAuthController
                 }
                 $logger->info('[APPLICATION_DETAIL] if canDecide ' . $application_id);
             }
-            $detail = $applicationEntity->getDetail();
+            $detail = [];
+//            $detail = $applicationEntity->getDetail();
             $logger->info('[APPLICATION_DETAIL] get detail ' . json_encode($detail));
             $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
         } catch (\Exception $e) {
