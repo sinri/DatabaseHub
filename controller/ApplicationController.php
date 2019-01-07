@@ -351,13 +351,9 @@ class ApplicationController extends AbstractAuthController
     public function detail()
     {
         try {
-            $logger = HubCore::getLogger();
-            $logger->info('[APPLICATION_DETAIL] info start ');
             // fetch application detail
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
-            $logger->info('[APPLICATION_DETAIL] get application_id ' . $application_id);
             $applicationEntity = ApplicationEntity::instanceById($application_id);
-            $logger->info('[APPLICATION_DETAIL] get entity ' . $application_id);
             if (is_null($applicationEntity)) {
                 throw new \Exception('not find application');
             }
@@ -367,27 +363,21 @@ class ApplicationController extends AbstractAuthController
                     ApplicationModel::STATUS_CANCELLED,
                     ApplicationModel::STATUS_ERROR,
                 ]);
-            $logger->info('[APPLICATION_DETAIL] can edit ' . $application_id);
             $canCancel = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
                     ApplicationModel::STATUS_APPLIED
                 ]);
 
-            $logger->info('[APPLICATION_DETAIL] can cancel ' . $application_id);
             $canDecide = in_array($applicationEntity->status, [
                 ApplicationModel::STATUS_APPLIED
             ]);
-            $logger->info('[APPLICATION_DETAIL] can decide ' . $application_id);
             if ($canDecide) {
                 $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
                 $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
                 if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
                     $canDecide = false;
                 }
-                $logger->info('[APPLICATION_DETAIL] if canDecide ' . $application_id);
             }
-            $detail = [];
-//            $detail = $applicationEntity->getDetail();
-            $logger->info('[APPLICATION_DETAIL] get detail ' . json_encode($detail));
+            $detail = $applicationEntity->getDetail();
             $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
