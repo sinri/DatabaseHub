@@ -49,6 +49,9 @@ class ApplicationEntity
      */
     public static function instanceByRow($row)
     {
+        if (empty($row)) {
+            return null;
+        }
         $entity = new ApplicationEntity();
         $entity->applicationId = $row['application_id'];
         $entity->title = $row['title'];

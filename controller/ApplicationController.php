@@ -352,6 +352,9 @@ class ApplicationController extends AbstractAuthController
             // fetch application detail
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
             $applicationEntity = ApplicationEntity::instanceById($application_id);
+            if (is_null($applicationEntity)) {
+                throw new \Exception('not find application');
+            }
 
             $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
                     ApplicationModel::STATUS_DENIED,
@@ -366,11 +369,11 @@ class ApplicationController extends AbstractAuthController
                 ApplicationModel::STATUS_APPLIED
             ]);
             if ($canDecide) {
-//                $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
-//                $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
-//                if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-//                    $canDecide = false;
-//                }
+                $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+                $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+                if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                    $canDecide = false;
+                }
             }
 
 
