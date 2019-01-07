@@ -25,7 +25,13 @@ const DetailApplicationPage = {
                 <divider>result</divider>
                 <i-button icon="md-cloud-download" type="success" size="small" style="margin-bottom: 5px;"
                     @click="downloadExportedContentAsCSV"
-                    v-if="detail.application.result_file.should_have_file">下载</i-button>
+                    :disabled="detail.application.result_file.error"
+                    v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024).toFixed(2) }}M)</i-button>
+                <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
+                <codemirror style="margin-bottom: 15px;font-size: 14px;"
+                        :options="codeMirrorOptions"
+                        :value="JSON.stringify(detail.application.preview_table, null, 4)"
+                        v-if="detail.application.preview_table"></codemirror>
                 <native-table
                     :columns="historyTableColumns"
                     :data="detail.application.history.slice(0, 100)"></native-table>

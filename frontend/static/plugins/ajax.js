@@ -1,26 +1,40 @@
-function ajax (apiName, data = {}) {
+function ajax (apiName, data = {}, cancelExecutor = (c) => c) {
     const api = API[apiName];
 
     return new Promise((resolve, reject) => {
-        SinriQF.api.call(api.url, data, (res) => {
-            resolve(res);
-        }, (error, status) => {
-            // be has response
-            if (status !== -1) {
-                console.log(JSON.stringify(error, null, 4))
+        const CancelToken = axios.CancelToken;
+
+        data.token = SinriQF.api.getTokenFromCookie();
+
+        axios.post(SinriQF.config.ApiBase + api.url, data, {
+            cancelToken: new CancelToken(cancelExecutor)
+        }).then((response) => {
+            if (response.status !== 200 || !response.data) {
+                callbackForError(response.data, response.status);
+                return;
+            }
+
+            const body = response.data;
+
+            if (typeof body.code !== 'undefined' && body.code === 'OK') {
+                resolve(body.data)
+            } else {
+                const error = body.data ? body.data : 'Unknown Error'
 
                 reject({
                     error,
-                    status,
+                    status: response.status,
                     message: `[${apiName}] Error. Feedback: ${error.error || error}`
                 });
-            } else {
-                reject({
-                    error,
-                    status,
-                    message: `[${apiName}] Network Error. Status: ${error.response.status} ${error.response.statusText}`
-                });
             }
+        }).catch((error) => {
+            if (axios.isCancel(error)) return;
+
+            reject({
+                error,
+                status: -1,
+                message: `[${apiName}] Network Error. Status: ${error.response.status} ${error.response.statusText}`
+            });
         });
     });
 }
