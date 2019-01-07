@@ -352,7 +352,6 @@ class ApplicationController extends AbstractAuthController
             // fetch application detail
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
             $applicationEntity = ApplicationEntity::instanceById($application_id);
-            $detail = $applicationEntity->getDetail();
 
             $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
                     ApplicationModel::STATUS_DENIED,
@@ -367,15 +366,15 @@ class ApplicationController extends AbstractAuthController
                 ApplicationModel::STATUS_APPLIED
             ]);
             if ($canDecide) {
-                $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
-                $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
-                if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-                    $canDecide = false;
-                }
+//                $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+//                $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+//                if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+//                    $canDecide = false;
+//                }
             }
 
 
-            $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
+            $this->_sayOK(['application' => $applicationEntity->getDetail(), 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
         }
