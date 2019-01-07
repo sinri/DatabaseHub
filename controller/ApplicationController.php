@@ -353,13 +353,11 @@ class ApplicationController extends AbstractAuthController
         try {
             $logger = HubCore::getLogger();
             $logger->info('[APPLICATION_DETAIL] info start ');
-            $logger->error('[APPLICATION_DETAIL] error start ');
-            $logger->debug('[APPLICATION_DETAIL] start ');
             // fetch application detail
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
-            $logger->debug('[APPLICATION_DETAIL] get application_id ' . $application_id);
+            $logger->info('[APPLICATION_DETAIL] get application_id ' . $application_id);
             $applicationEntity = ApplicationEntity::instanceById($application_id);
-            $logger->debug('[APPLICATION_DETAIL] get entity ' . $application_id);
+            $logger->info('[APPLICATION_DETAIL] get entity ' . $application_id);
             if (is_null($applicationEntity)) {
                 throw new \Exception('not find application');
             }
@@ -369,26 +367,26 @@ class ApplicationController extends AbstractAuthController
                     ApplicationModel::STATUS_CANCELLED,
                     ApplicationModel::STATUS_ERROR,
                 ]);
-            $logger->debug('[APPLICATION_DETAIL] can edit ' . $application_id);
+            $logger->info('[APPLICATION_DETAIL] can edit ' . $application_id);
             $canCancel = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
                     ApplicationModel::STATUS_APPLIED
                 ]);
 
-            $logger->debug('[APPLICATION_DETAIL] can cancel ' . $application_id);
+            $logger->info('[APPLICATION_DETAIL] can cancel ' . $application_id);
             $canDecide = in_array($applicationEntity->status, [
                 ApplicationModel::STATUS_APPLIED
             ]);
-            $logger->debug('[APPLICATION_DETAIL] can decide ' . $application_id);
+            $logger->info('[APPLICATION_DETAIL] can decide ' . $application_id);
             if ($canDecide) {
                 $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
                 $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
                 if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
                     $canDecide = false;
                 }
-                $logger->debug('[APPLICATION_DETAIL] if canDecide ' . $application_id);
+                $logger->info('[APPLICATION_DETAIL] if canDecide ' . $application_id);
             }
             $detail = $applicationEntity->getDetail();
-            $logger->debug('[APPLICATION_DETAIL] get detail ' . json_encode($detail));
+            $logger->info('[APPLICATION_DETAIL] get detail ' . json_encode($detail));
             $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
