@@ -355,6 +355,7 @@ class ApplicationEntity
         $rows = [];
         for ($i = 0; $i < $maxRows; $i++) {
             $data = fgetcsv($handle, 1000, ",");
+            var_dump($data);
             if ($data === false) break;
             $encode = @mb_detect_encoding($data);
             $rows[] = $encode;
