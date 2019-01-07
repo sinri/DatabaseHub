@@ -168,7 +168,7 @@ class ApplicationEntity
     public function getDetail()
     {
         $detail = $this->getAbstractForList();
-//        $detail['preview_table'] = $this->getExportedContentPreview();
+        $detail['preview_table'] = $this->getExportedContentPreview();
         $detail['history'] = $this->getRecords();
         $detail['result_file'] = $this->getExportedFileInfo();
         return $detail;
@@ -356,7 +356,8 @@ class ApplicationEntity
         for ($i = 0; $i < $maxRows; $i++) {
             $data = fgetcsv($handle, 1000, ",");
             if ($data === false) break;
-            $rows[] = $data;
+            $encode = mb_detect_encoding($data, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'));
+            $rows[] = $encode;
         }
         fclose($handle);
         return $rows;
