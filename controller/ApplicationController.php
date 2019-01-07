@@ -352,6 +352,8 @@ class ApplicationController extends AbstractAuthController
     {
         try {
             $logger = HubCore::getLogger();
+            $logger->info('[APPLICATION_DETAIL] info start ');
+            $logger->error('[APPLICATION_DETAIL] error start ');
             $logger->debug('[APPLICATION_DETAIL] start ');
             // fetch application detail
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
