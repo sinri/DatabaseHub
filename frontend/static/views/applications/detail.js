@@ -28,10 +28,12 @@ const DetailApplicationPage = {
                     :disabled="detail.application.result_file.error"
                     v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024).toFixed(2) }}M)</i-button>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
-                <codemirror style="margin-bottom: 15px;font-size: 14px;"
-                        :options="codeMirrorOptions"
-                        :value="JSON.stringify(detail.application.preview_table, null, 4)"
-                        v-if="detail.application.preview_table"></codemirror>
+                <native-table style="margin-bottom: 30px;"
+                    :columns="previewTableColumns"
+                    :data="detail.application.preview_table.slice(1)"
+                    v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
+                
+                <h2>History</h2>
                 <native-table
                     :columns="historyTableColumns"
                     :data="detail.application.history.slice(0, 100)"></native-table>
@@ -72,6 +74,22 @@ const DetailApplicationPage = {
         };
     },
     computed: {
+        previewTableColumns () {
+            const columns = [];
+
+            if (this.detail.application.preview_table &&
+                this.detail.application.preview_table.length > 0
+            ) {
+                this.detail.application.preview_table[0].forEach((key, index) => {
+                    columns.push({
+                        title: key,
+                        key: index
+                    });
+                });
+            }
+
+            return columns;
+        },
         historyTableColumns () {
             const columns = [];
 
