@@ -359,7 +359,11 @@ class ApplicationEntity
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
                     $encode = @mb_detect_encoding($value);
-                    $data[$key] = $encode;
+                    if (!$value) {
+                        $data[$key] = '';
+                    } else if ($value !== 'UTF-8') {
+                        $data[$key] = mb_convert_encoding($value, 'UTF-8', $encode);
+                    }
                 }
             }
             $rows[] = $data;
