@@ -158,13 +158,13 @@ class ApplicationEntity
 
     public function getAbstractForList()
     {
-        $abstract = json_decode(json_encode($this), true);
+        $abstract = (array)$this;
         return $abstract;
     }
 
     public function getDetail()
     {
-        $detail = json_decode(json_encode($this), true);
+        $detail = $this->getAbstractForList();
         $detail['preview_table'] = $this->getExportedContentPreview();
         $detail['history'] = $this->getRecords();
         $detail['result_file'] = $this->getExportedFileInfo();
