@@ -358,7 +358,7 @@ class ApplicationEntity
             if ($data === false) break;
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
-                    $encode = @mb_detect_encoding($data);
+                    $encode = @mb_detect_encoding($value);
                     $data[$key] = $encode;
                 }
             }
