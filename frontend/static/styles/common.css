@@ -140,6 +140,7 @@
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
+    background-color: #fff;
 }
 
 .text-ellipsis {

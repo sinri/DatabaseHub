@@ -119,6 +119,7 @@ const ApplicationListPage = {
                 page: 1,
                 page_size: 10
             },
+            queryCancelExecutor: null,
             applicationTable: {
                 isLoading: false,
                 columns: [
@@ -239,12 +240,19 @@ const ApplicationListPage = {
             this.applicationTable.isLoading = bool;
         },
         search (params = {}) {
+            // 取消前面的查询
+            if (this.queryCancelExecutor) {
+                this.queryCancelExecutor();
+            }
+
             Object.assign(this.query, params);
 
             const query = JSON.parse(JSON.stringify(this.query));
 
             this.setLoading(true);
-            ajax('searchApplication', query).then(({list, total}) => {
+            ajax('searchApplication', query, (c) => {
+                this.queryCancelExecutor = c;
+            }).then(({list, total}) => {
                 this.applicationTable.data = list;
                 this.applicationTable.total = total;
             }).catch(({message}) => {

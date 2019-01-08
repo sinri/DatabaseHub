@@ -25,7 +25,15 @@ Vue.component('application-preview', {
                 <divider>result</divider>
                 <i-button icon="md-cloud-download" type="success" size="small" style="margin-bottom: 5px;"
                     @click="downloadExportedContentAsCSV"
-                    v-if="detail.application.result_file.should_have_file">下载</i-button>
+                    :disabled="detail.application.result_file.error"
+                    v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
+                <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
+                <native-table style="margin-bottom: 30px;border: 10px solid #ccc;"
+                    :columns="previewTableColumns"
+                    :data="detail.application.preview_table.slice(1)"
+                    v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
+                
+                <h2>History</h2>
                 <native-table
                     :columns="historyTableColumns"
                     :data="detail.application.history.slice(0, 100)"></native-table>
@@ -70,6 +78,22 @@ Vue.component('application-preview', {
         };
     },
     computed: {
+        previewTableColumns () {
+            const columns = [];
+
+            if (this.detail.application.preview_table &&
+                this.detail.application.preview_table.length > 0
+            ) {
+                this.detail.application.preview_table[0].forEach((key, index) => {
+                    columns.push({
+                        title: key,
+                        key: index
+                    });
+                });
+            }
+
+            return columns;
+        },
         historyTableColumns () {
             const columns = [];
 

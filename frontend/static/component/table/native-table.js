@@ -1,6 +1,6 @@
 Vue.component('native-table', {
     template: `
-    <div style="position: relative;">
+    <div style="position: relative;overflow: auto;">
         <table class="c-native-table">
             <thead>
                 <tr>
