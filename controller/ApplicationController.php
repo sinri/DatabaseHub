@@ -10,10 +10,8 @@ namespace sinri\databasehub\controller;
 
 
 use sinri\ark\core\ArkHelper;
-use sinri\ark\core\ArkLogger;
 use sinri\ark\database\model\ArkSQLCondition;
 use sinri\databasehub\core\AbstractAuthController;
-use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
@@ -328,12 +326,16 @@ class ApplicationController extends AbstractAuthController
         $conditions = $this->buildFetchConditions();
 
         $conditions['status'] = ApplicationModel::STATUS_APPLIED;
+
+        $model = new ApplicationModel();
+
         if ($this->session->user->userType !== UserModel::USER_TYPE_ADMIN) {
             $conditions['permitted_user'] = $this->session->user->userId;
+            $model = new UserPermittedApprovalModel();
         }
 
-        $total = (new UserPermittedApprovalModel())->selectRowsForCount($conditions);
-        $rows = (new UserPermittedApprovalModel())->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
+        $total = $model->selectRowsForCount($conditions);
+        $rows = $model->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
 
         $list = [];
         if (!empty($rows)) {
