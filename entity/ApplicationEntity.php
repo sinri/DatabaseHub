@@ -354,7 +354,7 @@ class ApplicationEntity
         $maxRows = 10;
         $rows = [];
         for ($i = 0; $i < $maxRows; $i++) {
-            $data = fgetcsv($handle, 1000, ",");
+            $data = fgetcsv($handle, 2000, ",");
             if ($data === false) break;
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
