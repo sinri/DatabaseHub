@@ -4,25 +4,30 @@ Vue.component('top-banner', {
             :active-name="activeMenuName"
             @on-select="onMenuItemSelected">
             <template v-for="item in menuItems">
-                <submenu v-if="item.children"
-                    :key="item.name"
-                    :name="item.name">
-                    <template slot="title">
+                <template v-if="item.children">
+                    <submenu v-if="!item.admin || isAdmin"
+                        :key="item.name"
+                        :name="item.name">
+                        <template slot="title">
+                            <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
+                        </template>
+                        <menu-item v-for="subItem in item.children"
+                            :key="subItem.name"
+                            :name="subItem.name"
+                            :style="subItem.style">
+                            <Icon :type="subItem.icon" v-if="subItem.icon" /> {{ subItem.text }}
+                        </menu-item>
+                    </submenu>
+                </template>
+                
+                <template v-else>
+                   <menu-item v-if="!item.admin || isAdmin"
+                        :key="item.name"
+                        :name="item.name"
+                        :style="item.style">
                         <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
-                    </template>
-                    <menu-item v-for="subItem in item.children"
-                        :key="subItem.name"
-                        :name="subItem.name"
-                        :style="subItem.style">
-                        <Icon :type="subItem.icon" v-if="subItem.icon" /> {{ subItem.text }}
                     </menu-item>
-                </submenu>
-                <menu-item v-else
-                    :key="item.name"
-                    :name="item.name"
-                    :style="item.style">
-                    <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
-                </menu-item>
+                </template>
             </template>
         </i-menu>
     `,
@@ -50,6 +55,7 @@ Vue.component('top-banner', {
                     name: 'managementPage',
                     icon: 'ios-flask',
                     text: 'Management',
+                    admin: true,
                     children: [
                         {
                             name: 'databaseListPage',
@@ -87,6 +93,11 @@ Vue.component('top-banner', {
                 }
             ]
         };
+    },
+    computed: {
+        isAdmin () {
+            return JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userType === 'ADMIN'
+        }
     },
     methods: {
         onMenuItemSelected (name) {
