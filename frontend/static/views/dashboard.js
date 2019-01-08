@@ -1,7 +1,7 @@
 const DashboardPage = {
     template: `
         <Row>
-            <i-col span="8" style="margin: 10px">
+            <i-col span="12" style="margin: 10px">
                 <div class="markdown-body" v-html="mdHtml"></div>
             </i-col>
         </Row>
