@@ -26,7 +26,7 @@ const DetailApplicationPage = {
                 <i-button icon="md-cloud-download" type="success" size="small" style="margin-bottom: 5px;"
                     @click="downloadExportedContentAsCSV"
                     :disabled="detail.application.result_file.error"
-                    v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024).toFixed(2) }}M)</i-button>
+                    v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
                 <native-table style="margin-bottom: 30px;"
                     :columns="previewTableColumns"
