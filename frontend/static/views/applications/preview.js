@@ -28,7 +28,7 @@ Vue.component('application-preview', {
                     :disabled="detail.application.result_file.error"
                     v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
-                <native-table style="margin-bottom: 30px;"
+                <native-table style="margin-bottom: 30px;padding: 10px;background-color: #ccc;"
                     :columns="previewTableColumns"
                     :data="detail.application.preview_table.slice(1)"
                     v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
