@@ -23,10 +23,12 @@ const DetailApplicationPage = {
                         v-model="detail.application.sql"></codemirror>
             <div v-if="detail.application.status !== 'APPROVED'">
                 <divider>result</divider>
-                <i-button icon="md-cloud-download" type="success" size="small" style="margin-bottom: 5px;"
-                    @click="downloadExportedContentAsCSV"
-                    :disabled="detail.application.result_file.error"
-                    v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
+                <h2>预览（最多10条）
+                    <i-button icon="md-cloud-download" type="success" size="small" style="float: right;"
+                        @click="downloadExportedContentAsCSV"
+                        :disabled="detail.application.result_file.error"
+                        v-if="detail.application.result_file.should_have_file">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
+                </h2>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
                 <native-table style="margin-bottom: 30px;border: 10px solid #ccc;"
                     :columns="previewTableColumns"
@@ -70,7 +72,8 @@ const DetailApplicationPage = {
                 line: true,
                 mode: 'text/x-mysql',
                 theme: 'panda-syntax'
-            }
+            },
+            allUserMap: JSON.parse(localStorage.getItem('allUserMap'))
         };
     },
     computed: {
@@ -118,6 +121,13 @@ const DetailApplicationPage = {
             ajax('getApplicationDetail', {
                 application_id: this.applicationId
             }).then((res) => {
+                res.application.history = res.application.history.map((item) => {
+                    const user = this.allUserMap[item.actUser];
+
+                    item.actUser = item.actUser === 0 ? user.realname : `${user.realname}(${user.username})`;
+
+                    return item;
+                });
                 this.detail = res
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

@@ -210,11 +210,7 @@ const PermissionsPage = {
             });
         },
         getAllUserList () {
-            ajax('getAllUser').then(({list}) => {
-                this.allUserList = list;
-            }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
-            });
+            this.allUserList = JSON.parse(localStorage.getItem('allUserList'));
         },
         getPermittedDatabases () {
             ajax('commonDatabaseList').then(({list}) => {

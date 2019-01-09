@@ -10,12 +10,12 @@ const DashboardPage = {
         return {
             mdHtml: '',
             mdText: `
-## 欢迎使用DBREQ数据中心 Version 3.0
+## 欢迎使用DatabaseHub
 
-> 请使用Account Auth系统的登陆账户和密码使用该系统。
+> 请使用Account Auth V3系统的登陆账户和密码使用该系统。
 
 如果尚未在本系统注册，可通过他人在本系统发起注册申请。
-Version 3.0 支持一下数据申请的递交、审批和执行：
+DatabaseHub 支持一下数据申请的递交、审批和执行：
 - 数据导出：执行单条Select语句导出CSV数据；
 - 数据更新：执行多条更新(Update/Insert/Delete/Replace)。
 - 结构变更：执行DDL语句。
@@ -40,6 +40,5 @@ Version 3.0 支持一下数据申请的递交、审批和执行：
         const md = window.markdownit();
 
         this.mdHtml = md.render(this.mdText);
-        console.log(this.mdHtml)
     }
 };

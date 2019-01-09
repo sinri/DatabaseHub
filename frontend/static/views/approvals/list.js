@@ -276,11 +276,7 @@ const ApprovalListPage = {
             })
         },
         getAllUserList () {
-            ajax('getAllUser').then(({list}) => {
-                this.allUserList = list;
-            }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
-            });
+            this.allUserList = JSON.parse(localStorage.getItem('allUserList'));
         },
         getDatabaseList () {
             ajax('commonDatabaseList').then(({list}) => {
