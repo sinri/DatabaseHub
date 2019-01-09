@@ -69,9 +69,9 @@ const ProcessesPage = {
                         key: 'Info',
                         render: (h, {row}) => {
                             return h('div', {
-                                class: ['text-ellipsis-4', 'pre-line'],
+                                class: ['pre-line'],
                                 style: {
-                                    maxWidth: '30vw'
+                                    maxWidth: '25vw'
                                 }
                             }, row.Info)
                         }
