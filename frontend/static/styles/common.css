@@ -116,7 +116,7 @@
     border-bottom: 1px solid #e8eaec;
     vertical-align: middle;
 }
-.c-native-table tbody tr:hover {
+.c-native-table tbody tr:hover td {
     background-color: #ebf7ff;
 }
 .c-native-table .c-native-table-tips:hover {
