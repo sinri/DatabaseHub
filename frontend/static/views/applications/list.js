@@ -132,10 +132,19 @@ const ApplicationListPage = {
                         title: 'Title',
                         key: 'title',
                         render: (h, {row}) => {
-                            return h('div', {
+                            return h('a', {
                                 class: ['text-ellipsis'],
                                 attrs: {
                                     title: row.title
+                                },
+                                style: {
+                                    display: 'block',
+                                    lineHeight: '45px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.goDetailApplication(row)
+                                    }
                                 }
                             }, row.title)
                         }
