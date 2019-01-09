@@ -68,6 +68,7 @@ class HubCore
             if (!self::$cliLogger) {
                 self::$cliLogger = new ArkLogger($logPath, "cli");
                 self::$cliLogger->setIgnoreLevel(self::getConfig(['logger', 'level'], 'info'));
+                self::$cliLogger->setShowProcessID(true);
             }
             return self::$cliLogger;
         } else {

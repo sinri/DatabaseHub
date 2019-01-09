@@ -14,14 +14,15 @@
     "ext-json": "*",
     "ext-mysqli": "*",
     "ext-mbstring": "*",
-    "sinri/ark": "^2.0",
+    "sinri/ark": "^2.1",
     "sinri/ark-pdo": "^1.0",
     "sinri/ark-mysqli": "^1.0",
     "sinri/ark-queue": "^2.0",
     "phpmyadmin/sql-parser": "^4.2",
     "greenlion/php-sql-parser": "^4.1",
     "jdorn/sql-formatter": "^1.2",
-    "sinri/ark-curl": "^1.3"
+    "sinri/ark-curl": "^2.0",
+    "sinri/ark-core": "^2.0"
   },
   "repositories": [
     {
