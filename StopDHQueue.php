@@ -16,8 +16,8 @@ $delegate->setStopRuntimeCommand();
 
 while (true) {
     sleep(2);
-    if ($delegate->fetchRuntimeCommand() == \sinri\databasehub\queue\DHQueueDelegate::COMMAND_STOP) {
-        \sinri\databasehub\core\HubCore::getLogger()->info("Waiting for queue stopping...");
-        continue;
+    if ($delegate->fetchRuntimeCommand() != \sinri\databasehub\queue\DHQueueDelegate::COMMAND_STOP) {
+        break;
     }
+    \sinri\databasehub\core\HubCore::getLogger()->info("Waiting for queue stopping...");
 }
