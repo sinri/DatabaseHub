@@ -199,10 +199,12 @@ class ApplicationController extends AbstractAuthController
 
         $applicationEntity = ApplicationEntity::instanceById($application_id);
 
-        $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
-        $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
-        if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-            throw new \Exception("You have not approval permission on this application");
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+            $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+            $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+            if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                throw new \Exception("You have not approval permission on this application");
+            }
         }
 
         $afx = (new ApplicationModel())->update(
@@ -235,10 +237,12 @@ class ApplicationController extends AbstractAuthController
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
         $applicationEntity = ApplicationEntity::instanceById($application_id);
 
-        $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
-        $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
-        if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-            throw new \Exception("You have not approval permission on this application");
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+            $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+            $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+            if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                throw new \Exception("You have not approval permission on this application");
+            }
         }
 
         $afx = (new ApplicationModel())->update(
