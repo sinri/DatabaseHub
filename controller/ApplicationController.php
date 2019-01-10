@@ -372,7 +372,7 @@ class ApplicationController extends AbstractAuthController
             $canDecide = in_array($applicationEntity->status, [
                 ApplicationModel::STATUS_APPLIED
             ]);
-            if ($canDecide) {
+            if ($canDecide && $this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
                 $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
                 $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
                 if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
