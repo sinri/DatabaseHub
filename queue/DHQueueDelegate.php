@@ -104,7 +104,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
     public function whenNoTaskToDo()
     {
         HubCore::getLogger()->info("whenNoTaskToDo, sleep 60s");
-        sleep(60);
+        sleep(10);
     }
 
     /**
