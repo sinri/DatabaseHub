@@ -53,7 +53,7 @@ class QuickQueryController extends AbstractAuthController
     public function syncExecute()
     {
         $database_id = $this->_readRequest("database_id", 0);
-        if ($this->session->user->username != UserModel::USER_TYPE_ADMIN) {
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
             $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
             if (!$x) throw new \Exception("Not Permitted");
         }
