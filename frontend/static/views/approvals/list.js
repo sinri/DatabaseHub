@@ -40,17 +40,6 @@ const ApprovalListPage = {
                                       @click="toggleQueryForm('type', item)"></i-button>
                         </tooltip>
                     </div>
-                    <div class="filter-btn-group">
-                        Status：
-                        <tooltip v-for="item in CONSTANTS.APPLICATION_STATUS" placement="top"
-                                 :key="item"
-                                 :content="item">
-                            <i-button shape="circle"
-                                      :icon="CONSTANTS.APPLICATION_STATUS_ICON_TYPE_MAP[item]"
-                                      :type="queryForm.status.indexOf(item) !== -1 ? 'primary' : 'default'"
-                                      @click="toggleQueryForm('status', item)"></i-button>
-                        </tooltip>
-                    </div>
                 </div>
             </div>
             <i-table border 
@@ -76,36 +65,14 @@ const ApprovalListPage = {
             queryForm: {
                 title: '',
                 database_id: '',
-                type: [
-                    'READ',
-                    'MODIFY',
-                    'EXECUTE',
-                    'DDL'
-                ],
-                apply_user: '',
-                status: [
-                    'APPLIED'
-                ]
+                type: [],
+                apply_user: ''
             },
             query: {
                 title: '',
                 database_id: '',
-                type: [
-                    'READ',
-                    'MODIFY',
-                    'EXECUTE',
-                    'DDL'
-                ],
+                type: [],
                 apply_user: '',
-                status: [
-                    'APPLIED',
-                    'DENIED',
-                    'CANCELLED',
-                    'APPROVED',
-                    'EXECUTING',
-                    'DONE',
-                    'ERROR'
-                ],
                 page: 1,
                 page_size: 10
             },

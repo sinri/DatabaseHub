@@ -80,42 +80,16 @@ const ApplicationListPage = {
             queryForm: {
                 title: '',
                 database_id: '',
-                type: [
-                    'READ',
-                    'MODIFY',
-                    'EXECUTE',
-                    'DDL'
-                ],
+                type: [],
                 apply_user: '',
-                status: [
-                    'APPLIED',
-                    'DENIED',
-                    'CANCELLED',
-                    'APPROVED',
-                    'EXECUTING',
-                    'DONE',
-                    'ERROR'
-                ]
+                status: []
             },
             query: {
                 title: '',
                 database_id: '',
-                type: [
-                    'READ',
-                    'MODIFY',
-                    'EXECUTE',
-                    'DDL'
-                ],
+                type: [],
                 apply_user: '',
-                status: [
-                    'APPLIED',
-                    'DENIED',
-                    'CANCELLED',
-                    'APPROVED',
-                    'EXECUTING',
-                    'DONE',
-                    'ERROR'
-                ],
+                status: [],
                 page: 1,
                 page_size: 10
             },
