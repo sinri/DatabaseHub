@@ -84,13 +84,7 @@ const ApprovalListPage = {
                 ],
                 apply_user: '',
                 status: [
-                    'APPLIED',
-                    'DENIED',
-                    'CANCELLED',
-                    'APPROVED',
-                    'EXECUTING',
-                    'DONE',
-                    'ERROR'
+                    'APPLIED'
                 ]
             },
             query: {
