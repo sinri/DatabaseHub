@@ -13,7 +13,6 @@ use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\DatabaseEntity;
 use sinri\databasehub\entity\DatabaseMySQLiEntity;
-use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\PermissionModel;
 use sinri\databasehub\model\QuickQueryModel;
@@ -54,8 +53,10 @@ class QuickQueryController extends AbstractAuthController
     public function syncExecute()
     {
         $database_id = $this->_readRequest("database_id", 0);
-        $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
-        if (!$x) throw new \Exception("Not Permitted");
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+            $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
+            if (!$x) throw new \Exception("Not Permitted");
+        }
 
         $databaseEntity = DatabaseEntity::instanceById($database_id);
 

@@ -296,7 +296,7 @@ class ApplicationEntity
         HubCore::getLogger()->info("Begin SQL Export", ['application_id' => $this->applicationId]);
         HubCore::getLogger()->info($this->sql);
         $csv_path = $this->getExportedFilePath();
-        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->sql, $csv_path, $error, 'UTF-8');
+        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'UTF-8');
         return $written;
     }
 
@@ -309,7 +309,7 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL CALL:");
         HubCore::getLogger()->info($this->sql);
-        $done = (new DatabaseMySQLiEntity($this->database))->executeCall($this->sql, $error);
+        $done = (new DatabaseMySQLiEntity($this->database))->executeCall($this->getRemarkedSQL(), $error);
         return $done;
     }
 
@@ -323,8 +323,13 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL Query:");
         HubCore::getLogger()->info($this->sql);
-        $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->sql, $this->type, $affected, $error);
+        $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->getRemarkedSQL(), $this->type, $affected, $error);
         return $ret;
+    }
+
+    private function getRemarkedSQL()
+    {
+        return $this->sql . PHP_EOL . " -- From Database Hub, AID " . $this->applicationId . " AUTHOR " . $this->applyUser->username;
     }
 
     /**
