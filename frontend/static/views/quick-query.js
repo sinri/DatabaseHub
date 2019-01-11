@@ -19,7 +19,7 @@ const QuickQueryPage = {
                      </form-item>
                      
                       <form-item style="display: block;">
-                         <codemirror style="font-size: 14px;"
+                         <codemirror ref="codeMirror" style="font-size: 14px;"
                             :options="codeMirrorOptions"
                             v-model="executeParams.sql"></codemirror>
                      </form-item>
@@ -98,6 +98,11 @@ const QuickQueryPage = {
         },
         syncExecute () {
             const data = JSON.parse(JSON.stringify(this.executeParams));
+            const selection = this.$refs.codeMirror.codemirror.getSelection().trim();
+
+            if (selection !== '') {
+                data.sql = selection;
+            }
 
             this.setLoading(true);
 
