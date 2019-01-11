@@ -286,8 +286,15 @@ const ApplicationListPage = {
             });
         }
     },
+    created () {
+        const isAdmin = JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userType === 'ADMIN';
+
+        if (!isAdmin) {
+            this.queryForm.apply_user = JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userId;
+        }
+    },
     mounted () {
-        this.search();
+        this.onSearch();
         this.getAllUserList();
         this.getDatabaseList();
     }

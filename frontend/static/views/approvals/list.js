@@ -257,7 +257,7 @@ const ApprovalListPage = {
         }
     },
     mounted () {
-        this.search();
+        this.onSearch();
         this.getAllUserList();
         this.getDatabaseList();
     }
