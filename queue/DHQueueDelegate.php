@@ -30,11 +30,20 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
     {
     }
 
-    private function fetchRuntimeCommand()
+    public function fetchRuntimeCommand()
     {
         $path = __DIR__ . '/../runtime/queue.command';
         if (file_exists($path)) return file_get_contents($path);
         else return "";
+    }
+
+    public function setStopRuntimeCommand()
+    {
+        $path = __DIR__ . '/../runtime/queue.command';
+        if (!file_exists(__DIR__ . '/../runtime')) {
+            mkdir(__DIR__ . '/../runtime', 0777, true);
+        }
+        return file_put_contents($path, self::COMMAND_STOP);
     }
 
     public function clearRuntimeCommand()
@@ -86,6 +95,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
     public function whenLoopTerminates()
     {
         HubCore::getLogger()->info("Stop command is confirmed.");
+        $this->clearRuntimeCommand();
     }
 
     /**
@@ -94,7 +104,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
     public function whenNoTaskToDo()
     {
         HubCore::getLogger()->info("whenNoTaskToDo, sleep 60s");
-        sleep(60);
+        sleep(10);
     }
 
     /**
