@@ -2,7 +2,7 @@ const WorkersPage = {
     template: `<div>
             <p v-if="!output || output.length===0">No Workers Found.</p>
             <ul>
-                <li v-for="line in output">{{ line }}</li>
+                <li style="white-space: pre;" v-for="line in output">{{ line }}</li>
             </ul>
         </div>`,
     data: function () {
