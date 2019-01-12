@@ -42,6 +42,8 @@ class ApplicationEntity
     public $parallelable;
     public $duration;
 
+    public $processId;
+
     /**
      * @param array $row
      * @return ApplicationEntity
@@ -68,6 +70,7 @@ class ApplicationEntity
         $entity->approveTime = $row['approve_time'];
         $entity->duration = $row['duration'];
         $entity->parallelable = $row['parallelable'];
+        $entity->processId = $row['process_id'];
 
         return $entity;
     }
@@ -103,6 +106,7 @@ class ApplicationEntity
         $this->approveTime = $row['approve_time'];
         $this->duration = $row['duration'];
         $this->parallelable = $row['parallelable'];
+        $this->processId = $row['process_id'];
     }
 
     /**
