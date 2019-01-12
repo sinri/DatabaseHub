@@ -402,4 +402,10 @@ class ApplicationController extends AbstractAuthController
         $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title . ".csv");
         $this->_getOutputHandler()->downloadFileIndirectly($csv_path, null, $downloadFileName);
     }
+
+    public function checkWorkerStatus()
+    {
+        exec("ps aux|grep RunDHQueue", $output);
+        $this->_sayOK(['output' => $output]);
+    }
 }

@@ -14,6 +14,7 @@ use sinri\ark\queue\QueueTask;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\model\ApplicationModel;
+use sinri\databasehub\model\RecordModel;
 
 class DHQueueDelegate extends ParallelQueueDaemonDelegate
 {
@@ -125,7 +126,16 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
      */
     public function whenToExecuteTask($task)
     {
-        // do nothing
+        // record the process id
+        (new ApplicationModel())->update(['application_id' => $task->getTaskReference()], ['process_id' => getmypid()]);
+        (new RecordModel())->insert([
+            "application_id" => $task->getTaskReference(),
+            "status" => ApplicationModel::STATUS_EXECUTING,
+            "act_user" => 0,
+            "action" => "FORK",
+            "detail" => "Worker Process " . getmypid() . " Forked",
+            "act_time" => RecordModel::now(),
+        ]);
     }
 
     /**
@@ -133,7 +143,15 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
      */
     public function whenTaskExecuted($task)
     {
-        // do nothing
+        // record process work end
+        (new RecordModel())->insert([
+            "application_id" => $task->getTaskReference(),
+            "status" => ApplicationModel::STATUS_EXECUTING,
+            "act_user" => 0,
+            "action" => "FORK",
+            "detail" => "Worker Process " . getmypid() . " Finished Task",
+            "act_time" => RecordModel::now(),
+        ]);
     }
 
     /**
@@ -200,7 +218,8 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
      */
     public function whenChildProcessConfirmedDead($pid)
     {
-        HubCore::getLogger()->info("whenChildProcessConfirmedDead", ["pid" => $pid]);
+        $afx = (new ApplicationModel())->update(['process_id' => $pid], ['process_id' => (0 - $pid)]);
+        HubCore::getLogger()->info("whenChildProcessConfirmedDead", ["pid" => $pid, 'afx' => $afx]);
     }
 
     /**
