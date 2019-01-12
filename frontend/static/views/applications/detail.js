@@ -21,7 +21,17 @@ const DetailApplicationPage = {
             <codemirror style="font-size: 14px;"
                         :options="codeMirrorOptions"
                         v-model="detail.application.sql"></codemirror>
-            <div v-if="detail.application.status !== 'APPROVED'">
+            <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
+                <i-button type="success" v-if="detail.can_decide"
+                    @click="approveApplication">Approve</i-button>
+                <i-button type="error" v-if="detail.can_decide" 
+                    @click="denyApplication">Deny</i-button>
+                <i-button type="warn" v-if="detail.can_cancel"
+                    @click="cancelApplication">Cancel</i-button>
+                <i-button v-if="detail.can_edit"
+                    @click="goEditApplicationPage">Edit</i-button>
+            </div>            
+            <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
                 <h2 v-if="detail.application.result_file.should_have_file">预览（最多10条）
                     <i-button icon="md-cloud-download" type="success" size="small" style="float: right;"
@@ -33,21 +43,13 @@ const DetailApplicationPage = {
                     :columns="previewTableColumns"
                     :data="detail.application.preview_table.slice(1)"
                     v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
-                
-                <h2>History</h2>
-                <native-table
-                    :columns="historyTableColumns"
-                    :data="detail.application.history.slice(0, 100)"></native-table>
             </div>
-            <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
-                <i-button type="primary" v-if="detail.can_decide"
-                    @click="approveApplication">Approve</i-button>
-                <i-button type="primary" v-if="detail.can_decide" 
-                    @click="denyApplication">Deny</i-button>
-                <i-button v-if="detail.can_cancel"
-                    @click="cancelApplication">Cancel</i-button>
-                <i-button v-if="detail.can_edit"
-                    @click="goEditApplicationPage">Edit</i-button>
+            <div slot="footer" >
+                <h2>History</h2>
+                <!--<native-table-->
+                    <!--:columns="historyTableColumns"-->
+                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
+                <application-history :history="detail.application.history"></application-history>
             </div> 
         </layout-drawer>
     `,
@@ -158,7 +160,8 @@ const DetailApplicationPage = {
         },
         denyApplication () {
             ajax('denyApplication', {
-                application_id: this.applicationId
+                application_id: this.applicationId,
+                reason: prompt("Reason for your decision:"),
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Deny Application Success!', 2);
                 this.$emit('update')
@@ -175,7 +178,7 @@ const DetailApplicationPage = {
                 database_id: this.detail.application.database.databaseId,
                 type: this.detail.application.type,
                 sql: this.detail.application.sql
-            }
+            };
 
             this.$router.push({
                 name: 'editApplicationPage',

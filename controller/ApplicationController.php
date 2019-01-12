@@ -53,6 +53,9 @@ class ApplicationController extends AbstractAuthController
         $subSQLs = SQLChecker::split($data['sql']);
         foreach ($subSQLs as $subSQL) {
             $typeOfSubSQL = SQLChecker::getTypeOfSingleSql($subSQL);
+            if ($typeOfSubSQL === false) {
+                throw new \Exception("Not a valid SQL.");
+            }
             switch ($data['type']) {
                 case ApplicationModel::TYPE_DDL:
                     if (!in_array($typeOfSubSQL, [

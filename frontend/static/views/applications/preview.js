@@ -21,7 +21,7 @@ Vue.component('application-preview', {
             <codemirror style="font-size: 14px;"
                         :options="codeMirrorOptions"
                         v-model="detail.application.sql"></codemirror>
-            <div v-if="detail.application.status !== 'APPROVED'">
+            <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
                 <h2 v-if="detail.application.result_file.should_have_file">预览（最多10条）
                     <i-button icon="md-cloud-download" type="success" size="small" style="float: right;"
@@ -35,9 +35,10 @@ Vue.component('application-preview', {
                     v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
                 
                 <h2>History</h2>
-                <native-table
-                    :columns="historyTableColumns"
-                    :data="detail.application.history.slice(0, 100)"></native-table>
+                <!--<native-table-->
+                    <!--:columns="historyTableColumns"-->
+                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
+                <application-history :history="detail.application.history"></application-history>
             </div>
             <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="primary" v-if="detail.can_decide"
@@ -163,7 +164,8 @@ Vue.component('application-preview', {
         },
         denyApplication () {
             ajax('denyApplication', {
-                application_id: this.applicationId
+                application_id: this.applicationId,
+                reason: prompt("Reason for your decision:"),
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Deny Application Success!', 2);
                 this.$emit('update')
