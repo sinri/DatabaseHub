@@ -123,5 +123,11 @@ const API = {
     killProcess: {
         desc: 'Kill one thread by tid, with certain account by username.',
         url: 'KillerController/kill'
+    },
+
+    // Workers
+    checkWorkerStatus: {
+        desc: 'Check worker status.',
+        url: 'ApplicationController/checkWorkerStatus',
     }
-}
+};

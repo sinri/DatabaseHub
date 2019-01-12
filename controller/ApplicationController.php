@@ -406,7 +406,7 @@ class ApplicationController extends AbstractAuthController
     public function checkWorkerStatus()
     {
         $type = $this->_readRequest("type", "html");
-        exec("ps aux|grep RunDHQueue", $output);
+        exec("ps aux|grep RunDHQueue|grep -v grep", $output);
         switch ($type) {
             case "html":
                 echo "<pre>";
