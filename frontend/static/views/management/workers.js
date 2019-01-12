@@ -12,7 +12,8 @@ const WorkersPage = {
     },
     methods: {
         refreshWorkerList: function () {
-            ajax("checkWorkerStatus", {type: 'json'}, ({output}) => {
+            ajax("checkWorkerStatus", {type: 'json'}).then(({output}) => {
+                console.log("output", output);
                 this.output = output;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
