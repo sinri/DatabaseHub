@@ -187,37 +187,41 @@ router.beforeEach((to, from, next) => {
     }
 
     next()
-})
+});
 
-ajax('getAllUser').then(({list}) => {
-    const map = {
-        0: {
-            userId: 0,
-            realname: 'System',
-            username: 'System'
-        }
-    };
+const vm = new Vue({
+    el: '#app',
+    router,
+    data: {},
+    mounted() {
+        SinriQF.config.vueInstance = this;
 
-    list.forEach((user) => {
-        map[user.userId] = user;
-    });
+        // TODO 威神，这里可以加一个promise，加载这个接口时全页面交互屏蔽
 
-    localStorage.setItem('allUserMap', JSON.stringify(map));
-    localStorage.setItem('allUserList', JSON.stringify(list));
+        ajax('getAllUser').then(({list}) => {
+            const map = {
+                0: {
+                    userId: 0,
+                    realname: 'System',
+                    username: 'System'
+                }
+            };
 
-    const vm = new Vue({
-        el: '#app',
-        router,
-        data: {},
-        mounted () {
-            SinriQF.config.vueInstance = this;
-        }
-    });
-}).catch(({message}) => {
-    localStorage.setItem('allUserMap', JSON.stringify({}));
-    localStorage.setItem('allUserList', JSON.stringify([]));
-    //SinriQF.iview.showErrorMessage(message, 5);
-    alert(message);
+            list.forEach((user) => {
+                map[user.userId] = user;
+            });
+
+            localStorage.setItem('allUserMap', JSON.stringify(map));
+            localStorage.setItem('allUserList', JSON.stringify(list));
+
+
+        }).catch(({message}) => {
+            localStorage.setItem('allUserMap', JSON.stringify({}));
+            localStorage.setItem('allUserList', JSON.stringify([]));
+            SinriQF.iview.showErrorMessage(message, 5);
+        });
+
+    }
 });
 </script>
 </body>
