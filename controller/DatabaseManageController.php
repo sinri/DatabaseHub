@@ -108,7 +108,7 @@ class DatabaseManageController extends AbstractAuthController
         ]);
         $databases = [];
         foreach ($list as $item) {
-            $databases[] = DatabaseEntity::instanceByRow($item);
+            $databases[] = DatabaseEntity::instanceByRow($item)->advancedInfoForList();
         }
         $this->_sayOK(['list' => $databases]);
     }

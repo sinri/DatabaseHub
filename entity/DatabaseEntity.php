@@ -92,4 +92,12 @@ class DatabaseEntity
 
         return $database;
     }
+
+    public function advancedInfoForList()
+    {
+        $item = json_decode(json_encode($this), true);
+        $item['accounts_count'] = count($this->accounts);
+        $item['default_account'] = $this->defaultAccount ? $this->defaultAccount->username : "";
+        return $item;
+    }
 }

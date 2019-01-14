@@ -69,8 +69,13 @@ Vue.component('top-banner', {
                         },
                         {
                             name: 'processesPage',
-                            icon: 'md-pulse',
+                            icon: 'ios-backspace',
                             text: 'Processes'
+                        },
+                        {
+                            name: 'workersPage',
+                            icon: 'ios-pulse',
+                            text: 'Workers'
                         }
                     ]
                 },

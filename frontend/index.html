@@ -47,6 +47,7 @@
 <script src="static/component/avatar.js"></script>
 <script src="static/component/status.js"></script>
 <script src="static/component/top-banner.js"></script>
+<script src="static/component/application-history.js"></script>
 <script src="static/component/table/native-table-cell-render.js"></script>
 <script src="static/component/table/native-table.js"></script>
 
@@ -67,6 +68,7 @@
 <script src="static/views/management/databases/edit.js"></script>
 <script src="static/views/management/databases/list.js"></script>
 <script src="static/views/management/processes.js"></script>
+<script src="static/views/management/workers.js"></script>
 
 <script src="static/views/quick-query.js"></script>
 <script>
@@ -162,6 +164,11 @@ const routes = [
                 path: 'processes',
                 name: 'processesPage',
                 component: ProcessesPage
+            },
+            {
+                path: 'workers',
+                name: 'workersPage',
+                component: WorkersPage
             }
         ]
     },

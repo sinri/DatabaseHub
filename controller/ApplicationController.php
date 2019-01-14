@@ -12,6 +12,7 @@ namespace sinri\databasehub\controller;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\database\model\ArkSQLCondition;
 use sinri\databasehub\core\AbstractAuthController;
+use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
@@ -51,8 +52,16 @@ class ApplicationController extends AbstractAuthController
 
         // check SQL Syntax
         $subSQLs = SQLChecker::split($data['sql']);
+        HubCore::getLogger()->debug("SQL is broken down to " . count($subSQLs) . " parts");
+        if (empty($subSQLs)) {
+            throw new \Exception("This seems not a valid SQL, April Fool?");
+        }
         foreach ($subSQLs as $subSQL) {
             $typeOfSubSQL = SQLChecker::getTypeOfSingleSql($subSQL);
+            HubCore::getLogger()->debug("SQL type: " . json_encode($typeOfSubSQL), ["sql" => $subSQL]);
+            if ($typeOfSubSQL === false) {
+                throw new \Exception("Not a valid SQL.");
+            }
             switch ($data['type']) {
                 case ApplicationModel::TYPE_DDL:
                     if (!in_array($typeOfSubSQL, [
@@ -401,5 +410,22 @@ class ApplicationController extends AbstractAuthController
 
         $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title . ".csv");
         $this->_getOutputHandler()->downloadFileIndirectly($csv_path, null, $downloadFileName);
+    }
+
+    public function checkWorkerStatus()
+    {
+        $type = $this->_readRequest("type", "html");
+        exec("ps aux|grep RunDHQueue|grep -v grep", $output);
+        switch ($type) {
+            case "html":
+                echo "<pre>";
+                echo implode(PHP_EOL, $output);
+                echo "</pre>";
+                break;
+            case "json":
+            default:
+                $this->_sayOK(['output' => $output]);
+                break;
+        }
     }
 }
