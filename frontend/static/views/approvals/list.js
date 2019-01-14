@@ -194,7 +194,12 @@ const ApprovalListPage = {
         },
         onSearch () {
             this.search({
-                ...JSON.parse(JSON.stringify(this.queryForm)),
+                ...Object.assign({
+                    title: '',
+                    database_id: '',
+                    type: [],
+                    apply_user: ''
+                }, this.queryForm),
                 page: 1
             });
         },

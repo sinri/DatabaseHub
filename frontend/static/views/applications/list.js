@@ -20,7 +20,7 @@ const ApplicationListPage = {
                      </form-item>
                      <form-item>
                          <i-select placeholder="Apply User" style="width: 160px;" clearable
-                                   v-model.trim="queryForm.apply_user">
+                                   v-model="queryForm.apply_user">
                             <i-option v-for="item in allUserList" 
                                 :key="item.userId" 
                                 :value="item.userId">{{ item.realname }}({{ item.username }})</i-option>
@@ -66,7 +66,7 @@ const ApplicationListPage = {
                 v-model="previewer.drawerVisible">
                 <application-preview ref="applicationDetail"
                     :application-id="previewer.applicationId"
-                    @update="search"></application-preview>
+                    @update="onSearch"></application-preview>
             </drawer>
             
             <page slot="pagination" show-total show-elevator
@@ -212,7 +212,13 @@ const ApplicationListPage = {
         },
         onSearch () {
             this.search({
-                ...JSON.parse(JSON.stringify(this.queryForm)),
+                ...Object.assign({
+                    title: '',
+                    database_id: '',
+                    type: [],
+                    apply_user: '',
+                    status: []
+                }, this.queryForm),
                 page: 1
             });
         },
