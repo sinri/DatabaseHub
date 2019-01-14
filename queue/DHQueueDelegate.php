@@ -146,7 +146,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
         // record process work end
         (new RecordModel())->insert([
             "application_id" => $task->getTaskReference(),
-            "status" => ApplicationModel::STATUS_EXECUTING,
+            "status" => ApplicationModel::STATUS_DONE,
             "act_user" => 0,
             "action" => "FORK",
             "detail" => "Worker Process " . getmypid() . " Finished Task",
