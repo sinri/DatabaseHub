@@ -98,7 +98,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_org` (`user_org`,`username`),
   UNIQUE KEY `user_org_2` (`user_org`,`realname`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `user_permitted_approval`
 AS SELECT
