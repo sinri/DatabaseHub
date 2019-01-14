@@ -41,13 +41,13 @@ Vue.component('application-preview', {
                 <application-history :history="detail.application.history"></application-history>
             </div>
             <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
-                <i-button type="primary" v-if="detail.can_decide"
+                <i-button type="success" v-if="detail.can_decide"
                     @click="approveApplication">Approve</i-button>
-                <i-button type="primary" v-if="detail.can_decide" 
+                <i-button type="error" v-if="detail.can_decide" 
                     @click="denyApplication">Deny</i-button>
-                <i-button v-if="detail.can_cancel"
+                <i-button type="warn" v-if="detail.can_cancel"
                     @click="cancelApplication">Cancel</i-button>
-                <i-button v-if="detail.can_edit"
+                <i-button type="info" v-if="detail.can_edit"
                     @click="goEditApplicationPage">Edit</i-button>
             </div> 
         </layout-drawer>
