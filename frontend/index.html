@@ -216,7 +216,8 @@ ajax('getAllUser').then(({list}) => {
 }).catch(({message}) => {
     localStorage.setItem('allUserMap', JSON.stringify({}));
     localStorage.setItem('allUserList', JSON.stringify([]));
-    SinriQF.iview.showErrorMessage(message, 5);
+    //SinriQF.iview.showErrorMessage(message, 5);
+    alert(message);
 });
 </script>
 </body>
