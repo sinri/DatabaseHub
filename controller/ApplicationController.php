@@ -53,6 +53,9 @@ class ApplicationController extends AbstractAuthController
         // check SQL Syntax
         $subSQLs = SQLChecker::split($data['sql']);
         HubCore::getLogger()->debug("SQL is broken down to " . count($subSQLs) . " parts");
+        if (empty($subSQLs)) {
+            throw new \Exception("This seems not a valid SQL, April Fool?");
+        }
         foreach ($subSQLs as $subSQL) {
             $typeOfSubSQL = SQLChecker::getTypeOfSingleSql($subSQL);
             HubCore::getLogger()->debug("SQL type: " . json_encode($typeOfSubSQL), ["sql" => $subSQL]);
