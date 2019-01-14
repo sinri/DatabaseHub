@@ -12,6 +12,7 @@ namespace sinri\databasehub\controller;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\database\model\ArkSQLCondition;
 use sinri\databasehub\core\AbstractAuthController;
+use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
@@ -51,8 +52,10 @@ class ApplicationController extends AbstractAuthController
 
         // check SQL Syntax
         $subSQLs = SQLChecker::split($data['sql']);
+        HubCore::getLogger()->debug("SQL is broken down to " . count($subSQLs) . " parts");
         foreach ($subSQLs as $subSQL) {
             $typeOfSubSQL = SQLChecker::getTypeOfSingleSql($subSQL);
+            HubCore::getLogger()->debug("SQL type: " . json_encode($typeOfSubSQL), ["sql" => $subSQL]);
             if ($typeOfSubSQL === false) {
                 throw new \Exception("Not a valid SQL.");
             }
