@@ -14,14 +14,28 @@ use sinri\databasehub\model\UserModel;
 
 class InitCommand extends ArkCliProgram
 {
-    public function actionCreateAdminUser($username = 'admin', $password = '123456')
+    /**
+     * php runner.php  command/InitCommand Default
+     */
+    public function actionDefault()
+    {
+        echo __METHOD__ . " HERE" . PHP_EOL;
+    }
+
+    /**
+     * php runner.php command/InitCommand CreateUser [USERNAME] [PASSWORD] [USER|ADMIN]
+     * @param $username
+     * @param $password
+     * @param string $type
+     */
+    public function actionCreateUser($username, $password, $type = UserModel::USER_TYPE_USER)
     {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $user_id = (new UserModel())->insert([
             'username' => $username,
             'realname' => $username,
             'password' => $passwordHash,
-            'user_type' => UserModel::USER_TYPE_ADMIN,
+            'user_type' => $type,
             'user_org' => UserModel::USER_ORG_FREE,
             'status' => UserModel::USER_STATUS_NORMAL,
         ]);
