@@ -52,16 +52,16 @@ Vue.component('application-preview', {
             <!--</div> -->
             <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
                 type="flex" justify="space-around" class="code-row-bg">
-                <Col span="5" v-if="detail.can_decide" >
+                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
                     <i-button type="success" @click="approveApplication">Approve</i-button>
                 </Col>
-                <Col span="5" v-if="detail.can_edit">
+                <Col span="5" v-if="detail.can_edit" style="text-align: center;">
                     <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
                 </Col>
-                <Col span="5" v-if="detail.can_cancel">
+                <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
                     <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
                 </Col>
-                <Col span="5" v-if="detail.can_decide">
+                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
                     <i-button type="error"  @click="denyApplication">Deny</i-button>
                 </Col>
             </Row>
