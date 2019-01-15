@@ -10,7 +10,8 @@ Vue.component('application-preview', {
                     </h2>
                     <h3 class="sub-title text-ellipsis" :title="detail.application.title">{{ detail.application.title }}</h3>
                 </div>
-                <avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname" :showUsername="true"></avatar>
+                <!--<avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname" :showUsername="true"></avatar>-->
+                <div>{{detail.application.applyUser.realname}}({{detail.application.applyUser.username}})</div>
             </div>
             <div style="display: flex;padding: 10px;background-color: rgb(247, 247, 249);text-transform: uppercase;">
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Type:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.type }}</span></div>
