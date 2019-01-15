@@ -40,16 +40,31 @@ Vue.component('application-preview', {
                     <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
                 <application-history :history="detail.application.history"></application-history>
             </div>
-            <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
-                <i-button type="success" v-if="detail.can_decide"
-                    @click="approveApplication">Approve</i-button>
-                <i-button type="error" v-if="detail.can_decide" 
-                    @click="denyApplication">Deny</i-button>
-                <i-button type="warn" v-if="detail.can_cancel"
-                    @click="cancelApplication">Cancel</i-button>
-                <i-button type="info" v-if="detail.can_edit"
-                    @click="goEditApplicationPage">Edit</i-button>
-            </div> 
+            <!--<div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">-->
+                <!--<i-button type="success" v-if="detail.can_decide"-->
+                    <!--@click="approveApplication">Approve</i-button>-->
+                <!--<i-button type="error" v-if="detail.can_decide" -->
+                    <!--@click="denyApplication">Deny</i-button>-->
+                <!--<i-button type="warn" v-if="detail.can_cancel"-->
+                    <!--@click="cancelApplication">Cancel</i-button>-->
+                <!--<i-button type="info" v-if="detail.can_edit"-->
+                    <!--@click="goEditApplicationPage">Edit</i-button>-->
+            <!--</div> -->
+            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
+                type="flex" justify="space-around" class="code-row-bg">
+                <Col span="5">
+                    <i-button type="success" v-if="detail.can_decide" @click="approveApplication">Approve</i-button>
+                </Col>
+                <Col span="5">
+                    <i-button type="info" v-if="detail.can_edit" @click="goEditApplicationPage">Edit</i-button>
+                </Col>
+                <Col span="5">
+                    <i-button type="warn" v-if="detail.can_cancel" @click="cancelApplication">Cancel</i-button>
+                </Col>
+                <Col span="5">
+                    <i-button type="error" v-if="detail.can_decide" @click="denyApplication">Deny</i-button>
+                </Col>
+            </Row>
         </layout-drawer>
     `,
     props: {
