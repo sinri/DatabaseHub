@@ -11,7 +11,7 @@ Vue.component('application-preview', {
                     <h3 class="sub-title text-ellipsis" :title="detail.application.title">{{ detail.application.title }}</h3>
                 </div>
                 <!--<avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname" :showUsername="true"></avatar>-->
-                <div>{{detail.application.applyUser.realname}}({{detail.application.applyUser.username}})</div>
+                <div>Applied by {{detail.application.applyUser.realname}}({{detail.application.applyUser.username}})</div>
             </div>
             <div style="display: flex;padding: 10px;background-color: rgb(247, 247, 249);text-transform: uppercase;">
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Type:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.type }}</span></div>
@@ -91,7 +91,8 @@ Vue.component('application-preview', {
                 lineNumbers: true,
                 line: true,
                 mode: 'text/x-mysql',
-                theme: 'panda-syntax'
+                theme: 'panda-syntax',
+                readOnly: true,
             },
             allUserMap: JSON.parse(localStorage.getItem('allUserMap'))
         };
