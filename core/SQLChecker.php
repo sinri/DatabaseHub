@@ -86,10 +86,14 @@ class SQLChecker
      * @param string $sql
      * @param int $max_limit
      * @return string The original sql if well limited, or the modified sql.
+     * @throws \Exception
      */
     public static function processSqlForQuickQuery($sql, $max_limit = 512)
     {
         $split_result = self::split($sql);
+        if (empty($split_result)) {
+            throw new \Exception("The SQL seems have syntax problem.");
+        }
         $sql = $split_result[0];
         $parser = new Parser($sql);
         if (
