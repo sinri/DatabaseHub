@@ -15,7 +15,7 @@ const ProcessesPage = {
                      <form-item>
                          <i-button type="primary" html-type="submit" icon="ios-search"
                             :loading="processTable.isLoading"
-                            @click="search">Search</i-button>
+                            @click="search">Show Full Process List</i-button>
                      </form-item>
                 </i-form>
             </div>
@@ -71,7 +71,9 @@ const ProcessesPage = {
                             return h('div', {
                                 class: ['pre-line'],
                                 style: {
-                                    maxWidth: '25vw'
+                                    maxWidth: '25vw',
+                                    'max-height': '100px',
+                                    overflow: 'auto',
                                 }
                             }, row.Info)
                         }
