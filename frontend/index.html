@@ -16,7 +16,7 @@
         <top-banner></top-banner>
     </header>
     <main>
-        <router-view></router-view>
+        <router-view v-if="!globalLoading"></router-view>
     </main>
 </div>
 <!--Libs-->
@@ -192,35 +192,44 @@ router.beforeEach((to, from, next) => {
 const vm = new Vue({
     el: '#app',
     router,
-    data: {},
-    mounted() {
+    data: {
+        globalLoading: true
+    },
+    methods: {
+        getAllUser () {
+            return ajax('getAllUser').then(({list}) => {
+                const map = {
+                    0: {
+                        userId: 0,
+                        realname: 'System',
+                        username: 'System'
+                    }
+                };
+
+                list.forEach((user) => {
+                    map[user.userId] = user;
+                });
+
+                localStorage.setItem('allUserMap', JSON.stringify(map));
+                localStorage.setItem('allUserList', JSON.stringify(list));
+            }).catch(({message}) => {
+                localStorage.setItem('allUserMap', JSON.stringify({}));
+                localStorage.setItem('allUserList', JSON.stringify([]));
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
+        preloadGlobalData () {
+            Promise.all([
+                this.getAllUser()
+            ]).finally(() => {
+                this.globalLoading = false;
+            });
+        }
+    },
+    created () {
         SinriQF.config.vueInstance = this;
 
-        // TODO 威神，这里可以加一个promise，加载这个接口时全页面交互屏蔽
-
-        ajax('getAllUser').then(({list}) => {
-            const map = {
-                0: {
-                    userId: 0,
-                    realname: 'System',
-                    username: 'System'
-                }
-            };
-
-            list.forEach((user) => {
-                map[user.userId] = user;
-            });
-
-            localStorage.setItem('allUserMap', JSON.stringify(map));
-            localStorage.setItem('allUserList', JSON.stringify(list));
-
-
-        }).catch(({message}) => {
-            localStorage.setItem('allUserMap', JSON.stringify({}));
-            localStorage.setItem('allUserList', JSON.stringify([]));
-            SinriQF.iview.showErrorMessage(message, 5);
-        });
-
+        this.preloadGlobalData();
     }
 });
 </script>
