@@ -13,7 +13,11 @@ const DashboardPage = {
         }
     },
     mounted () {
-        const md = window.markdownit();
+        const md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
+        });
 
         this.mdHtml = md.render(this.mdText);
 
