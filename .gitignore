@@ -10,5 +10,6 @@ composer.phar
 /log/
 /store/
 /runtime/
+/debug/
 
 .DS_Store

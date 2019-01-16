@@ -29,4 +29,8 @@ $config = [
     "queue" => [
         "max_worker" => 5,
     ],
+    'dashboard' => [
+        'doc_path' => __DIR__ . '/../docs/DashboardDoc_Leqee_CN.md',
+        //'doc'=>"lalala", // this field would override the doc_path
+    ]
 ];

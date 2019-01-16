@@ -12,6 +12,8 @@ namespace sinri\databasehub\core;
 use PhpMyAdmin\SqlParser\Components\Limit;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
+use PhpMyAdmin\SqlParser\Statements\CallStatement;
+use PhpMyAdmin\SqlParser\Statements\TruncateStatement;
 use PhpMyAdmin\SqlParser\Utils\Query;
 use PHPSQLParser\PHPSQLParser;
 
@@ -36,6 +38,7 @@ class SQLChecker
     const QUERY_TYPE_SHOW = 'SHOW';
     const QUERY_TYPE_UPDATE = 'UPDATE';
     const QUERY_TYPE_SET = 'SET';
+    const QUERY_TYPE_TRUNCATE = "TRUNCATE";
 
     /// SPLITTER
 
@@ -67,17 +70,30 @@ class SQLChecker
      */
     private static function dealStatement($statement)
     {
-        $sql = $statement->build();
+        if ($statement instanceof TruncateStatement) {
+            $sql = "TRUNCATE TABLE " . $statement->table;
+        } elseif ($statement instanceof CallStatement) {
+            return "CALL " . $statement->call->name . "(" . ($statement->call->parameters ? implode(",", $statement->call->parameters->raw) : "") . ")";
+        } else {
+            $sql = $statement->build();
+        }
         return $sql;
     }
 
     /**
      * @param String $query
-     * @return String
+     * @return String|false
      */
     public static function getTypeOfSingleSql($query)
     {
         $parser = new Parser($query);
+        if (empty($parser->statements)) {
+            //throw new \Exception("Cannot find any statement from query.");
+            return false;
+        }
+        if ($parser->statements[0] instanceof TruncateStatement) {
+            return "TRUNCATE";
+        }
         $flags = Query::getFlags($parser->statements[0]);
         return $flags['querytype'];
     }

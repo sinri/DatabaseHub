@@ -54,4 +54,14 @@ class LoginController extends ArkWebController
             $this->_sayFail($exception->getMessage());
         }
     }
+
+    public function dashboardMeta()
+    {
+        $doc = HubCore::getConfig(['dashboard', 'doc'], null);
+        if ($doc === null) {
+            $doc_path = HubCore::getConfig(['dashboard', 'doc_path'], __DIR__ . '/../docs/DashboardDoc_Leqee_CN.md');
+            $doc = file_get_contents($doc_path);
+        }
+        $this->_sayOK(['doc' => $doc]);
+    }
 }

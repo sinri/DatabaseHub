@@ -6,6 +6,9 @@ const API = {
     getAllUser: {
         url: 'LoginController/getAllUser'
     },
+    dashboardMeta: {
+        url: 'LoginController/dashboardMeta'
+    },
 
     // ApplicationController
     createApplication: {

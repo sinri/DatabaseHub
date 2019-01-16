@@ -68,6 +68,7 @@ class ApplicationController extends AbstractAuthController
                         SQLChecker::QUERY_TYPE_ALTER,
                         SQLChecker::QUERY_TYPE_CREATE,
                         SQLChecker::QUERY_TYPE_DROP,
+                        SQLChecker::QUERY_TYPE_TRUNCATE,
                     ])) {
                         throw new \Exception("Not a DDL statement.");
                     }
