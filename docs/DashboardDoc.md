@@ -10,7 +10,7 @@ Make use of the user permission mapping to benefit the security.
 
 ## About
 
-This project is maintained by [Sinri](https://github.com/sinri) and [Vinci](https://github.com/RoamIn).
+This project is maintained by [Sinri](https://github.com/sinri) , [Vinci](https://github.com/RoamIn) and [Caroltc](https://github.com/caroltc).
 
 DatabaseHub is licensed under the GNU General Public License v3.0.
 
