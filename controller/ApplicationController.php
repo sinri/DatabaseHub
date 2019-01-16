@@ -408,7 +408,8 @@ class ApplicationController extends AbstractAuthController
         $application = ApplicationEntity::instanceById($application_id);
         $csv_path = $application->getExportedFilePath();
 
-        $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title . ".csv");
+        $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title);
+        $downloadFileName = urlencode($downloadFileName);
         $this->_getOutputHandler()->downloadFileIndirectly($csv_path, null, $downloadFileName);
     }
 

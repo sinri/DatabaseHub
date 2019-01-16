@@ -14,9 +14,21 @@ PHP
     - sinri/ark-queue
     - sinri/ark-curl 
     - sinri/ark-core
-    - phpmyadmin/sql-parser (sinri modification)
+    - phpmyadmin/sql-parser
     - greenlion/php-sql-parser (sinri modification)
     - jdorn/sql-formatter
+    
+    
+Once Used:
+
+phpmyadmin/sql-parser (sinri modification)    
+
+```json
+    {
+      "type": "git",
+      "url": "https://github.com/sinri/sql-parser.git"
+    }
+```
     
 JavaScript
 

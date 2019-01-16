@@ -18,7 +18,7 @@
     "sinri/ark-pdo": "^1.0",
     "sinri/ark-mysqli": "^1.0",
     "sinri/ark-queue": "^2.0",
-    "phpmyadmin/sql-parser": "^4.2",
+    "phpmyadmin/sql-parser": "^4.3",
     "greenlion/php-sql-parser": "^4.1",
     "jdorn/sql-formatter": "^1.2",
     "sinri/ark-curl": "^2.0",
@@ -32,10 +32,6 @@
     {
       "type": "git",
       "url": "https://github.com/sinri/PHP-SQL-Parser.git"
-    },
-    {
-      "type": "git",
-      "url": "https://github.com/sinri/sql-parser.git"
     }
   ]
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "c6a7f07e692a19612ddc9f6a5017fc98",
+  "content-hash": "25385e2be26329fde2c19f09e38e84e9",
     "packages": [
         {
           "name": "analog/analog",
@@ -128,16 +128,16 @@
       },
       {
             "name": "jaybizzle/crawler-detect",
-        "version": "v1.2.76",
+        "version": "v1.2.78",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-              "reference": "728dd7f210819ccafbf008a6ef7956f4f3c3571c"
+              "reference": "0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/728dd7f210819ccafbf008a6ef7956f4f3c3571c",
-              "reference": "728dd7f210819ccafbf008a6ef7956f4f3c3571c",
+              "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6",
+              "reference": "0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6",
               "shasum": "",
               "mirrors": [
                 {
@@ -179,7 +179,7 @@
                 "crawlerdetect",
                 "php crawler detect"
             ],
-        "time": "2018-12-18T08:52:44+00:00"
+        "time": "2019-01-15T21:21:27+00:00"
         },
         {
           "name": "jdorn/sql-formatter",
@@ -239,16 +239,16 @@
         },
       {
             "name": "jenssegers/agent",
-        "version": "v2.6.1",
+        "version": "v2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/agent.git",
-              "reference": "59f35c4640b44113389509af2a647cf6dceed6ce"
+              "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/jenssegers/agent/zipball/59f35c4640b44113389509af2a647cf6dceed6ce",
-              "reference": "59f35c4640b44113389509af2a647cf6dceed6ce",
+              "url": "https://api.github.com/repos/jenssegers/agent/zipball/41cd1fd6200a9b0d70db75133ee23064c9965980",
+              "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980",
               "shasum": "",
               "mirrors": [
                 {
@@ -310,7 +310,7 @@
                 "user agent",
                 "useragent"
             ],
-        "time": "2019-01-04T13:02:53+00:00"
+        "time": "2019-01-06T12:37:04+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -786,7 +786,13 @@
                 "type": "zip",
               "url": "https://api.github.com/repos/sinri/Ark-MySQLi/zipball/aef90b21412d7fcfc148c9ee63310598a937fc5e",
               "reference": "aef90b21412d7fcfc148c9ee63310598a937fc5e",
-              "shasum": ""
+              "shasum": "",
+              "mirrors": [
+                {
+                  "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                  "preferred": true
+                }
+              ]
             },
             "require": {
                 "ext-mysqli": "*",
