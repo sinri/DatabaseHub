@@ -19,9 +19,25 @@ Vue.component('top-banner', {
                         </menu-item>
                     </submenu>
                 </template>
-                
+                <template v-else-if="item.type==='daemon-status'">
+                    <menu-item 
+                        :key="item.name"
+                        :name="item.name"
+                        :style="item.style"
+                    >
+                        <Tooltip :content="queue_status_tooltip">
+                            Daemon:
+                            <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
+                            <Icon type="ios-done-all" v-if="queue_status==='active' && queue_worker_count==0"></Icon>
+                            <Icon type="ios-eye" v-if="queue_status==='active' && queue_worker_count>0"></Icon>
+                            <Icon type="ios-loading" v-if="queue_status==='unknown'"></Icon>
+                            {{ queue_status }}
+                            ({{queue_worker_count}} workers)
+                        </Tooltip>
+                    </menu-item>
+                </template>
                 <template v-else>
-                   <menu-item v-if="!item.admin || isAdmin"
+                    <menu-item v-if="!item.admin || isAdmin"
                         :key="item.name"
                         :name="item.name"
                         :style="item.style">
@@ -31,7 +47,7 @@ Vue.component('top-banner', {
             </template>
         </i-menu>
     `,
-    data () {
+    data() {
         return {
             activeMenuName: 'DatabaseHub',
             menuItems: [
@@ -95,17 +111,26 @@ Vue.component('top-banner', {
                     style: 'float: right;',
                     icon: 'md-person',
                     text: JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).realname
-                }
-            ]
+                },
+                {
+                    type: 'daemon-status',
+                    name: 'daemon-status',
+                    style: 'float: right;',
+                },
+            ],
+            queue_status: "unknown",
+            queue_worker_count: -1,
+            queue_status_tooltip: '',
+            queue_status_refresh_time: null
         };
     },
     computed: {
-        isAdmin () {
+        isAdmin() {
             return JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userType === 'ADMIN'
         }
     },
     methods: {
-        onMenuItemSelected (name) {
+        onMenuItemSelected(name) {
             this.activeMenuName = name;
 
             switch (name) {
@@ -127,8 +152,25 @@ Vue.component('top-banner', {
                     router.push({name});
             }
         },
-        updateActiveMenuName (to) {
+        updateActiveMenuName(to) {
             this.activeMenuName = to.name
+        },
+        refreshQueueDaemonStatus: function () {
+            this.queue_status = "unknown";
+            this.queue_worker_count = -1;
+            this.queue_status_tooltip = "Loading";
+            ajax("checkWorkerStatus", {type: 'status'}).then(({status, worker_count, output}) => {
+                console.log("output", output);
+                this.queue_status = status;
+                this.queue_worker_count = worker_count;
+                this.queue_status_refresh_time = (new Date());
+                this.queue_status_tooltip = "Updated: " + this.queue_status_refresh_time;
+                if (output && output.length > 0) {
+                    this.queue_status_tooltip += "\n" + output.join("\n")
+                }
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
         }
     },
     watch: {
@@ -136,5 +178,11 @@ Vue.component('top-banner', {
             handler: 'updateActiveMenuName',
             immediate: true
         }
+    },
+    mounted: function () {
+        this.refreshQueueDaemonStatus();
+        setInterval(() => {
+            this.refreshQueueDaemonStatus();
+        }, 10000);
     }
 });
