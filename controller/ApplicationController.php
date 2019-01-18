@@ -419,6 +419,13 @@ class ApplicationController extends AbstractAuthController
         $type = $this->_readRequest("type", "html");
         exec("ps aux|grep RunDHQueue|grep -v grep", $output);
         switch ($type) {
+            case "status":
+                if (count($output) < 2) {
+                    $this->_sayOK(["status" => "inactive", "worker_count" => 0, 'output' => $output]);
+                } else {
+                    $this->_sayOK(["status" => "active", "worker_count" => (count($output) - 2), 'output' => $output]);
+                }
+                break;
             case "html":
                 echo "<pre>";
                 echo implode(PHP_EOL, $output);
