@@ -11,11 +11,13 @@ const ProcessesPage = {
                                        :value="item.databaseId">{{ item.databaseName }}</i-option>
                          </i-select>
                      </form-item>
-                    
                      <form-item>
                          <i-button type="primary" html-type="submit" icon="ios-search"
                             :loading="processTable.isLoading"
                             @click="search">Show Full Process List</i-button>
+                     </form-item>
+                     <form-item>
+                        <span>Processes in sleep status are hidden.</span>
                      </form-item>
                 </i-form>
             </div>

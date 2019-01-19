@@ -2,7 +2,7 @@ const ApplicationListPage = {
     template: `
         <layout-list>
             <div slot="search">
-                <div>
+                <div style="display: none">
                     <i-button type="primary" @click="goCreateApplication">Create Application</i-button>
                     <divider dashed></divider>
                 </div>
