@@ -34,10 +34,10 @@ const DetailApplicationPage = {
             </div>            
             <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
-                <h2 v-if="detail.application.result_file.should_have_file">预览（最多10条）
+                <h2 v-if="detail.application.result_file.should_have_file">Preview, up to 10 rows
                     <i-button icon="md-cloud-download" type="success" size="small" style="float: right;"
                         @click="downloadExportedContentAsCSV"
-                        :disabled="detail.application.result_file.error">下载({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
+                        :disabled="detail.application.result_file.error">Download ({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
                 </h2>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
                 <native-table style="margin-bottom: 30px;border: 10px solid #ccc;"

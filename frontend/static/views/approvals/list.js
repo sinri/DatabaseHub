@@ -54,10 +54,13 @@ const ApprovalListPage = {
                     @update="search"></application-preview>
             </drawer>
             
-            <page slot="pagination" show-total show-elevator
-                :total="applicationTable.total"
-                @on-change="changePage"
-                v-show="applicationTable.total > 0" />
+            <div style="text-align: right" slot="pagination">
+                <page  show-total show-elevator
+                    :total="applicationTable.total"
+                    @on-change="changePage"
+                    v-show="applicationTable.total > 0" />      
+            </div>
+            
         </layout-list>
     `,
     data () {

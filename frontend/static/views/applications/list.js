@@ -69,10 +69,14 @@ const ApplicationListPage = {
                     @update="onSearch"></application-preview>
             </drawer>
             
-            <page slot="pagination" show-total show-elevator
-                :total="applicationTable.total"
-                @on-change="changePage"
-                v-show="applicationTable.total > 0" />
+            <Row slot="pagination">
+                <i-col span="24" style="text-align: right">
+                    <page show-total show-elevator
+                        :total="applicationTable.total"
+                        @on-change="changePage"
+                        v-show="applicationTable.total > 0" />
+                </i-col>
+            </Row>
         </layout-list>
     `,
     data () {
