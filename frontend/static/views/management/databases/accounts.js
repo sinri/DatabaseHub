@@ -2,11 +2,12 @@ const DatabaseAccountsPage = {
     template: `
         <layout-list>
             <div slot="header">
-                <h2 class="title"><i-button @click="back">返回</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }} - ({{ $route.query.host }}:{{ $route.query.port }})</h2>
+                <h2 class="title"><i-button @click="back">Back</i-button>  Manage accounts for database #{{ $route.params.databaseId }} - {{ $route.query.databaseName }} - ({{ $route.query.host }}:{{ $route.query.port }})</h2>
                 <divider></divider>
             </div>
             
             <div slot="handle">
+                <p style="margin: 10px auto;">The existed account would be replaced if you register an account with same account name.</p>
                 <i-form ref="databaseAccountForm" inline
                     :model="databaseAccountForm.model" 
                     :rules="databaseAccountForm.rules"
@@ -22,7 +23,7 @@ const DatabaseAccountsPage = {
                     <form-item>
                         <i-button type="primary"
                             :loading="databaseAccountTable.isLoading"
-                            @click="onDatabaseAccountFormSubmit">Register new account</i-button>
+                            @click="onDatabaseAccountFormSubmit">Register Account</i-button>
                     </form-item>
                 </i-form>
             </div>

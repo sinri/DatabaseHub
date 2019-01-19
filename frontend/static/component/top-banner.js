@@ -25,7 +25,7 @@ Vue.component('top-banner', {
                         :name="item.name"
                         :style="item.style"
                     >
-                        <Tooltip :content="queue_status_tooltip" max-width="400">
+                        <!--<Tooltip :content="queue_status_tooltip" max-width="400">-->
                             Daemon:
                             <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
                             <Icon type="ios-done-all" v-if="queue_status==='active' && queue_worker_count==0"></Icon>
@@ -33,7 +33,7 @@ Vue.component('top-banner', {
                             <Icon type="ios-loading" v-if="queue_status==='unknown'"></Icon>
                             <span style="width: 60px;display: inline-block;">{{ queue_status }}</span>
                             <span style="width: 80px;display: inline-block;">{{queue_worker_count}} workers</span>
-                        </Tooltip>
+                        <!--</Tooltip>-->
                     </menu-item>
                 </template>
                 <template v-else>

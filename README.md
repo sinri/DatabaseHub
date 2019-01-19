@@ -63,3 +63,11 @@ Make a config file `config/config.php` referring to the sample file before you s
 Config the web server, follow the instruction of framework [Ark](https://github.com/sinri/Ark).
 Start the task queue daemon with `RunDHQueue.php`. You might need to run it with `nohup`.
 To stop the queue, use `StopDHQueue.php`. If needed, you can use `kill -9` to do it fiercely.
+
+## About
+
+This project is maintained by [Sinri](https://github.com/sinri), [Vinci](https://github.com/RoamIn) and [Caroltc](https://github.com/caroltc).
+
+DatabaseHub is licensed under the GNU General Public License v3.0.
+
+Lord, have mercy on us. 2019 Jan 19th.
