@@ -25,14 +25,14 @@ Vue.component('top-banner', {
                         :name="item.name"
                         :style="item.style"
                     >
-                        <Tooltip :content="queue_status_tooltip">
+                        <Tooltip :content="queue_status_tooltip" max-width="400">
                             Daemon:
                             <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
                             <Icon type="ios-done-all" v-if="queue_status==='active' && queue_worker_count==0"></Icon>
                             <Icon type="ios-eye" v-if="queue_status==='active' && queue_worker_count>0"></Icon>
                             <Icon type="ios-loading" v-if="queue_status==='unknown'"></Icon>
-                            {{ queue_status }}
-                            ({{queue_worker_count}} workers)
+                            <span style="width: 60px;display: inline-block;">{{ queue_status }}</span>
+                            <span style="width: 80px;display: inline-block;">{{queue_worker_count}} workers</span>
                         </Tooltip>
                     </menu-item>
                 </template>
@@ -53,7 +53,7 @@ Vue.component('top-banner', {
             menuItems: [
                 {
                     name: 'dashboardPage',
-                    style: 'width: 20%;text-align: left;',
+                    style: 'width: 15%;text-align: left;',
                     icon: 'ios-nuclear',
                     text: 'DatabaseHub'
                 },
@@ -61,6 +61,11 @@ Vue.component('top-banner', {
                     name: 'applicationListPage',
                     icon: 'ios-beaker',
                     text: 'Applications'
+                },
+                {
+                    name: 'createApplicationPage',
+                    icon: 'ios-create',
+                    text: 'Apply'
                 },
                 {
                     name: 'approvalListPage',
@@ -119,7 +124,7 @@ Vue.component('top-banner', {
                 },
             ],
             queue_status: "unknown",
-            queue_worker_count: -1,
+            queue_worker_count: '?',
             queue_status_tooltip: '',
             queue_status_refresh_time: null
         };
@@ -156,8 +161,6 @@ Vue.component('top-banner', {
             this.activeMenuName = to.name
         },
         refreshQueueDaemonStatus: function () {
-            this.queue_status = "unknown";
-            this.queue_worker_count = -1;
             this.queue_status_tooltip = "Loading";
             ajax("checkWorkerStatus", {type: 'status'}).then(({status, worker_count, output}) => {
                 console.log("output", output);
@@ -169,7 +172,10 @@ Vue.component('top-banner', {
                     this.queue_status_tooltip += "\n" + output.join("\n")
                 }
             }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
+                //SinriQF.iview.showErrorMessage(message, 5);
+                this.queue_status = "unknown";
+                this.queue_worker_count = '?';
+                this.queue_status_tooltip = "Load Error: " + message;
             });
         }
     },

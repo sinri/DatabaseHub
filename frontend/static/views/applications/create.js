@@ -3,13 +3,13 @@ const CreateApplicationPage = {
         <layout>
             <h2 class="title">Create Application</h2>
             <divider></divider>
-            <i-form ref="form" style="width: 640px;"
+            <i-form ref="form" style="width: 90%;"
                 :label-width="120"
                 :model="form.model" 
                 :rules="form.rules"
                 >
                 <form-item label="Title" prop="title">
-                    <i-input clearable v-model.trim="form.model.title" />
+                    <i-input clearable v-model.trim="form.model.title" style="width:400px" />
                 </form-item>
                 
                 <form-item label="Description" prop="description">
@@ -17,7 +17,7 @@ const CreateApplicationPage = {
                 </form-item>
                 
                 <form-item label="Database" prop="database_id">
-                    <i-select v-model="form.model.database_id">
+                    <i-select v-model="form.model.database_id" style="width:200px">
                         <i-option v-for="item in databaseList" 
                             :key="item.databaseId" 
                             :value="item.databaseId">{{ item.databaseName }}</i-option>
@@ -25,7 +25,7 @@ const CreateApplicationPage = {
                 </form-item>
                 
                 <form-item label="Type" prop="type">
-                    <i-select v-model="form.model.type">
+                    <i-select v-model="form.model.type" style="width:200px">
                         <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>
@@ -39,8 +39,10 @@ const CreateApplicationPage = {
                 </form-item>
                                 
                 <form-item>
-                    <i-button type="primary" @click="onSubmit">Submit</i-button>
-                    <i-button @click="back">Back</i-button>
+                    <Row>
+                        <i-col span="12"><i-button @click="back">Back</i-button></i-col>
+                        <i-col span="12" style="text-align: right"><i-button type="primary" @click="onSubmit">Submit</i-button></i-col>
+                    </Row>
                 </form-item>
             </i-form>
         </layout>

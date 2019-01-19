@@ -10,12 +10,10 @@ Vue.component('native-table', {
             </thead>
             <tbody>
                 <tr class="c-native-table-tips" v-if="data.length === 0">
-                    <td :colspan="columns.length" style="text-align: center;">暂无数据</td>
+                    <td :colspan="columns.length" style="text-align: center;">N/A</td>
                 </tr>
-                <tr v-for="(row, rowIndex) in data"
-                    :key="rowIndex">
-                    <td v-for="(col, colIndex) in columns"
-                        :key="col.key">
+                <tr v-for="(row, rowIndex) in data" :key="rowIndex">
+                    <td v-for="(col, colIndex) in columns" :key="col.key" style="padding: 2px">
                         <template v-if="typeof col.render === 'function'">
                         <native-table-cell-render
                             :row="row"
