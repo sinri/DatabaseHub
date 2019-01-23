@@ -325,8 +325,8 @@ class ApplicationEntity
      */
     protected function taskExecuteModifySQL(&$affected, &$error)
     {
-        HubCore::getLogger()->info("Begin SQL Query:");
-        HubCore::getLogger()->info($this->sql);
+        HubCore::getLogger()->info("Begin SQL Query Remarked:");
+        HubCore::getLogger()->info($this->getRemarkedSQL());
         $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->getRemarkedSQL(), $this->type, $affected, $error);
         return $ret;
     }

@@ -154,6 +154,8 @@ class DatabaseMySQLiEntity
                     && $this->mysqliAgent->getInstanceOfMySQLi()->next_result()
                     && !$this->mysqliAgent->getInstanceOfMySQLi()->errno
                 );
+            } else {
+                throw new \Exception("multi_query failed. [" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . "]" . $this->mysqliAgent->getInstanceOfMySQLi()->error);
             }
 
             $this->mysqliAgent->getInstanceOfMySQLi()->commit();
