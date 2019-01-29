@@ -208,6 +208,9 @@ Vue.component('application-preview', {
             })
         },
         downloadExportedContentAsCSV () {
+            let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
+            console.log("downloadExportedContentAsCSV: ", url);
+
             const api = API.downloadExportedContentAsCSV;
             const filename = this.detail.application.result_file.path.split('/').pop();
 
