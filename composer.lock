@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "25385e2be26329fde2c19f09e38e84e9",
+  "content-hash": "b4ac8786ca3b6381c81faceae44dea90",
     "packages": [
         {
           "name": "analog/analog",
@@ -239,16 +239,16 @@
         },
       {
             "name": "jenssegers/agent",
-        "version": "v2.6.2",
+        "version": "v2.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/agent.git",
-              "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980"
+              "reference": "bcb895395e460478e101f41cdab139c48dc721ce"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/jenssegers/agent/zipball/41cd1fd6200a9b0d70db75133ee23064c9965980",
-              "reference": "41cd1fd6200a9b0d70db75133ee23064c9965980",
+              "url": "https://api.github.com/repos/jenssegers/agent/zipball/bcb895395e460478e101f41cdab139c48dc721ce",
+              "reference": "bcb895395e460478e101f41cdab139c48dc721ce",
               "shasum": "",
               "mirrors": [
                 {
@@ -310,7 +310,7 @@
                 "user agent",
                 "useragent"
             ],
-        "time": "2019-01-06T12:37:04+00:00"
+        "time": "2019-01-19T21:32:55+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -584,16 +584,16 @@
         },
         {
             "name": "sinri/ark",
-          "version": "2.1",
+          "version": "2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark.git",
-              "reference": "e9397e0d67ea79c9f8520162f664d7b82d74ba07"
+              "reference": "73ae456afea7fd06baefa57b13ff03427f977885"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark/zipball/e9397e0d67ea79c9f8520162f664d7b82d74ba07",
-              "reference": "e9397e0d67ea79c9f8520162f664d7b82d74ba07",
+              "url": "https://api.github.com/repos/sinri/Ark/zipball/73ae456afea7fd06baefa57b13ff03427f977885",
+              "reference": "73ae456afea7fd06baefa57b13ff03427f977885",
               "shasum": "",
               "mirrors": [
                 {
@@ -603,6 +603,7 @@
               ]
             },
             "require": {
+              "ext-json": "*",
                 "jenssegers/agent": "^2.6",
                 "php": "~7.0",
                 "ralouphie/getallheaders": "^2.0",
@@ -646,7 +647,7 @@
                 }
             ],
             "description": "A fundamental toolkit for PHP.",
-          "time": "2019-01-09T05:30:58+00:00"
+          "time": "2019-01-29T14:14:08+00:00"
         },
         {
             "name": "sinri/ark-cache",
@@ -863,16 +864,16 @@
         },
       {
         "name": "sinri/ark-queue",
-        "version": "2.0",
+        "version": "2.1",
         "source": {
           "type": "git",
           "url": "https://github.com/sinri/Ark-Queue.git",
-          "reference": "64ca22cc2178705bfc8788cb58374cc94d08463f"
+          "reference": "78b802c91668ce211c102ae8b31b15e2a233bf6e"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/64ca22cc2178705bfc8788cb58374cc94d08463f",
-          "reference": "64ca22cc2178705bfc8788cb58374cc94d08463f",
+          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/78b802c91668ce211c102ae8b31b15e2a233bf6e",
+          "reference": "78b802c91668ce211c102ae8b31b15e2a233bf6e",
           "shasum": "",
           "mirrors": [
             {
@@ -882,7 +883,8 @@
           ]
         },
         "suggest": {
-          "ext-pcntl": "*"
+          "ext-pcntl": "*",
+          "sinri/ark-lock": "^0.3"
         },
         "type": "library",
         "autoload": {
@@ -901,7 +903,7 @@
           }
         ],
         "description": "The queue component for Ark 2",
-        "time": "2018-12-22T13:30:56+00:00"
+        "time": "2019-01-22T15:10:43+00:00"
       },
       {
         "name": "symfony/polyfill-mbstring",
