@@ -191,12 +191,17 @@ const DetailApplicationPage = {
             const api = API.downloadExportedContentAsCSV;
             const filename = this.detail.application.result_file.path.split('/').pop();
 
+            let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
+            console.log("downloadExportedContentAsCSV: ", url);
+            window.location.href = (url);
+            /*
             axios.post(SinriQF.config.ApiBase + api.url, {
                 application_id: this.applicationId,
                 token: SinriQF.api.getTokenFromCookie()
             }).then(({data}) => {
                 exportCsv.download(filename, data);
             });
+            */
         }
     },
     mounted () {
