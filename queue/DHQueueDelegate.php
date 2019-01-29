@@ -218,8 +218,32 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
      */
     public function whenChildProcessConfirmedDead($pid)
     {
-        $afx = (new ApplicationModel())->update(['process_id' => $pid], ['process_id' => (0 - $pid)]);
-        HubCore::getLogger()->info("whenChildProcessConfirmedDead", ["pid" => $pid, 'afx' => $afx]);
+        $rows = (new ApplicationModel())->selectRows(['process_id' => $pid]);
+        if (empty($rows)) {
+            HubCore::getLogger()->error("Process [$pid] contains no records", ["rows" => $rows]);
+            return;
+        }
+
+        if (count($rows) > 1) {
+            HubCore::getLogger()->warning("Process [$pid] contains " . count($rows) . " records", ["rows" => $rows]);
+        }
+
+        foreach ($rows as $row) {
+            if ($row['status'] == ApplicationModel::STATUS_EXECUTING) {
+                $newStatus = ApplicationModel::STATUS_ERROR;
+            } else {
+                $newStatus = $row['status'];
+            }
+
+            $afx = (new ApplicationModel())->update(
+                ['application_id' => $row['application_id'], 'process_id' => $pid],
+                [
+                    'process_id' => (0 - $pid),
+                    'status' => $newStatus,
+                ]
+            );
+            HubCore::getLogger()->info("whenChildProcessConfirmedDead", ["pid" => $pid, 'application_id' => $row['application_id'], 'afx' => $afx]);
+        }
     }
 
     /**

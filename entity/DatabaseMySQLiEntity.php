@@ -191,6 +191,7 @@ class DatabaseMySQLiEntity
      * @param array $data
      * @param null|string[] $error
      * @param int $limit
+     * @param int $duration
      * @return bool
      */
     public function quickQuery($query, &$data = [], &$error = null, $limit = 512, &$duration = 0)

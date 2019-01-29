@@ -34,7 +34,8 @@ Vue.component('application-preview', {
                     :columns="previewTableColumns"
                     :data="detail.application.preview_table.slice(1)"
                     v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
-                
+            </div>
+            <div>
                 <h2>History</h2>
                 <!--<native-table-->
                     <!--:columns="historyTableColumns"-->
@@ -210,12 +211,17 @@ Vue.component('application-preview', {
             const api = API.downloadExportedContentAsCSV;
             const filename = this.detail.application.result_file.path.split('/').pop();
 
+            let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
+            console.log("downloadExportedContentAsCSV: ", url);
+            window.open(url);
+            /*
             axios.post(SinriQF.config.ApiBase + api.url, {
                 application_id: this.applicationId,
                 token: SinriQF.api.getTokenFromCookie()
             }).then(({data}) => {
                 exportCsv.download(filename, data);
             });
+            */
         }
     }
 });

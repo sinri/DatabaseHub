@@ -93,4 +93,30 @@ class ApplicationExecuteTask extends ParallelQueueTask
         $this->executeFeedback = ($this->done ? "Executed" : "Failed");
         return $this->done;
     }
+
+    /**
+     * Do anything after execution, no matter the situation.
+     * You may need to release the locks here.
+     * Update $readyToFinish and return it.
+     * @return bool
+     */
+    public function afterExecute()
+    {
+        $this->readyToFinish = true;
+        return $this->readyToFinish;
+    }
+
+    /**
+     * One queue task might have several locks.
+     * I.e. If A task holding lock x and y started,
+     * no any tasks could be started
+     * if they hold x, hold y or hold both of them.
+     * The implementation of LOCK depends on the delegate.
+     *
+     * @return string[]
+     */
+    public function getLockList()
+    {
+        return [];
+    }
 }

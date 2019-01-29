@@ -153,6 +153,8 @@ Vue.component('top-banner', {
                     window.open(href, '_blank');
 
                     break;
+                case 'daemon-status':
+                    break;
                 default:
                     router.push({name});
             }
