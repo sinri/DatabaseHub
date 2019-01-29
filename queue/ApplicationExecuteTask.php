@@ -102,7 +102,8 @@ class ApplicationExecuteTask extends ParallelQueueTask
      */
     public function afterExecute()
     {
-        return true;
+        $this->readyToFinish = true;
+        return $this->readyToFinish;
     }
 
     /**
