@@ -34,7 +34,8 @@ Vue.component('application-preview', {
                     :columns="previewTableColumns"
                     :data="detail.application.preview_table.slice(1)"
                     v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
-                
+            </div>
+            <div>
                 <h2>History</h2>
                 <!--<native-table-->
                     <!--:columns="historyTableColumns"-->
