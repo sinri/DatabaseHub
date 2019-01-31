@@ -300,7 +300,7 @@ class ApplicationEntity
         HubCore::getLogger()->info("Begin SQL Export", ['application_id' => $this->applicationId]);
         HubCore::getLogger()->info($this->sql);
         $csv_path = $this->getExportedFilePath();
-        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'UTF-8');
+        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'gbk');
         return $written;
     }
 
