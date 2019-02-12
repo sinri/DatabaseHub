@@ -12,7 +12,7 @@ Vue.component('application-history', {
                     <Icon type="md-create" slot="dot" v-if="item.action==='UPDATE'"></Icon>
                     <Icon type="ios-git-branch" slot="dot" v-if="item.action==='FORK'"></Icon>
                     <p style="font-weight: bold;">{{ item.actTime }} {{ item.actUser }} made action <code>{{ item.action }}</code>, status became <code>{{ item.status }}</code>  </p>
-                    <p v-if="item.detail.trim()!==''">{{ item.detail }}</p>
+                    <p style="white-space: pre;" v-if="item.detail.trim()!==''">{{ item.detail }}</p>
                 </Timeline-Item>
             </Timeline>    
         </div>
