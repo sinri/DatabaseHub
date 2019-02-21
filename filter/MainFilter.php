@@ -31,7 +31,7 @@ class MainFilter extends ArkRequestFilter
     public function shouldAcceptRequest($path, $method, $params, &$preparedData = null, &$responseCode = 200, &$error = null)
     {
         //echo $path;
-        if ($path === '/api/LoginController/login') return true;
+        if ($path === '/api/LoginController/login' || $path === '/api/LoginController/autoLogin') return true;
 
         try {
             $token = Ark()->webInput()->readRequest("token", "");
