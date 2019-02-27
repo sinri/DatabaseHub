@@ -1,3 +1,7 @@
+[v-cloak] {
+    display: none !important;
+}
+
 .ivu-form .ivu-form-item-label {
     color: #fff;
 }
@@ -49,8 +53,8 @@ footer {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 360px;
-    padding: 20px;
+    width: 330px;
+    padding: 15px 20px;
     text-align: center;
     border-radius: 4px;
     background-color: #fff;
@@ -60,9 +64,46 @@ footer {
 }
 .login .slogan {
     margin-bottom: 10px;
-    line-height: 40px;
 }
 
 .text-center {
     text-align: center;
 }
+
+.c-scan-qr-code-login {
+    text-align: center;
+}
+
+.c-scan-qr-code-login-img-wrapper {
+    position: relative;
+    margin: 0 auto;
+    height: 245px;
+}
+
+.c-scan-qr-code-login-img-wrapper .red {
+    color: #fa5b5b;
+}
+
+.c-scan-qr-code-login-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #000;
+    background-color: rgba(255, 255, 255, .9);
+}
+
+.c-scan-qr-code-login-tips {
+     padding: 5px 0;
+     font-size: 14px;
+ }
+
+.c-scan-qr-code-login-refresh-link {
+     color: #38adff;
+ }
