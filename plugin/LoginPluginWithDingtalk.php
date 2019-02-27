@@ -34,13 +34,14 @@ class LoginPluginWithDingtalk extends LoginPlugin
     {
         $curl = new ArkCurl();
         $curl->setLogger(HubCore::getLogger());
+        $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
+        $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Delegate/getUserInfo"))
-            ->setPostFormField("user_name", $username)
-            ->setPostFormField("tp_code", HubCore::getConfig(['aa', 'tp_code'], ""))
-            ->setPostFormField("tp_verification", HubCore::getConfig(['aa', 'tp_verification'], ""))
+            ->setPostContent(['user_name' => $username, 'tp_code' => $tp_code, 'tp_verification' => $tp_verification])
             ->execute(true);
 
-        HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username, 'password' => $password]]);
+        HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username,
+            'tp_code' => $tp_code, 'tp_verification' => $tp_verification]]);
 
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API is sleeping.", $result);
         $json = json_decode($result, true);
