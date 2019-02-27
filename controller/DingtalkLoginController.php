@@ -41,7 +41,9 @@ class DingtalkLoginController extends ArkWebController
             if (!$insert_result) {
                 throw new \Exception('会话建立失败，请刷新页面重试');
             }
-            $this->_sayOK(['token' => $dingtalkScanLoginSessionEntity->token, 'aa_domain' => HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com')]);
+            $this->_sayOK(['token' => $dingtalkScanLoginSessionEntity->token,
+                'tp_code' => HubCore::getConfig(['aa', 'tp_code'], ''),
+                'aa_domain' => HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com')]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
         }
