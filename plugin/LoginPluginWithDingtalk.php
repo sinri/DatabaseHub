@@ -37,8 +37,10 @@ class LoginPluginWithDingtalk extends LoginPlugin
         $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
         $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Delegate/getUserInfo"))
-            ->setPostContent(['user_name' => $username, 'tp_code' => $tp_code, 'tp_verification' => $tp_verification])
-            ->execute(true);
+            ->setPostFormField("user_name", $username)
+            ->setPostFormField("tp_code", $tp_code)
+            ->setPostFormField("tp_verification", $tp_verification)
+            ->execute(false);
 
         HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username,
             'tp_code' => $tp_code, 'tp_verification' => $tp_verification]]);
