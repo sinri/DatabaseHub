@@ -34,7 +34,7 @@ class LoginPluginWithDingtalk extends LoginPlugin
     {
         $curl = new ArkCurl();
         $curl->setLogger(HubCore::getLogger());
-        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("/api/Delegate/getUserInfo"))
+        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Delegate/getUserInfo"))
             ->setPostFormField("user_name", $username)
             ->setPostFormField("tp_code", HubCore::getConfig(['aa', 'tp_code'], ""))
             ->setPostFormField("tp_verification", HubCore::getConfig(['aa', 'tp_verification'], ""))
