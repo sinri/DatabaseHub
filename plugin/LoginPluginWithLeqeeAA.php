@@ -38,6 +38,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Login/requestWithUsername"))
             ->setPostFormField("username", $username)
             ->setPostFormField("up_checksum", $up_checksum)
+            ->setPostFormField("tp_code", HubCore::getConfig(['aa', 'tp_code'], "databasehub"))
             // tp_code is neglected now
             ->execute(true);
 
