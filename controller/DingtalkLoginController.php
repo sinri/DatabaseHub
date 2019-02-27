@@ -67,15 +67,18 @@ class DingtalkLoginController extends ArkWebController
             }
             $dingtalkScanLoginSessionEntity = (new DingtalkScanLoginSessionEntity())->getByToken($token);
             if (!$dingtalkScanLoginSessionEntity) {
+                HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " {$user_name} not find valid token, token:{$token}");
                 throw new \Exception('not find valid token ' . $token);
             }
             $session = $this->plugin->validateAuthPair($user_name, '');
+            HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . "{$user_name} session : " . json_encode($session));
             if (empty($dingtalkScanLoginSessionEntity->coreUserId)) {
                 $dingtalkScanLoginSessionEntity->setUser($session->user->userId);
                 $dingtalkScanLoginSessionEntity->setUserSessionToken($session->token);
             }
             $this->_sayOK($session);
         } catch (\Exception $e) {
+            HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " Exception : " . $e->getMessage());
             $this->_sayFail($e->getMessage());
         }
     }
