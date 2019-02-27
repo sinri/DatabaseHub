@@ -17,11 +17,11 @@ use sinri\databasehub\entity\UserEntity;
 use sinri\databasehub\model\UserModel;
 use sinri\databasehub\plugin\standard\LoginPlugin;
 
-class LoginPluginWithLeqeeAA extends LoginPlugin
+class LoginPluginWithDingtalk extends LoginPlugin
 {
     protected function apiUrl($subUrl)
     {
-        return HubCore::getConfig(['leqee-aa3-api'], "") . $subUrl;
+        return HubCore::getConfig(['aa', 'domain'], "") . $subUrl;
     }
 
     /**
@@ -30,19 +30,20 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
      * @return SessionEntity
      * @throws \Exception
      */
-    public function validateAuthPair($username, $password)
+    public function validateAuthPair($username, $password = '')
     {
-        $up_checksum = md5($username . '#' . md5($password));
         $curl = new ArkCurl();
         $curl->setLogger(HubCore::getLogger());
-        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Login/requestWithUsername"))
-            ->setPostFormField("username", $username)
-            ->setPostFormField("up_checksum", $up_checksum)
-            ->setPostFormField("tp_code", HubCore::getConfig(['aa', 'tp_code'], "databasehub"))
-            // tp_code is neglected now
-            ->execute(true);
+        $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
+        $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
+        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("/api/Delegate/getUserInfo"))
+            ->setPostFormField("user_name", $username)
+            ->setPostFormField("tp_code", $tp_code)
+            ->setPostFormField("tp_verification", $tp_verification)
+            ->execute(false);
 
-        //HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username, 'password' => $password]]);
+        HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " AAv3 API Response:" . $result, ["req" => ['username' => $username,
+            'tp_code' => $tp_code, 'tp_verification' => $tp_verification]]);
 
         ArkHelper::quickNotEmptyAssert("Leqee AAv3 API is sleeping.", $result);
         $json = json_decode($result, true);
@@ -52,7 +53,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
         if ($code === 'OK') {
             //$token=ArkHelper::readTarget($json,['data','token']);
             //$token_life=ArkHelper::readTarget($json,['data','token_life']);
-            $user_info = ArkHelper::readTarget($json, ['data', 'user_info']);
+            $user_info = ArkHelper::readTarget($json, ['data']);
 
             $row = (new UserModel())->selectRow(['username' => $user_info['user_name'], "user_org" => "LEQEE"]);
             if (empty($row)) {
@@ -73,7 +74,7 @@ class LoginPluginWithLeqeeAA extends LoginPlugin
             $userEntity = UserEntity::instanceByRow($row);
             return SessionEntity::createSessionForUser($userEntity);
         } elseif ($code === 'FAIL') {
-            throw new \Exception(ArkHelper::readTarget($json, ['failed_info', 'failed_info']));
+            throw new \Exception(ArkHelper::readTarget($json, ['data']));
         } else {
             throw new \Exception("Unknown AAv3 API Code: " . json_encode($code));
         }
