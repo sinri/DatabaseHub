@@ -21,7 +21,7 @@ class LoginPluginWithDingtalk extends LoginPlugin
 {
     protected function apiUrl($subUrl)
     {
-        return HubCore::getConfig(['leqee-aa3-api'], "") . $subUrl;
+        return HubCore::getConfig(['aa', 'domain'], "") . $subUrl;
     }
 
     /**
@@ -36,7 +36,7 @@ class LoginPluginWithDingtalk extends LoginPlugin
         $curl->setLogger(HubCore::getLogger());
         $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
         $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
-        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("Delegate/getUserInfo"))
+        $result = $curl->prepareToRequestURL("POST", $this->apiUrl("/api/Delegate/getUserInfo"))
             ->setPostFormField("user_name", $username)
             ->setPostFormField("tp_code", $tp_code)
             ->setPostFormField("tp_verification", $tp_verification)
