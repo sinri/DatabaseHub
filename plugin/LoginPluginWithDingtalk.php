@@ -53,7 +53,7 @@ class LoginPluginWithDingtalk extends LoginPlugin
         if ($code === 'OK') {
             //$token=ArkHelper::readTarget($json,['data','token']);
             //$token_life=ArkHelper::readTarget($json,['data','token_life']);
-            $user_info = ArkHelper::readTarget($json, ['data', 'info']);
+            $user_info = ArkHelper::readTarget($json, ['data']);
 
             $row = (new UserModel())->selectRow(['username' => $user_info['user_name'], "user_org" => "LEQEE"]);
             if (empty($row)) {
