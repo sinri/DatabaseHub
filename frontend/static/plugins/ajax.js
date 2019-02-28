@@ -1,12 +1,17 @@
 function ajax (apiName, data = {}, cancelExecutor = (c) => c) {
     const api = API[apiName];
+    let url = SinriQF.config.ApiBase + api.url;
+
+    if (typeof api.suffix !== 'undefined') {
+        url += `/${data[api.suffix]}`
+    }
 
     return new Promise((resolve, reject) => {
         const CancelToken = axios.CancelToken;
 
         data.token = SinriQF.api.getTokenFromCookie();
 
-        axios.post(SinriQF.config.ApiBase + api.url, data, {
+        axios.post(url, data, {
             cancelToken: new CancelToken(cancelExecutor)
         }).then((response) => {
             if (response.status !== 200 || !response.data) {

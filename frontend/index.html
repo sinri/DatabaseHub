@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="static/styles/markdown.css">
 </head>
 <body>
-<div id="app">
+<div id="app" v-cloak>
     <header>
         <top-banner></top-banner>
     </header>
@@ -63,6 +63,7 @@
 <script src="static/views/approvals/list.js"></script>
 
 <script src="static/views/management/permissions.js"></script>
+<script src="static/views/management/permission-audit.js"></script>
 <script src="static/views/management/databases/accounts.js"></script>
 <script src="static/views/management/databases/create.js"></script>
 <script src="static/views/management/databases/edit.js"></script>
@@ -159,6 +160,11 @@ const routes = [
                 path: 'permissions',
                 name: 'permissionsPage',
                 component: PermissionsPage
+            },
+            {
+                path: 'permission-audit',
+                name: 'permissionAuditPage',
+                component: PermissionAuditPage
             },
             {
                 path: 'processes',

@@ -4,7 +4,7 @@ const PermissionsPage = {
             <div slot="search">
                 <i-form action="javascript:;" inline>
                      <form-item>
-                         <i-select placeholder="Apply User" style="width: 160px;" multiple clearable
+                         <i-select placeholder="Apply User" style="width: 240px;" multiple clearable filterable
                                    v-model="query.user_list">
                             <i-option v-for="item in allUserList" 
                                 :key="item.userId" 
@@ -12,7 +12,7 @@ const PermissionsPage = {
                         </i-select>
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Database" style="width: 160px;" multiple clearable filterable
+                         <i-select placeholder="Database" style="width: 240px;" multiple clearable filterable
                                    v-model="query.database_list">
                              <i-option v-for="item in permittedDatabases"
                                        :key="item.databaseId"

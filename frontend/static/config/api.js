@@ -1,4 +1,13 @@
 const API = {
+    // Dingtalk
+    getScanQRCodeLoginToken: {
+        url: 'DingtalkLoginController/getScanQRCodeLoginToken'
+    },
+    checkScanQRCodeLoginStatus: {
+        url: 'DingtalkLoginController/checkScanQRCodeLoginStatus',
+        suffix: 'token'
+    },
+
     // LoginController
     login: {
         url: 'LoginController/login'

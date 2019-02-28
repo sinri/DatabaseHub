@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./static/styles/login.css">
 </head>
 <body>
-<div id="app" class="page">
+<div id="app" class="page" v-cloak>
     <div id="particles" class="bg"></div>
     <main>
         <div class="login">
@@ -15,19 +15,29 @@
             <p class="slogan">
                 Open the door towards the new world.
             </p>
-            <i-form action="javascript:;">
-                <form-item>
-                    <i-input type="text" placeholder="Username" v-model="form.model.username"></i-input>
-                </form-item>
-                <form-item>
-                    <i-input type="password" placeholder="Password" v-model="form.model.password"></i-input>
-                </form-item>
-                <form-item>
-                    <i-button type="primary" html-type="submit" size="long"
-                              @click="login"
-                              :loading="loginApiRequesting">Sign in</i-button>
-                </form-item>
-            </i-form>
+            <div class="c-scan-qr-code-login">
+                <div class="c-scan-qr-code-login-img-wrapper">
+                    <div class="c-scan-qr-code-login-mask" v-show="needRefresh || loginSuccess">
+                        <div class="text red" v-if="needRefresh">
+                            您的二维码已失效，<br/>
+                            请点击下方刷新按钮
+                        </div>
+                        <div class="text" v-if="loginSuccess">
+                            登录成功
+                        </div>
+                    </div>
+                    <img :src="qrCodeLink" width="240" v-if="qrCodeLink">
+                </div>
+
+                <div class="c-scan-qr-code-login-tips">
+                    请使用钉钉扫描二维码登录
+                    <a class="c-scan-qr-code-login-refresh-link" href="javascript:"
+                       @click="refreshQRCode">
+                        <Icon type="md-refresh" size="16" />
+                        刷新
+                    </a>
+                </div>
+            </div>
         </div>
     </main>
     <footer>
@@ -63,40 +73,84 @@ new Vue({
     el: '#app',
     data () {
         return {
-            form: {
-                model: {
-                    username: '',
-                    password: ''
-                }
-            },
-            loginApiRequesting: false
+            loginToken: '',
+            timestamp: '',
+            needRefresh: false,
+            loginSuccess: false,
+            timer: null,
+            aaDomain: '',
+            tp_code: '',
+            checkDelay: 3000
+        }
+    },
+    computed: {
+        qrCodeLink () {
+            if (this.loginToken === '') return ''
+
+            return `${this.aaDomain}/index.php/api/DingtalkLogin/getQRCode?client_data=${this.loginToken}&tp_code=${this.tp_code}&size=6&t=${this.timestamp}`
         }
     },
     methods: {
-        login () {
-            const data = JSON.parse(JSON.stringify(this.form.model))
+        login ({session}) {
+            SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
+            SinriQF.cookies.setCookie('DatabaseHubUser', session.user, session.expire);
 
-            this.loginApiRequesting = true;
+            const targetHref = localStorage.getItem('target_href') || 'index.html';
 
-            ajax('login', data).then(({session}) => {
-                SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
-                SinriQF.cookies.setCookie('DatabaseHubUser', session.user, session.expire);
-
-                const targetHref = localStorage.getItem('target_href') || 'index.html';
-
-                localStorage.setItem('target_href', '');
-                window.location.href = targetHref;
-                this.loginApiRequesting = false;
-            }).catch(({message}) => {
-                SinriQF.iview.showErrorMessage(message, 5);
-                this.loginApiRequesting = false;
+            localStorage.setItem('target_href', '');
+            window.location.href = targetHref;
+        },
+        getScanQRCodeLoginToken () {
+            ajax('getScanQRCodeLoginToken').then((res) => {
+                this.aaDomain = res.aa_domain;
+                this.loginToken = res.token;
+                this.tp_code = res.tp_code
+                this.needRefresh = false;
+                this.timer = setTimeout(() => {
+                    this.checkScanQRCodeLoginStatus();
+                }, this.checkDelay);
+            }).catch(() => {
+                SinriQF.iview.showErrorMessage('网络错误，获取二维码失败', 5);
             })
+        },
+        checkScanQRCodeLoginStatus () {
+            ajax('checkScanQRCodeLoginStatus', {token: this.loginToken}).then((res) => {
+                const status = res.status;
+
+                if (status === 'WAIT') {
+                    this.timer = setTimeout(() => {
+                        this.checkScanQRCodeLoginStatus();
+                    }, this.checkDelay);
+                } else {
+                    this.loginSuccess = true;
+                    this.login(res);
+                }
+            }).catch(() => {
+                this.needRefresh = true;
+                SinriQF.iview.showErrorMessage('网络错误，检测二维码失败', 5);
+            });
+        },
+        refreshQRCode () {
+            if (this.needRefresh) {
+                this.getScanQRCodeLoginToken();
+            } else {
+                clearTimeout(this.timer);
+                this.timestamp = (new Date()).getTime();
+                this.checkScanQRCodeLoginStatus();
+            }
+        },
+        init () {
+            this.getScanQRCodeLoginToken();
+        },
+        clear () {
+            clearTimeout(this.timer);
         }
     },
     mounted () {
         SinriQF.config.TokenName = 'database_hub_token';
         SinriQF.config.vueInstance = this;
-        particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json')
+        this.init();
+        particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json');
     }
 });
 </script>
