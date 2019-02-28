@@ -2,7 +2,7 @@ const PermissionAuditPage = {
     template: `
         <layout-list>
             <template v-for="table in userPermissionTable.list">
-                <h3>{{ table.user.realname }}({{ table.user.username }})</h3>
+                <h3 style="padding: 5px 0;">{{ table.user.realname }}({{ table.user.username }})</h3>
                 
                 <i-table border style="margin-bottom: 30px;" 
                      :loading="userPermissionTable.isLoading"
@@ -20,7 +20,15 @@ const PermissionAuditPage = {
             },
             userPermissionMap: {},
             allUserList: [],
-            permittedDatabases: []
+            permittedDatabases: [],
+            permissionTagColorMap: {
+                READ: 'success',
+                MODIFY: 'primary',
+                DDL: 'primary',
+                EXECUTE: 'primary',
+                QUICK_QUERY: 'success',
+                KILL: 'warning'
+            }
         }
     },
     computed: {
@@ -43,52 +51,46 @@ const PermissionAuditPage = {
                 const userPermission = this.userPermissionMap[userId];
 
                 // columns
-                const columns = [];
+                const columns = [{
+                    title: 'Database',
+                    key: 'databaseName'
+                }, {
+                    title: 'Permissions',
+                    key: 'permissions',
+                    render: (h, {row}) => {
+                        return h('div', {
+                            style: {
+                                padding: '10px 0'
+                            }
+                        }, [
+                            ...row.permissions.map((permission) => {
+                                return h('tag', {
+                                    props: {
+                                        type: 'border',
+                                        color: this.permissionTagColorMap[permission]
+                                    }
+                                }, permission);
+                            })
+                        ]);
+                    }
+                }];
 
-                Object.keys(userPermission).forEach((databaseId) => {
-                    const database = userPermission[databaseId];
-
-                    columns.push({
-                        title: database.database_info.databaseName,
-                        key: databaseId,
-                        render: (h) => {
-                            return h('div', {
-                                style: {
-                                    padding: '10px 0'
-                                }
-                            }, [
-                                ...database.permissions.map((permission) => {
-                                    return (h('div', {
-                                        style: {
-                                            padding: '5px 0'
-                                        }
-                                    }, [
-                                        h('span', {
-                                            style: {
-                                                marginLeft: '5px'
-                                            }
-                                        }, permission)
-                                    ]));
-                                })
-                            ]);
-                        }
-                    });
-                });
 
                 // data
-                const databaseList = Object.keys(userPermission).map((databaseId) => {
+                const data = Object.keys(userPermission).map((databaseId) => {
+                    const row = userPermission[databaseId]
+
                     return {
-                        [databaseId]: userPermission[databaseId].database_info
+                        databaseName: row.database_info.databaseName,
+                        permissions: row.permissions
                     };
-                })
-                const data = [{
-                    ...databaseList
-                }];
+                });
+
 
                 list.push({
                     columns,
                     user,
-                    hasData: databaseList.length > 0,
+                    hasData: data.length > 0,
                     data
                 })
             });
