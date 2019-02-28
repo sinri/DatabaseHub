@@ -1,38 +1,19 @@
-const PermissionsDetailReportPage = {
+const PermissionAuditPage = {
     template: `
         <layout-list>
-            <div slot="search">
-                <i-form action="javascript:;" inline>
-                     <form-item>
-                         <i-select placeholder="Apply User" style="width: 240px;" multiple clearable filterable
-                                   v-model="query.user_list">
-                            <i-option v-for="item in allUserList" 
-                                :key="item.userId" 
-                                :value="item">{{ item.realname }}({{ item.username }})</i-option>
-                        </i-select>
-                     </form-item>
-                    
-                     <form-item>
-                         <i-button type="primary" html-type="submit"
-                            :loading="userPermissionTable.isLoading"
-                            @click="getUserPermission">Load</i-button>
-                     </form-item>
-                </i-form>
-            </div>
             <template v-for="table in userPermissionTable.list">
-                <i-table border style="margin-bottom: 20px;" 
+                <h3>{{ table.user.realname }}({{ table.user.username }})</h3>
+                
+                <i-table border style="margin-bottom: 30px;" 
                      :loading="userPermissionTable.isLoading"
                      :columns="table.columns" 
-                     :data="table.data"></i-table>
+                     :data="table.data" v-if="table.hasData"></i-table>
+                <p style="margin-bottom: 30px;" v-else>null</p>
             </template>
         </layout-list>
     `,
     data () {
         return {
-            query: {
-                user_list: [],
-                database_list: []
-            },
             userPermissionTable: {
                 isLoading: false,
                 list: []
@@ -57,20 +38,12 @@ const PermissionsDetailReportPage = {
         makeUserPermissionTableList () {
             const list = [];
 
-            // 用户列
-            const baseColumns = [{
-                title: 'User',
-                key: 'username',
-                render: (h, {row}) => {
-                    return h('div', `${row.user.realname}(${row.user.username})`);
-                }
-            }];
-
             Object.keys(this.userPermissionMap).forEach((userId) => {
+                const user =  this.allUserMap[userId];
                 const userPermission = this.userPermissionMap[userId];
 
                 // columns
-                const columns = baseColumns.concat();
+                const columns = [];
 
                 Object.keys(userPermission).forEach((databaseId) => {
                     const database = userPermission[databaseId];
@@ -90,12 +63,6 @@ const PermissionsDetailReportPage = {
                                             padding: '5px 0'
                                         }
                                     }, [
-                                        h('i-switch', {
-                                            props: {
-                                                disabled: true,
-                                                value: true
-                                            }
-                                        }),
                                         h('span', {
                                             style: {
                                                 marginLeft: '5px'
@@ -109,17 +76,19 @@ const PermissionsDetailReportPage = {
                 });
 
                 // data
-                const data =[{
-                    user: this.allUserMap[userId],
-                    ...Object.keys(userPermission).map((databaseId) => {
-                        return {
-                            [databaseId]: userPermission[databaseId].database_info
-                        };
-                    })
+                const databaseList = Object.keys(userPermission).map((databaseId) => {
+                    return {
+                        [databaseId]: userPermission[databaseId].database_info
+                    };
+                })
+                const data = [{
+                    ...databaseList
                 }];
 
                 list.push({
                     columns,
+                    user,
+                    hasData: databaseList.length > 0,
                     data
                 })
             });
@@ -129,22 +98,19 @@ const PermissionsDetailReportPage = {
         setLoading (bool) {
             this.userPermissionTable.isLoading = bool;
         },
-        formatQuery (query) {
-            return {
-                user_ids: query.user_list.map((item) => {
+        getUserPermission () {
+            const query = {
+                user_ids: this.allUserList.map((item) => {
                     return item.userId
                 }).join(','),
                 database_id_list: this.permittedDatabases.map((item) => {
                     return item.databaseId
                 })
-            }
-        },
-        getUserPermission () {
-            const query = {...this.query}
+            };
 
             this.setLoading(true);
 
-            ajax('getUserPermission', this.formatQuery(query)).then(({dict}) => {
+            ajax('getUserPermission', query).then(({dict}) => {
                 this.userPermissionMap = dict;
                 this.userPermissionTable.list = this.makeUserPermissionTableList()
             }).catch(({message}) => {
@@ -154,10 +120,13 @@ const PermissionsDetailReportPage = {
             });
         },
         getAllUserList () {
-            this.allUserList = JSON.parse(localStorage.getItem('allUserList'));
+            return new Promise((resolve) => {
+                this.allUserList = JSON.parse(localStorage.getItem('allUserList'));
+                resolve();
+            });
         },
         getPermittedDatabases () {
-            ajax('commonDatabaseList').then(({list}) => {
+            return ajax('commonDatabaseList').then(({list}) => {
                 this.permittedDatabases = list;
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
@@ -165,7 +134,11 @@ const PermissionsDetailReportPage = {
         }
     },
     mounted () {
-        this.getAllUserList();
-        this.getPermittedDatabases();
+        Promise.all([
+            this.getAllUserList(),
+            this.getPermittedDatabases()
+        ]).then(() => {
+            this.getUserPermission();
+        })
     }
 };
