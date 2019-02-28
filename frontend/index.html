@@ -63,6 +63,7 @@
 <script src="static/views/approvals/list.js"></script>
 
 <script src="static/views/management/permissions.js"></script>
+<script src="static/views/management/permission-detail-report.js"></script>
 <script src="static/views/management/databases/accounts.js"></script>
 <script src="static/views/management/databases/create.js"></script>
 <script src="static/views/management/databases/edit.js"></script>
@@ -159,6 +160,11 @@ const routes = [
                 path: 'permissions',
                 name: 'permissionsPage',
                 component: PermissionsPage
+            },
+            {
+                path: 'permission-detail-report',
+                name: 'permissionsDetailReportPage',
+                component: PermissionsDetailReportPage
             },
             {
                 path: 'processes',

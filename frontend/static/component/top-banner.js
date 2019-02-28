@@ -89,6 +89,11 @@ Vue.component('top-banner', {
                             text: 'Permissions'
                         },
                         {
+                            name: 'permissionsDetailReportPage',
+                            icon: 'ios-book',
+                            text: 'Permissions Detail Report'
+                        },
+                        {
                             name: 'processesPage',
                             icon: 'ios-backspace',
                             text: 'Processes'
