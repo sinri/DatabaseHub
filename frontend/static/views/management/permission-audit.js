@@ -167,7 +167,7 @@ const PermissionAuditPage = {
                appendLine(content, [newLine]);
             });
 
-            exportCsv.download('Permission-Audit', content.join(newLine));
+            exportCsv.download('Permission-Audit.csv', content.join(newLine));
         }
     },
     mounted () {
