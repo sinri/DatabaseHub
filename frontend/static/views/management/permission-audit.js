@@ -1,14 +1,19 @@
 const PermissionAuditPage = {
     template: `
         <layout-list>
+            <div style="position: relative;height: 100px;" v-if="userPermissionTable.isLoading">
+                <Spin fix />
+            </div>
+            <div style="text-align: right" v-else>
+                <i-button icon="md-cloud-download" type="success" size="small"
+                        @click="downloadAsCSV">Download</i-button>
+            </div>
             <template v-for="table in userPermissionTable.list">
-                <h3 style="padding: 5px 0;">{{ table.user.realname }}({{ table.user.username }})</h3>
+                <h3 style="padding: 5px 0;">{{ table.user.realname }}({{ table.user.username }}) - {{ table.user.userType }}</h3>
                 
                 <i-table border style="margin-bottom: 30px;" 
-                     :loading="userPermissionTable.isLoading"
                      :columns="table.columns" 
-                     :data="table.data" v-if="table.hasData"></i-table>
-                <p style="margin-bottom: 30px;" v-else>null</p>
+                     :data="table.data"></i-table>
             </template>
         </layout-list>
     `,
@@ -110,8 +115,6 @@ const PermissionAuditPage = {
                 })
             };
 
-            this.setLoading(true);
-
             ajax('getUserPermission', query).then(({dict}) => {
                 this.userPermissionMap = dict;
                 this.userPermissionTable.list = this.makeUserPermissionTableList()
@@ -133,9 +136,43 @@ const PermissionAuditPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
+        },
+        downloadAsCSV () {
+            const content = [];
+            const newLine = '\r\n';
+
+            const appendLine = (content, row, separator = ',') => {
+                const line  = row.map(data => {
+                    data = typeof data === 'string' ? data.replace(/"/g, '"') : data;
+
+                    return `"${data}"`;
+                });
+
+                content.push(line.join(separator));
+            };
+
+            this.userPermissionTable.list.forEach((item) => {
+                appendLine(content, [
+                    `${ item.user.realname }(${ item.user.username }) - ${ item.user.userType }`,
+                ]);
+                appendLine(content, ['Database', 'Permissions']);
+
+               item.data.forEach(({databaseName, permissions}) => {
+                    appendLine(content, [
+                        databaseName,
+                        permissions.join('、')
+                    ]);
+                });
+
+               appendLine(content, [newLine]);
+            });
+
+            exportCsv.download('Permission-Audit.csv', content.join(newLine));
         }
     },
     mounted () {
+        this.setLoading(true);
+
         Promise.all([
             this.getAllUserList(),
             this.getPermittedDatabases()
