@@ -5,7 +5,7 @@ Vue.component('top-banner', {
             @on-select="onMenuItemSelected">
             <template v-for="item in menuItems">
                 <template v-if="item.children">
-                    <submenu v-if="!item.admin || isAdmin"
+                    <submenu v-if="!item.admin || isAdmin || isKiller"
                         :key="item.name"
                         :name="item.name">
                         <template slot="title">
@@ -14,7 +14,8 @@ Vue.component('top-banner', {
                         <menu-item v-for="subItem in item.children"
                             :key="subItem.name"
                             :name="subItem.name"
-                            :style="subItem.style">
+                            :style="subItem.style"
+                            v-if="!subItem.admin || isAdmin">
                             <Icon :type="subItem.icon" v-if="subItem.icon" /> {{ subItem.text }}
                         </menu-item>
                     </submenu>
@@ -81,17 +82,20 @@ Vue.component('top-banner', {
                         {
                             name: 'databaseListPage',
                             icon: 'ios-cube',
-                            text: 'Databases'
+                            text: 'Databases',
+                            admin: true,
                         },
                         {
                             name: 'permissionsPage',
                             icon: 'ios-people',
-                            text: 'Permissions'
+                            text: 'Permissions',
+                            admin: true,
                         },
                         {
                             name: 'permissionAuditPage',
                             icon: 'ios-book',
-                            text: 'Permission Audit'
+                            text: 'Permission Audit',
+                            admin: true,
                         },
                         {
                             name: 'processesPage',
@@ -101,7 +105,8 @@ Vue.component('top-banner', {
                         {
                             name: 'workersPage',
                             icon: 'ios-pulse',
-                            text: 'Workers'
+                            text: 'Workers',
+                            admin: true,
                         }
                     ]
                 },
@@ -137,6 +142,9 @@ Vue.component('top-banner', {
     computed: {
         isAdmin() {
             return JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userType === 'ADMIN'
+        },
+        isKiller() {
+            return !!(JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).asKiller)
         }
     },
     methods: {

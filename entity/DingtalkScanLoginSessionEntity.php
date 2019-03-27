@@ -57,7 +57,7 @@ class DingtalkScanLoginSessionEntity
 
     /**
      * @param $core_user_id
-     * @return  int $core_user_id
+     * @return  int afx
      */
     public function setUser($core_user_id)
     {
@@ -70,7 +70,7 @@ class DingtalkScanLoginSessionEntity
 
     /**
      * @param $token
-     * @return  int $core_user_id
+     * @return  int afx
      */
     public function setUserSessionToken($token)
     {

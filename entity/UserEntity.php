@@ -23,6 +23,7 @@ class UserEntity
     protected $passwordHash;
     public $status;
     public $userOrg;
+    public $asKiller;
 
     /**
      * @param array $row
@@ -39,6 +40,14 @@ class UserEntity
         $user->passwordHash = $row['password'];
         $user->status = $row['status'];
         $user->userOrg = $row['user_org'];
+
+        // update asKiller
+        $killableDatabaseIdList = (new PermissionModel())->selectRowsForFieldsWithSort(["database_id"], ["permission" => "KILL", "user_id" => $user->userId]);
+        if (empty($killableDatabaseIdList)) {
+            $user->asKiller = false;
+        } else {
+            $user->asKiller = true;
+        }
 
         return $user;
     }
