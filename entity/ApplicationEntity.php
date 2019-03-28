@@ -231,6 +231,8 @@ class ApplicationEntity
                 $totalAffect = 0;
                 $sqlIdx = 1;
                 foreach ($results as $result) {
+                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " result", $results);
+
                     $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . PHP_EOL;
 
                     $singleAffect = $result['affected_rows'];
