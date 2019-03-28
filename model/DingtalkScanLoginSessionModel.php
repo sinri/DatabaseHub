@@ -25,6 +25,7 @@ class DingtalkScanLoginSessionModel extends ArkDatabaseTableModel
 
     /**
      * @return ArkPDO
+     * @throws \Exception
      */
     public function db()
     {
