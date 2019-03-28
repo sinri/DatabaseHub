@@ -237,10 +237,10 @@ class ApplicationEntity
 
                     $singleAffect = $result['affected_rows'];
                     $totalAffect += $singleAffect;
-                    $recordInfo .= "affected " . $singleAffect . " row(s); " . PHP_EOL;
+                    //$recordInfo .= "affected " . $singleAffect . " row(s); " . PHP_EOL;
 
-                    $singleInserted = $result['insert_id'];
-                    $recordInfo .= "caused last insert ID as " . $singleInserted . "; " . PHP_EOL;
+                    //$singleInserted = $result['insert_id'];
+                    //$recordInfo .= "caused last insert ID as " . $singleInserted . "; " . PHP_EOL;
 
                     $warnings = $result['warnings'];
                     if (!empty($warnings)) {
