@@ -131,6 +131,7 @@ class DatabaseMySQLiEntity
             if ($this->mysqliAgent->getInstanceOfMySQLi()->multi_query($query)) {
                 do {
                     $result = [
+                        'info' => $this->mysqliAgent->getInstanceOfMySQLi()->info,
                         'affected_rows' => $this->mysqliAgent->getInstanceOfMySQLi()->affected_rows,
                         'insert_id' => $this->mysqliAgent->getInstanceOfMySQLi()->insert_id,
                         'errno' => $this->mysqliAgent->getInstanceOfMySQLi()->errno,

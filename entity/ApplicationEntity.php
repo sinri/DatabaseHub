@@ -231,7 +231,7 @@ class ApplicationEntity
                 $totalAffect = 0;
                 $sqlIdx = 1;
                 foreach ($results as $result) {
-                    $recordInfo .= "No." . $sqlIdx . " Statement ";
+                    $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . PHP_EOL;
 
                     $singleAffect = $result['affected_rows'];
                     $totalAffect += $singleAffect;
@@ -241,7 +241,7 @@ class ApplicationEntity
                     $recordInfo .= "caused last insert ID as " . $singleInserted . "; " . PHP_EOL;
 
                     $warnings = $result['warnings'];
-                    if (!empty($recordInfo)) {
+                    if (!empty($warnings)) {
                         $recordInfo .= " WARN: " . PHP_EOL;
                         foreach ($warnings as $key => $warning) {
                             $recordInfo .= 'WARN-' . ($key + 1) . ' Errno=' . $warning->errno . " SqlState=" . $warning->sqlstate . " Message=" . $warning->message . "; " . PHP_EOL;
