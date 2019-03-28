@@ -20,7 +20,9 @@ use sinri\databasehub\model\UserModel;
 
 class QuickQueryController extends AbstractAuthController
 {
-
+    /**
+     * @throws \Exception
+     */
     public function permittedDatabases()
     {
         $list = [];

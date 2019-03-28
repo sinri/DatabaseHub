@@ -113,13 +113,13 @@ class DatabaseMySQLiEntity
     /**
      * @param string $query
      * @param string $type
-     * @param int[] $affected
+     * @param array[] $results
      * @param string[] $error
      * @return bool
      */
-    public function executeMulti($query, $type, &$affected, &$error)
+    public function executeMulti($query, $type, &$results, &$error)
     {
-        $affected = array();
+        $results = array();
         $error = array();
 
         $sqlIdx = 1;
@@ -130,19 +130,38 @@ class DatabaseMySQLiEntity
         try {
             if ($this->mysqliAgent->getInstanceOfMySQLi()->multi_query($query)) {
                 do {
-                    $affected[] = $this->mysqliAgent->getInstanceOfMySQLi()->affected_rows;
+                    $result = [
+                        'info' => $this->mysqliAgent->getInstanceOfMySQLi()->info,
+                        'affected_rows' => $this->mysqliAgent->getInstanceOfMySQLi()->affected_rows,
+                        'insert_id' => $this->mysqliAgent->getInstanceOfMySQLi()->insert_id,
+                        'errno' => $this->mysqliAgent->getInstanceOfMySQLi()->errno,
+                        'error' => $this->mysqliAgent->getInstanceOfMySQLi()->error,
+                        'warnings' => [],
+                    ];
+
+                    if ($this->mysqliAgent->getInstanceOfMySQLi()->warning_count > 0) {
+                        $w = $this->mysqliAgent->getInstanceOfMySQLi()->get_warnings();
+                        do {
+                            $result['warnings'][] = $w;
+                        } while ($w->next());
+                    }
+
+                    $results[] = $result;
+
                     if (
                         $type == ApplicationModel::TYPE_MODIFY
                         && $this->mysqliAgent->getInstanceOfMySQLi()->affected_rows <= 0
                     ) {
-                        $error[$sqlIdx] = 'The No.{$sqlIdx} statement has no effect!';
-                        if ($this->mysqliAgent->getInstanceOfMySQLi()->errno !== 0) {
-                            $error[$sqlIdx] .= " MySQL Error: #" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . " " . $this->mysqliAgent->getInstanceOfMySQLi()->error;
-                            $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
-                            $this->mysqliAgent->getInstanceOfMySQLi()->close();
-                            throw new \Exception($error[$sqlIdx]);
-                        }
+                        $error[$sqlIdx] = 'The No.{$sqlIdx} modify statement has no effect!';
                     }
+
+                    if ($this->mysqliAgent->getInstanceOfMySQLi()->errno !== 0) {
+                        $error[$sqlIdx] .= " MySQL Error: #" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . " " . $this->mysqliAgent->getInstanceOfMySQLi()->error;
+                        $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
+                        $this->mysqliAgent->getInstanceOfMySQLi()->close();
+                        throw new \Exception($error[$sqlIdx]);
+                    }
+
                     $sqlIdx++;
 
                     // I wonder should the calls be multi called

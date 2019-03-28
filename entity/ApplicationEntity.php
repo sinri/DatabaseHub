@@ -222,7 +222,7 @@ class ApplicationEntity
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
             } else {
-                $done = $this->taskExecuteModifySQL($affected, $error);
+                $done = $this->taskExecuteModifySQL($results, $error);
 
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
@@ -230,9 +230,26 @@ class ApplicationEntity
                 $recordInfo = "Executed. Affected rows by each statement:" . PHP_EOL;
                 $totalAffect = 0;
                 $sqlIdx = 1;
-                foreach ($affected as $singleAffect) {
+                foreach ($results as $result) {
+                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " result", $results);
+
+                    $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . "; ";
+
+                    $singleAffect = $result['affected_rows'];
                     $totalAffect += $singleAffect;
-                    $recordInfo .= "No." . $sqlIdx . " Statement affected " . $singleAffect . " row(s);" . PHP_EOL;
+                    $recordInfo .= "affected " . $singleAffect . " row(s); " . PHP_EOL;
+
+                    //$singleInserted = $result['insert_id'];
+                    //$recordInfo .= "caused last insert ID as " . $singleInserted . "; " . PHP_EOL;
+
+                    $warnings = $result['warnings'];
+                    if (!empty($warnings)) {
+                        $recordInfo .= " WARN: " . PHP_EOL;
+                        foreach ($warnings as $key => $warning) {
+                            $recordInfo .= 'WARN-' . ($key + 1) . ' Errno=' . $warning->errno . " SqlState=" . $warning->sqlstate . " Message=" . $warning->message . "; " . PHP_EOL;
+                        }
+                    }
+
                     $sqlIdx++;
                 }
                 $recordInfo .= "Totally affected" . $totalAffect . " row(s)." . PHP_EOL;
@@ -318,16 +335,16 @@ class ApplicationEntity
     }
 
     /**
-     * @param $affected
+     * @param $results
      * @param $error
      * @return bool
      * @throws \Exception
      */
-    protected function taskExecuteModifySQL(&$affected, &$error)
+    protected function taskExecuteModifySQL(&$results, &$error)
     {
         HubCore::getLogger()->info("Begin SQL Query Remarked:");
         HubCore::getLogger()->info($this->getRemarkedSQL());
-        $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->getRemarkedSQL(), $this->type, $affected, $error);
+        $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->getRemarkedSQL(), $this->type, $results, $error);
         return $ret;
     }
 
