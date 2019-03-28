@@ -233,11 +233,11 @@ class ApplicationEntity
                 foreach ($results as $result) {
                     HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " result", $results);
 
-                    $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . PHP_EOL;
+                    $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . "; ";
 
                     $singleAffect = $result['affected_rows'];
                     $totalAffect += $singleAffect;
-                    //$recordInfo .= "affected " . $singleAffect . " row(s); " . PHP_EOL;
+                    $recordInfo .= "affected " . $singleAffect . " row(s); " . PHP_EOL;
 
                     //$singleInserted = $result['insert_id'];
                     //$recordInfo .= "caused last insert ID as " . $singleInserted . "; " . PHP_EOL;
