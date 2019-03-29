@@ -136,10 +136,11 @@ class DatabaseMySQLiEntity
                         'insert_id' => $this->mysqliAgent->getInstanceOfMySQLi()->insert_id,
                         'errno' => $this->mysqliAgent->getInstanceOfMySQLi()->errno,
                         'error' => $this->mysqliAgent->getInstanceOfMySQLi()->error,
+                        'warning_count' => $this->mysqliAgent->getInstanceOfMySQLi()->warning_count,
                         'warnings' => [],
                     ];
 
-                    if ($this->mysqliAgent->getInstanceOfMySQLi()->warning_count > 0) {
+                    if ($result['warning_count'] > 0) {
                         $w = $this->mysqliAgent->getInstanceOfMySQLi()->get_warnings();
                         do {
                             $result['warnings'][] = $w;
@@ -150,13 +151,13 @@ class DatabaseMySQLiEntity
 
                     if (
                         $type == ApplicationModel::TYPE_MODIFY
-                        && $this->mysqliAgent->getInstanceOfMySQLi()->affected_rows <= 0
+                        && $result['affected_rows'] <= 0
                     ) {
                         $error[$sqlIdx] = 'The No.{$sqlIdx} modify statement has no effect!';
                     }
 
-                    if ($this->mysqliAgent->getInstanceOfMySQLi()->errno !== 0) {
-                        $error[$sqlIdx] .= " MySQL Error: #" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . " " . $this->mysqliAgent->getInstanceOfMySQLi()->error;
+                    if ($result['errno'] !== 0) {
+                        $error[$sqlIdx] .= " MySQL Error: #" . $result['errno'] . " " . $result['error'];
                         HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " errno not zero and will ROLLBACK! " . $error[$sqlIdx]);
                         $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
                         $this->mysqliAgent->getInstanceOfMySQLi()->close();
