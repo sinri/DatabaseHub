@@ -153,7 +153,7 @@ class DatabaseMySQLiEntity
                         $type == ApplicationModel::TYPE_MODIFY
                         && $result['affected_rows'] <= 0
                     ) {
-                        $error[$sqlIdx] = 'The No.{$sqlIdx} modify statement has no effect!';
+                        $error[$sqlIdx] = "The No.{$sqlIdx} modify statement has no effect!";
                     }
 
                     if ($result['errno'] !== 0) {
