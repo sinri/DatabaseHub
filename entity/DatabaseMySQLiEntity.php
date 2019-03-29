@@ -158,8 +158,8 @@ class DatabaseMySQLiEntity
                     if ($this->mysqliAgent->getInstanceOfMySQLi()->errno !== 0) {
                         $error[$sqlIdx] .= " MySQL Error: #" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . " " . $this->mysqliAgent->getInstanceOfMySQLi()->error;
                         HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " errno not zero and will ROLLBACK! " . $error[$sqlIdx]);
-                        //$this->mysqliAgent->getInstanceOfMySQLi()->rollback();
-                        //$this->mysqliAgent->getInstanceOfMySQLi()->close();
+                        $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
+                        $this->mysqliAgent->getInstanceOfMySQLi()->close();
                         throw new \Exception($error[$sqlIdx]);
                     }
 
