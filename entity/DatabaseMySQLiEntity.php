@@ -157,8 +157,9 @@ class DatabaseMySQLiEntity
 
                     if ($this->mysqliAgent->getInstanceOfMySQLi()->errno !== 0) {
                         $error[$sqlIdx] .= " MySQL Error: #" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . " " . $this->mysqliAgent->getInstanceOfMySQLi()->error;
-                        $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
-                        $this->mysqliAgent->getInstanceOfMySQLi()->close();
+                        HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " errno not zero and will ROLLBACK! " . $error[$sqlIdx]);
+                        //$this->mysqliAgent->getInstanceOfMySQLi()->rollback();
+                        //$this->mysqliAgent->getInstanceOfMySQLi()->close();
                         throw new \Exception($error[$sqlIdx]);
                     }
 
@@ -174,13 +175,20 @@ class DatabaseMySQLiEntity
                     && !$this->mysqliAgent->getInstanceOfMySQLi()->errno
                 );
             } else {
+                HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " multi_query failed with unknown error", [
+                    'errno' => $this->mysqliAgent->getInstanceOfMySQLi()->errno,
+                    'error' => $this->mysqliAgent->getInstanceOfMySQLi()->error,
+                ]);
                 throw new \Exception("multi_query failed. [" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . "]" . $this->mysqliAgent->getInstanceOfMySQLi()->error);
             }
+
+            HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " To commit");
 
             $this->mysqliAgent->getInstanceOfMySQLi()->commit();
             $this->mysqliAgent->getInstanceOfMySQLi()->close();
             return true;
         } catch (\Exception $exception) {
+            HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " Met exception, go to rollback and false would be returned. " . $exception->getMessage());
             //if ($this->mysqliAgent->getInstanceOfMySQLi()->errno) {
             $error[$sqlIdx] = $this->mysqliAgent->getInstanceOfMySQLi()->error;
             $this->mysqliAgent->getInstanceOfMySQLi()->rollback();

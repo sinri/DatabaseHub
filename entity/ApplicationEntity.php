@@ -223,6 +223,14 @@ class ApplicationEntity
                 $duration = $sqlEndTime - $sqlBeginTime;
             } else {
                 $done = $this->taskExecuteModifySQL($results, $error);
+                HubCore::getLogger()->info(
+                    __METHOD__ . '@' . __LINE__ . " after taskExecuteModifySQL",
+                    [
+                        'done' => $done,
+                        'results' => $results,
+                        'error' => $error
+                    ]
+                );
 
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
@@ -231,7 +239,7 @@ class ApplicationEntity
                 $totalAffect = 0;
                 $sqlIdx = 1;
                 foreach ($results as $result) {
-                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " result", $results);
+                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " done: " . json_encode($done), $results);
 
                     $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . "; ";
 
