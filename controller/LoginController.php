@@ -56,7 +56,10 @@ class LoginController extends ArkWebController
             if (empty($username)) {
                 throw new \Exception('参数错误，请勿非法调用');
             }
-            $username = (new PrpcryptLibrary(md5('databasehub')))->decrypt($username);
+            $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
+            $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
+            $secret_key =  md5($tp_code . 'AA' . md5($tp_verification));
+            $username = (new PrpcryptLibrary($secret_key))->decrypt($username);
             if (empty($username)) {
                 throw new \Exception('参数解析错误，请勿非法调用');
             }
