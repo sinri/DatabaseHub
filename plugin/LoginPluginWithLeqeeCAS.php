@@ -21,7 +21,7 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
 {
     protected function apiUrl($subUrl)
     {
-        return HubCore::getConfig(['cas','leqee-cas-url'], "") . $subUrl;
+        return HubCore::getConfig(['cas','leqee-cas-url'], "https://test-account-auth-v3.leqee.com/") . $subUrl;
     }
 
     /**
