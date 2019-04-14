@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Login - Database Hub</title>
+    <link rel="stylesheet" href="./static/libs/iview@3.1.5/iview.css">
+    <link rel="stylesheet" href="./static/styles/login.css">
+</head>
+<body>
+<div id="app" class="page" >
+    <div id="particles" class="bg"></div>
+    <main>
+        <div class="login">
+            <h1 class="title">Login - Database Hub</h1>
+            <p class="slogan">
+                Open the door towards the new world.
+            </p>
+            <div class="c-scan-qr-code-login">
+                <div class="c-scan-qr-code-login-img-wrapper">
+                    <div class="c-scan-qr-code-login-mask" v-show="needRefresh || loginSuccess">
+                        <div class="text red">
+                            您未登录<br/>
+                            <a href="http://aa.test/index.php/cas/CAS/login?service=databasehub">立即登录</a>
+                        </div>
+                    </div>
+                    <img :src="qrCodeLink" width="240" v-if="qrCodeLink">
+                </div>
+
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p class="copyright text-center">
+            Copyright &copy; 2018
+            |
+            This project is maintained by
+            <a href="https://github.com/sinri">Sinri</a>
+            ,
+            <a href="https://github.com/RoamIn">Vinci</a>
+            and
+            <a href="https://github.com/caroltc">Caroltc</a>.
+        </p>
+        <p class="text-center">Browser Note: Chrome with version no less than 62 is recommended.</p>
+    </footer>
+</div>
+<script type="application/javascript">
+    // 检测登录状态
+    if (SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
+        window.location.href = 'index.html';
+    }
+
+</script>
+
+</body>
+</html>
