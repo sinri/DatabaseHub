@@ -24,9 +24,9 @@ class CasController extends ArkWebController
             $session_entity = (new LoginPluginWithLeqeeCAS())->validateAuthPair($ticket, null);
             setcookie('database_hub_token', $session_entity->token, $session_entity->expire, '/');
             setcookie('DatabaseHubUser', json_encode($session_entity->user), $session_entity->expire, '/');
-            header('Location:' . 'http://' . $_SERVER['HTTP_HOST'] .'/frontend/index.html');
+            header('Location:/frontend/index.html');
         } catch (\Exception $e) {
-
+            echo $e->getMessage();
         }
     }
 }
