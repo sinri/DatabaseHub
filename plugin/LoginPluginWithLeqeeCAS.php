@@ -12,6 +12,7 @@ namespace sinri\databasehub\plugin;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\io\curl\ArkCurl;
 use sinri\databasehub\core\HubCore;
+use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\entity\UserEntity;
 use sinri\databasehub\model\UserModel;
@@ -33,10 +34,19 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
     public function validateAuthPair($username, $password)
     {
         $ticket = $username;
+
+        // 建立CAS会话与系统会话映射,方便后续CAS登出
+        $dingtalkScanLoginSessionEntity = new DingtalkScanLoginSessionEntity();
+        $insert_result = $dingtalkScanLoginSessionEntity->createToken();
+        if (!$insert_result) {
+            throw new \Exception('会话建立失败，请刷新页面重试');
+        }
+
         $curl = new ArkCurl();
         $curl->setLogger(HubCore::getLogger());
         $result = $curl->prepareToRequestURL("POST", $this->apiUrl("validate"))
             ->setPostFormField("ticket", $ticket)
+            ->setPostFormField("tp_token", $dingtalkScanLoginSessionEntity->token)
             ->setPostFormField("format", 'JSON')
             ->setPostFormField("service", HubCore::getConfig(['aa', 'tp_code'], "databasehub"))
             // tp_code is neglected now
@@ -68,7 +78,10 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
             }
             HubCore::getLogger()->info("validateAuthPair finally get user row", ["row" => $row]);
             $userEntity = UserEntity::instanceByRow($row);
-            return SessionEntity::createSessionForUser($userEntity);
+            $sessionEntity = SessionEntity::createSessionForUser($userEntity);
+            $dingtalkScanLoginSessionEntity->setUser($userEntity->userId);
+            $dingtalkScanLoginSessionEntity->setUserSessionToken($sessionEntity->token);
+            return $sessionEntity;
         }else {
             throw new \Exception($result);
         }
