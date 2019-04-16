@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="./static/styles/login.css">
 </head>
 <body>
-<div id="app" class="page" >
+<div id="app" class="page" v-cloak>
     <div id="particles" class="bg"></div>
     <main>
-        <a href="https://test-account-auth-v3.leqee.com/cas/CAS/login?service=databasehub">
+        <a :href="jumpLink">
             <div class="login" style="display: flex;align-items: center;">
                 <div style="flex: auto;">
                     <h2 class="title">Go Login - Database Hub</h2>
@@ -21,7 +21,7 @@
                         Open the door towards the new world.
                     </p>
                 </div>
-                <svg t="1555397804833" class="icon" style="font-size: 36px;font-weight: 500;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1961" data-spm-anchor-id="a313x.7781069.0.i0"><path d="M950.378747 494.018463 660.673599 198.314695c-9.380648-9.624195-24.707728-9.624195-34.138518 0-9.381671 9.576099-9.381671 25.222451 0 34.848693l248.494561 253.612115L88.338443 486.775502c-13.3214 0-24.142863 11.047614-24.142863 24.641213 0 13.597693 10.821463 24.645306 24.142863 24.645306l786.690176 0L626.535081 789.694603c-9.381671 9.603729-9.381671 25.248034 0 34.847669 4.76349 4.836145 10.939143 7.194866 17.116843 7.194866 6.1777 0 12.355399-2.405793 17.116843-7.194866l289.704125-295.723212c9.383718-9.602705 9.383718-25.244964 0-34.849716L950.378747 494.018463z" p-id="1962"></path></svg>
+                <Icon type="md-arrow-forward" size="32" />
             </div>
         </a>
     </main>
@@ -39,14 +39,41 @@
         <p class="text-center">Browser Note: Chrome with version no less than 62 is recommended.</p>
     </footer>
 </div>
+<script src="static/libs/axios@0.18.0/axios.min.js"></script>
 <script src="./static/libs/js-cookie@2.2.0/js.cookie.js"></script>
+<script src="static/plugins/ajax.js"></script>
+<script src="./static/libs/vue@2.5.17/vue.min.js"></script>
+<script src="./static/libs/iview@3.1.5/iview.min.js"></script>
 <script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+<script src="./static/libs/particles@2.0.0/particles.min.js"></script>
+<script src="./static/config/api.js"></script>
 <script type="application/javascript">
     // 检测登录状态
     if (SinriQF.cookies.getCookie('database_hub_token') && SinriQF.cookies.getCookie('DatabaseHubUser')) {
         window.location.href = 'index.html';
     }
-</script>
 
+    new Vue({
+        el: '#app',
+        data () {
+            return {
+                jumpLink: ''
+            }
+        },
+        methods: {
+            getLoginConfig () {
+                ajax('getLoginConfig').then(({cas_login_url}) => {
+                    this.jumpLink =  cas_login_url
+                }).catch(({message}) => {
+                    SinriQF.iview.showErrorMessage(message, 5)
+                })
+            }
+        },
+        created () {
+            this.getLoginConfig();
+            particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json');
+        }
+    });
+</script>
 </body>
 </html>
