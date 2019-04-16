@@ -43,7 +43,7 @@
 <script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
 <script type="application/javascript">
     // 检测登录状态
-    if (SinriQF.cookies.getCookie(SinriQF.config.TokenName) && SinriQF.cookies.getCookie('DatabaseHubUser')) {
+    if (SinriQF.cookies.getCookie('database_hub_token') && SinriQF.cookies.getCookie('DatabaseHubUser')) {
         window.location.href = 'index.html';
     }
 </script>
