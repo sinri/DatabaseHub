@@ -1,4 +1,9 @@
 const API = {
+    // CAS
+    getLoginConfig: {
+        url: 'CasController/getLoginConfig'
+    },
+
     // Dingtalk
     getScanQRCodeLoginToken: {
         url: 'DingtalkLoginController/getScanQRCodeLoginToken'
