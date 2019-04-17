@@ -41,7 +41,7 @@ class CasController extends ArkWebController
         try {
             $tp_code = HubCore::getConfig(['aa', 'tp_code'], '');
             $cas_domain = HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com');
-            $this->_sayOK(['cas_login_url' => $cas_domain . '/CAS/login?service=' . $tp_code ]);
+            $this->_sayOK(['cas_login_url' => $cas_domain . '/cas/login?service=' . $tp_code ]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
         }
