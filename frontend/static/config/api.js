@@ -3,6 +3,9 @@ const API = {
     getLoginConfig: {
         url: 'CasController/getLoginConfig'
     },
+    logout: {
+        url: 'CasController/logout'
+    },
 
     // Dingtalk
     getScanQRCodeLoginToken: {
