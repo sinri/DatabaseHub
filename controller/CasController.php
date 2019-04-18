@@ -14,7 +14,6 @@ use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\plugin\LoginPluginWithLeqeeCAS;
-use sinri\enoch\core\LibRequest;
 
 class CasController extends ArkWebController
 {
@@ -25,7 +24,7 @@ class CasController extends ArkWebController
     {
         parent::__construct();
         $this->tp_code = HubCore::getConfig(['aa', 'tp_code'], '');
-        $this->cas_url = HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com');
+        $this->cas_url = HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com') . '/cas';
 
     }
 
@@ -51,7 +50,7 @@ class CasController extends ArkWebController
     public function getLoginConfig()
     {
         try {
-            $this->_sayOK(['cas_login_url' => $this->cas_url . '/cas/login?service=' . $this->tp_code ]);
+            $this->_sayOK(['cas_login_url' => $this->cas_url . '/login?service=' . $this->tp_code ]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
         }
@@ -62,15 +61,16 @@ class CasController extends ArkWebController
      */
     public function logout()
     {
-        $user_session_token = LibRequest::getCookie('database_hub_token', null);
-        setcookie('database_hub_token', null);
-        setcookie('DatabaseHubUser', null);
-        if (!empty($token)) {
+        session_start();
+        $user_session_token = isset($_COOKIE['database_hub_token']) ? $_COOKIE['database_hub_token'] : '';
+        setcookie('database_hub_token', "[]", time()-86400,'/');
+        setcookie('DatabaseHubUser', "[]", time()-86400,'/');
+        unset($_COOKIE['database_hub_token']);
+        unset($_COOKIE['DatabaseHubUser']);
+        if (!empty($user_session_token)) {
             $verify_session = (new DingtalkScanLoginSessionEntity())->getByUserSessionToken($user_session_token);
             if ($verify_session) {
-                setcookie('database_hub_token', null);
-                setcookie('DatabaseHubUser', null);
-                header('Location:' . $this->cas_url . '/cas/logout?service=' . $this->tp_code . '&tp_token=' . $verify_session->token);
+                header('Location:' . $this->cas_url . '/logout?service=' . $this->tp_code . '&tp_token=' . $verify_session->token);
             }
         }
         header('Location:/frontend/login.html');
