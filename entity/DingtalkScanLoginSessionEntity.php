@@ -111,4 +111,15 @@ class DingtalkScanLoginSessionEntity
         $row = $this->dingtalkScanLoginSessionModel->selectRow($conditions);
         return $this->loadEntity($row);
     }
+
+    /**
+     * @param    int $user_session_token
+     * @return  bool|DingtalkScanLoginSessionEntity
+     */
+    public function getByUserSessionToken($user_session_token)
+    {
+        $conditions = ['user_session_token' => $user_session_token];
+        $row = $this->dingtalkScanLoginSessionModel->selectRow($conditions);
+        return $this->loadEntity($row);
+    }
 }

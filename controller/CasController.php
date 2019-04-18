@@ -14,9 +14,21 @@ use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\plugin\LoginPluginWithLeqeeCAS;
+use sinri\enoch\core\LibRequest;
 
 class CasController extends ArkWebController
 {
+    protected $cas_url = '';
+    protected $tp_code = '';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->tp_code = HubCore::getConfig(['aa', 'tp_code'], '');
+        $this->cas_url = HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com');
+
+    }
+
     public function loginCallback()
     {
         $ticket = $this->_readRequest("ticket", '');
@@ -39,12 +51,29 @@ class CasController extends ArkWebController
     public function getLoginConfig()
     {
         try {
-            $tp_code = HubCore::getConfig(['aa', 'tp_code'], '');
-            $cas_domain = HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com');
-            $this->_sayOK(['cas_login_url' => $cas_domain . '/cas/login?service=' . $tp_code ]);
+            $this->_sayOK(['cas_login_url' => $this->cas_url . '/cas/login?service=' . $this->tp_code ]);
         } catch (\Exception $e) {
             $this->_sayFail($e->getMessage());
         }
+    }
+
+    /**
+     * 退出登录删除token
+     */
+    public function logout()
+    {
+        $user_session_token = LibRequest::getCookie('database_hub_token', null);
+        setcookie('database_hub_token', null);
+        setcookie('DatabaseHubUser', null);
+        if (!empty($token)) {
+            $verify_session = (new DingtalkScanLoginSessionEntity())->getByUserSessionToken($user_session_token);
+            if ($verify_session) {
+                setcookie('database_hub_token', null);
+                setcookie('DatabaseHubUser', null);
+                header('Location:' . $this->cas_url . '/cas/logout?service=' . $this->tp_code . '&tp_token=' . $verify_session->token);
+            }
+        }
+        header('Location:/frontend/login.html');
     }
 
     /**
