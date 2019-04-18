@@ -41,6 +41,7 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
         if (!$insert_result) {
             throw new \Exception('会话建立失败，请刷新页面重试');
         }
+        $dingtalkScanLoginSessionEntity->loginSessionId = $insert_result;
 
         $curl = new ArkCurl();
         $curl->setLogger(HubCore::getLogger());
