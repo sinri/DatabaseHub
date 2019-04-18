@@ -156,7 +156,7 @@ Vue.component('top-banner', {
                 case 'userInfo':
                     break;
                 case 'logout':
-                    window.location.href = API.logout.url;
+                    window.location.href = SinriQF.config.ApiBase + API.logout.url;
 
                     break;
                 case 'quickQueryPage':
