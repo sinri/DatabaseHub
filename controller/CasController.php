@@ -61,14 +61,15 @@ class CasController extends ArkWebController
      */
     public function logout()
     {
+        session_start();
         $user_session_token = isset($_COOKIE['database_hub_token']) ? $_COOKIE['database_hub_token'] : '';
-        setcookie('database_hub_token', null);
-        setcookie('DatabaseHubUser', null);
+        setcookie('database_hub_token', "[]", time()-86400,'/');
+        setcookie('DatabaseHubUser', "[]", time()-86400,'/');
+        unset($_COOKIE['database_hub_token']);
+        unset($_COOKIE['DatabaseHubUser']);
         if (!empty($user_session_token)) {
             $verify_session = (new DingtalkScanLoginSessionEntity())->getByUserSessionToken($user_session_token);
             if ($verify_session) {
-                setcookie('database_hub_token', null);
-                setcookie('DatabaseHubUser', null);
                 header('Location:' . $this->cas_url . '/logout?service=' . $this->tp_code . '&tp_token=' . $verify_session->token);
             }
         }
