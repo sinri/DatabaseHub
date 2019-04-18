@@ -14,7 +14,6 @@ use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\plugin\LoginPluginWithLeqeeCAS;
-use sinri\enoch\core\LibRequest;
 
 class CasController extends ArkWebController
 {
@@ -62,7 +61,7 @@ class CasController extends ArkWebController
      */
     public function logout()
     {
-        $user_session_token = LibRequest::getCookie('database_hub_token', null);
+        $user_session_token = isset($_COOKIE['database_hub_token']) ? $_COOKIE['database_hub_token'] : '';
         setcookie('database_hub_token', null);
         setcookie('DatabaseHubUser', null);
         if (!empty($user_session_token)) {
