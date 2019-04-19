@@ -126,7 +126,7 @@ new Vue({
                     }, this.checkDelay);
                 } else {
                     this.loginSuccess = true;
-                    this.loginv1(res);
+                    this.login(res);
                 }
             }).catch(() => {
                 this.needRefresh = true;
