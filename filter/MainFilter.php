@@ -35,6 +35,9 @@ class MainFilter extends ArkRequestFilter
         if (self::hasPrefixAmong($path, ['/api/DingtalkLoginController/'])) {
             return true;
         }
+        if (self::hasPrefixAmong($path, ['/api/CasController/'])) {
+            return true;
+        }
         try {
             $token = Ark()->webInput()->readRequest("token", "");
             $preparedData['session'] = SessionEntity::instanceByToken($token);

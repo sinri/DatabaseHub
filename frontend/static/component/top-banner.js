@@ -41,6 +41,7 @@ Vue.component('top-banner', {
                     <menu-item v-if="!item.admin || isAdmin"
                         :key="item.name"
                         :name="item.name"
+                        :to="item.to"
                         :style="item.style">
                         <Icon :type="item.icon" v-if="item.icon" /> {{ item.text }}
                     </menu-item>
@@ -155,9 +156,7 @@ Vue.component('top-banner', {
                 case 'userInfo':
                     break;
                 case 'logout':
-                    SinriQF.cookies.cleanCookie('DatabaseHubUser');
-                    SinriQF.cookies.cleanCookie(SinriQF.config.TokenName);
-                    window.location.href = 'login.html';
+                    window.location.href = SinriQF.config.ApiBase + API.logout.url;
 
                     break;
                 case 'quickQueryPage':

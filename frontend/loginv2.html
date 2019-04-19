@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Login - Database Hub</title>
+    <link rel="stylesheet" href="./static/libs/iview@3.1.5/iview.css">
+    <link rel="stylesheet" href="./static/styles/login.css">
+</head>
+<body>
+<div id="app" class="page" v-cloak>
+    <div id="particles" class="bg"></div>
+    <main>
+        <div class="login">
+            <h1 class="title">Login - Database Hub</h1>
+            <p class="slogan">
+                Open the door towards the new world.
+            </p>
+            <div class="c-scan-qr-code-login">
+                <div class="c-scan-qr-code-login-img-wrapper">
+                    <div class="c-scan-qr-code-login-mask" v-show="needRefresh || loginSuccess">
+                        <div class="text red" v-if="needRefresh">
+                            您的二维码已失效，<br/>
+                            请点击下方刷新按钮
+                        </div>
+                        <div class="text" v-if="loginSuccess">
+                            登录成功
+                        </div>
+                    </div>
+                    <img :src="qrCodeLink" width="240" v-if="qrCodeLink">
+                </div>
+
+                <div class="c-scan-qr-code-login-tips">
+                    请使用钉钉扫描二维码登录
+                    <a class="c-scan-qr-code-login-refresh-link" href="javascript:"
+                       @click="refreshQRCode">
+                        <Icon type="md-refresh" size="16" />
+                        刷新
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p class="copyright text-center">
+            Copyright &copy; 2018
+            |
+            This project is maintained by
+            <a href="https://github.com/sinri">Sinri</a>
+            ,
+            <a href="https://github.com/RoamIn">Vinci</a>
+            and
+            <a href="https://github.com/caroltc">Caroltc</a>.
+        </p>
+        <p class="text-center">Browser Note: Chrome with version no less than 62 is recommended.</p>
+    </footer>
+</div>
+<!--Libs-->
+<script src="./static/libs/axios@0.18.0/axios.min.js"></script>
+<script src="./static/libs/js-cookie@2.2.0/js.cookie.js"></script>
+<script src="./static/libs/vue@2.5.17/vue.min.js"></script>
+<script src="./static/libs/vue-router@3.0.2/vue-router.min.js"></script>
+<script src="./static/libs/iview@3.1.5/iview.min.js"></script>
+<script src="./static/libs/particles@2.0.0/particles.min.js"></script>
+<script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+
+<!--Config-->
+<script src="./static/config/api.js"></script>
+
+<!--Plugins-->
+<script src="./static/plugins/ajax.js"></script>
+<script>
+new Vue({
+    el: '#app',
+    data () {
+        return {
+            loginToken: '',
+            timestamp: '',
+            needRefresh: false,
+            loginSuccess: false,
+            timer: null,
+            aaDomain: '',
+            tp_code: '',
+            checkDelay: 3000
+        }
+    },
+    computed: {
+        qrCodeLink () {
+            if (this.loginToken === '') return ''
+
+            return `${this.aaDomain}/index.php/api/DingtalkLogin/getQRCodeV2?client_data=${this.loginToken}&tp_code=${this.tp_code}&size=6&t=${this.timestamp}`
+        }
+    },
+    methods: {
+        login ({session}) {
+            SinriQF.cookies.setCookie(SinriQF.config.TokenName, session.token, session.expire);
+            SinriQF.cookies.setCookie('DatabaseHubUser', session.user, session.expire);
+
+            const targetHref = localStorage.getItem('target_href') || 'index.html';
+
+            localStorage.setItem('target_href', '');
+            window.location.href = targetHref;
+        },
+        getScanQRCodeLoginToken () {
+            ajax('getScanQRCodeLoginToken').then((res) => {
+                this.aaDomain = res.aa_domain;
+                this.loginToken = res.token;
+                this.tp_code = res.tp_code
+                this.needRefresh = false;
+                this.timer = setTimeout(() => {
+                    this.checkScanQRCodeLoginStatus();
+                }, this.checkDelay);
+            }).catch(() => {
+                SinriQF.iview.showErrorMessage('网络错误，获取二维码失败', 5);
+            })
+        },
+        checkScanQRCodeLoginStatus () {
+            ajax('checkScanQRCodeLoginStatus', {token: this.loginToken}).then((res) => {
+                const status = res.status;
+
+                if (status === 'WAIT') {
+                    this.timer = setTimeout(() => {
+                        this.checkScanQRCodeLoginStatus();
+                    }, this.checkDelay);
+                } else {
+                    this.loginSuccess = true;
+                    this.login2(res);
+                }
+            }).catch(() => {
+                this.needRefresh = true;
+                SinriQF.iview.showErrorMessage('网络错误，检测二维码失败', 5);
+            });
+        },
+        refreshQRCode () {
+            if (this.needRefresh) {
+                this.getScanQRCodeLoginToken();
+            } else {
+                clearTimeout(this.timer);
+                this.timestamp = (new Date()).getTime();
+                this.checkScanQRCodeLoginStatus();
+            }
+        },
+        init () {
+            this.getScanQRCodeLoginToken();
+        },
+        clear () {
+            clearTimeout(this.timer);
+        }
+    },
+    mounted () {
+        SinriQF.config.TokenName = 'database_hub_token';
+        SinriQF.config.vueInstance = this;
+        this.init();
+        particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json');
+    }
+});
+</script>
+</body>
+</html>
