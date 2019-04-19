@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Login - Database Hub</title>
+    <link rel="stylesheet" href="./static/libs/iview@3.1.5/iview.css">
+    <link rel="stylesheet" href="./static/styles/login.css">
+</head>
+<body>
+<div id="app" class="page" v-cloak>
+    <div id="particles" class="bg"></div>
+    <main>
+        <a :href="jumpLink">
+            <div class="login" style="display: flex;align-items: center;">
+                <div style="flex: auto;">
+                    <h2 class="title">点击登录 Database Hub</h2>
+                </div>
+                <Icon type="md-arrow-forward" size="32" />
+            </div>
+        </a>
+    </main>
+    <footer>
+        <p class="copyright text-center">
+            Copyright &copy; 2018
+            |
+            This project is maintained by
+            <a href="https://github.com/sinri">Sinri</a>
+            ,
+            <a href="https://github.com/RoamIn">Vinci</a>
+            and
+            <a href="https://github.com/caroltc">Caroltc</a>.
+        </p>
+        <p class="text-center">Browser Note: Chrome with version no less than 62 is recommended.</p>
+    </footer>
+</div>
+<script src="static/libs/axios@0.18.0/axios.min.js"></script>
+<script src="./static/libs/js-cookie@2.2.0/js.cookie.js"></script>
+<script src="static/plugins/ajax.js"></script>
+<!--<script src="./static/libs/vue@2.5.17/vue.min.js"></script>-->
+<!--<script src="./static/libs/iview@3.1.5/iview.min.js"></script>-->
+<script src="//www.everstray.com/cdn/QuickFrontend/SinriQF/dist/SinriQF-1.0.js"></script>
+<!--<script src="./static/libs/particles@2.0.0/particles.min.js"></script>-->
+<script src="./static/config/api.js"></script>
+<script type="application/javascript">
+    // 检测登录状态
+    if (SinriQF.cookies.getCookie('database_hub_token') && SinriQF.cookies.getCookie('DatabaseHubUser')) {
+        window.location.href = 'index.html';
+    }
+
+    ajax('getLoginConfig').then(({cas_login_url}) => {
+        window.location.href =  cas_login_url;
+    }).catch(({message}) => {
+        alert(message)
+    })
+
+
+    // new Vue({
+    //     el: '#app',
+    //     data () {
+    //         return {
+    //             jumpLink: ''
+    //         }
+    //     },
+    //     methods: {
+    //         getLoginConfig () {
+    //             ajax('getLoginConfig').then(({cas_login_url}) => {
+    //                 this.jumpLink =  cas_login_url;
+    //             }).catch(({message}) => {
+    //                 SinriQF.iview.showErrorMessage(message, 5)
+    //             })
+    //         }
+    //     },
+    //     created () {
+    //         this.getLoginConfig();
+    //         particlesJS.load('particles', './static/libs/particles@2.0.0/particles.json');
+    //     }
+    // });
+</script>
+</body>
+</html>
