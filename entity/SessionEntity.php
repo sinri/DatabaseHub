@@ -89,7 +89,7 @@ class SessionEntity
      */
     public static function disableSession($token)
     {
-        return (new SessionModel())->update(['token' => $token], ['expire' => time()]);
+        return (new SessionModel())->update(['token' => $token], ['expire' => time() - 3600]);
     }
 
 }

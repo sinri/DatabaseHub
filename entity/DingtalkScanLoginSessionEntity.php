@@ -113,6 +113,17 @@ class DingtalkScanLoginSessionEntity
     }
 
     /**
+     * @param    int $token
+     * @return  bool|DingtalkScanLoginSessionEntity
+     */
+    public function getByTokenWithoutCheck($token)
+    {
+        $conditions = ['token' => $token];
+        $row = $this->dingtalkScanLoginSessionModel->selectRow($conditions);
+        return $this->loadEntity($row);
+    }
+
+    /**
      * @param    int $user_session_token
      * @return  bool|DingtalkScanLoginSessionEntity
      */

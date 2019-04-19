@@ -80,7 +80,7 @@ class CasController extends ArkWebController
             $ticket = $this->_readRequest("ticket", '');
             $tp_token = $this->_readRequest("tp_token", '');
             if (!empty($tp_token)) {
-                $verify_session = (new DingtalkScanLoginSessionEntity())->getByToken($tp_token);
+                $verify_session = (new DingtalkScanLoginSessionEntity())->getByTokenWithoutCheck($tp_token);
                 if ($verify_session) {
                     SessionEntity::disableSession($verify_session->userSessionToken);
                 }
