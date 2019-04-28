@@ -50,11 +50,11 @@
         window.location.href = 'index.html';
     }
 
-    // ajax('getLoginConfig').then(({cas_login_url}) => {
-    //     window.location.href =  cas_login_url;
-    // }).catch(({message}) => {
-    //     alert(message)
-    // })
+    ajax('getLoginConfig').then(({cas_login_url}) => {
+        window.location.href =  cas_login_url;
+    }).catch(({message}) => {
+        alert(message)
+    })
 
 
     // new Vue({
