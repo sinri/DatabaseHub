@@ -44,6 +44,22 @@ class CasController extends ArkWebController
         }
     }
 
+    public function loginRedirectCallback()
+    {
+        $ticket = $this->_readRequest("ticket", '');
+        try {
+            if (empty($ticket)) {
+                throw new \Exception('ticket is empty');
+            }
+            $session_entity = (new LoginPluginWithLeqeeCAS())->validateAuthPair($ticket, null);
+            setcookie('database_hub_token', $session_entity->token, $session_entity->expire, '/');
+            setcookie('DatabaseHubUser', json_encode($session_entity->user), $session_entity->expire, '/');
+            header('Location:/frontend/login-redirect.html');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
     /**
      * 获取登录配置
      */
