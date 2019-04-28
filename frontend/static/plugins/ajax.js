@@ -39,7 +39,7 @@ function ajax (apiName, data = {}, cancelExecutor = (c) => c) {
                 SinriQF.cookies.cleanCookie(SinriQF.config.TokenName)
                 SinriQF.iview.showErrorMessage('登录已过期', 3)
                 setTimeout(() => {
-                    window.location.href = '/login.html'
+                    window.location.href = 'login.html'
                 }, 3000)
             }
 
