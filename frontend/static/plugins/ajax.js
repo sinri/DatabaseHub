@@ -35,6 +35,14 @@ function ajax (apiName, data = {}, cancelExecutor = (c) => c) {
         }).catch((error) => {
             if (axios.isCancel(error)) return;
 
+            if (error.response.status === 403) {
+                SinriQF.cookies.cleanCookie(SinriQF.config.TokenName)
+                SinriQF.iview.showErrorMessage('登录已过期', 3)
+                setTimeout(() => {
+                    window.location.href = '/login.html'
+                }, 3000)
+            }
+
             reject({
                 error,
                 status: -1,
