@@ -90,7 +90,7 @@ new Vue({
         qrCodeLink () {
             if (this.loginToken === '') return ''
 
-            return `${this.aaDomain}/index.php/api/DingtalkLogin/getQRCode?client_data=${this.loginToken}&tp_code=${this.tp_code}&size=6&t=${this.timestamp}`
+            return `${this.aaDomain}/index.php/api/DingtalkLogin/getQRCodeV2?client_data=${this.loginToken}&tp_code=${this.tp_code}&size=6&t=${this.timestamp}`
         }
     },
     methods: {
