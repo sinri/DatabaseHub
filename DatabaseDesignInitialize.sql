@@ -119,3 +119,15 @@ AS SELECT
    `a`.`duration` AS `duration`,
    `p`.`user_id` AS `permitted_user`
 FROM (`application` `a` join `permission` `p` on(((`a`.`database_id` = `p`.`database_id`) and (`a`.`type` = `p`.`permission`)))) where (`a`.`status` = 'APPLIED');
+
+CREATE TABLE `dingtalk_scan_login_session` (
+  `login_session_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `core_user_id` bigint(20) DEFAULT NULL COMMENT '登录成功后的用户id',
+  `user_session_token` varchar(200) DEFAULT NULL COMMENT '登录成功后系统对应token',
+  `token` varchar(200) NOT NULL COMMENT 'token',
+  `expire` int(11) NOT NULL COMMENT '过期时间戳',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`login_session_id`),
+  UNIQUE KEY `token` (`token`)
+) ENGINE=InnoDB AUTO_INCREMENT=317 DEFAULT CHARSET=utf8 COMMENT='钉钉扫码登陆session'
