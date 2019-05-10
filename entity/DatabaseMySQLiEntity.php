@@ -9,6 +9,7 @@
 namespace sinri\databasehub\entity;
 
 
+use Exception;
 use sinri\ark\database\mysqli\ArkMySQLi;
 use sinri\ark\database\mysqli\ArkMySQLiConfig;
 use sinri\databasehub\core\HubCore;
@@ -26,7 +27,7 @@ class DatabaseMySQLiEntity
     /**
      * @param DatabaseEntity $database
      * @param null|AccountEntity $account
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($database, $account = null)
     {
@@ -72,13 +73,13 @@ class DatabaseMySQLiEntity
         try {
             $multiQueryDone = $this->mysqliAgent->getInstanceOfMySQLi()->multi_query($query);
             if (!$multiQueryDone) {
-                throw new \Exception("MySQLi multi_query cannot be done for query: " . $query);
+                throw new Exception("MySQLi multi_query cannot be done for query: " . $query);
             }
             $result = $this->mysqliAgent->getInstanceOfMySQLi()->store_result();
             if (!$result) {
-                throw new \Exception("MySQLi store_result failed, returned " . json_encode($result));
+                throw new Exception("MySQLi store_result failed, returned " . json_encode($result));
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $error[$sqlIdx] = $this->mysqliAgent->getInstanceOfMySQLi()->error;
             if (!empty($result)) {
                 $result->free();
@@ -143,7 +144,7 @@ class DatabaseMySQLiEntity
                     if ($result['warning_count'] > 0) {
                         $w = $this->mysqliAgent->getInstanceOfMySQLi()->get_warnings();
                         do {
-                            $result['warnings'][] = $w;
+                            $result['warnings'][] = $w;//seems no use here
                         } while ($w->next());
                     }
 
@@ -161,7 +162,7 @@ class DatabaseMySQLiEntity
                         HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " errno not zero and will ROLLBACK! " . $error[$sqlIdx]);
                         $this->mysqliAgent->getInstanceOfMySQLi()->rollback();
                         $this->mysqliAgent->getInstanceOfMySQLi()->close();
-                        throw new \Exception($error[$sqlIdx]);
+                        throw new Exception($error[$sqlIdx]);
                     }
 
                     $sqlIdx++;
@@ -173,14 +174,20 @@ class DatabaseMySQLiEntity
                 } while (
                     $this->mysqliAgent->getInstanceOfMySQLi()->more_results()
                     && $this->mysqliAgent->getInstanceOfMySQLi()->next_result()
-                    && !$this->mysqliAgent->getInstanceOfMySQLi()->errno
+                    //&& !$this->mysqliAgent->getInstanceOfMySQLi()->errno
                 );
+                $fin_errno = $this->mysqliAgent->getInstanceOfMySQLi()->errno;
+                $fin_error = $this->mysqliAgent->getInstanceOfMySQLi()->error;
+                if ($fin_errno != 0) {
+                    $error[$sqlIdx] = $fin_errno . " " . $fin_error;
+                    throw new Exception($error[$sqlIdx]);
+                }
             } else {
                 HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " multi_query failed with unknown error", [
                     'errno' => $this->mysqliAgent->getInstanceOfMySQLi()->errno,
                     'error' => $this->mysqliAgent->getInstanceOfMySQLi()->error,
                 ]);
-                throw new \Exception("multi_query failed. [" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . "]" . $this->mysqliAgent->getInstanceOfMySQLi()->error);
+                throw new Exception("multi_query failed. [" . $this->mysqliAgent->getInstanceOfMySQLi()->errno . "]" . $this->mysqliAgent->getInstanceOfMySQLi()->error);
             }
 
             HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " To commit");
@@ -188,7 +195,7 @@ class DatabaseMySQLiEntity
             $this->mysqliAgent->getInstanceOfMySQLi()->commit();
             $this->mysqliAgent->getInstanceOfMySQLi()->close();
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             HubCore::getLogger()->error(__METHOD__ . '@' . __LINE__ . " Met exception, go to rollback and false would be returned. " . $exception->getMessage());
             //if ($this->mysqliAgent->getInstanceOfMySQLi()->errno) {
             $error[$sqlIdx] = $this->mysqliAgent->getInstanceOfMySQLi()->error;
@@ -236,11 +243,11 @@ class DatabaseMySQLiEntity
             $t2 = microtime(true);
             $duration = $t2 - $t1;
             if (!$multiQueryDone) {
-                throw new \Exception("MySQLi multi_query cannot be done for query: " . $query);
+                throw new Exception("MySQLi multi_query cannot be done for query: " . $query);
             }
             $result = $this->mysqliAgent->getInstanceOfMySQLi()->store_result();
             if (!$result) {
-                throw new \Exception("MySQLi store_result failed, returned " . json_encode($result));
+                throw new Exception("MySQLi store_result failed, returned " . json_encode($result));
             }
 
             HubCore::getLogger()->info("look here the result", ["result" => $result]);
@@ -256,7 +263,7 @@ class DatabaseMySQLiEntity
             $result->free();
             $this->mysqliAgent->getInstanceOfMySQLi()->close();
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $error[] = $this->mysqliAgent->getInstanceOfMySQLi()->error;
             if (!empty($result)) {
                 $result->free();

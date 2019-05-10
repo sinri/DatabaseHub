@@ -9,6 +9,7 @@
 namespace sinri\databasehub\entity;
 
 
+use Exception;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\DatabaseModel;
@@ -47,7 +48,7 @@ class ApplicationEntity
     /**
      * @param array $row
      * @return ApplicationEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function instanceByRow($row)
     {
@@ -78,7 +79,7 @@ class ApplicationEntity
     /**
      * @param int $applicationId
      * @return ApplicationEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function instanceById($applicationId)
     {
@@ -87,7 +88,7 @@ class ApplicationEntity
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function refresh()
     {
@@ -239,7 +240,7 @@ class ApplicationEntity
                 $totalAffect = 0;
                 $sqlIdx = 1;
                 foreach ($results as $result) {
-                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " done: " . json_encode($done), $results);
+                    HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " done: " . json_encode($done), $result);
 
                     $recordInfo .= "No." . $sqlIdx . " Statement: " . $result['info'] . "; ";
 
@@ -260,13 +261,13 @@ class ApplicationEntity
 
                     $sqlIdx++;
                 }
-                $recordInfo .= "Totally affected" . $totalAffect . " row(s)." . PHP_EOL;
+                $recordInfo .= "Totally affected " . $totalAffect . " row(s)." . PHP_EOL;
             }
 
             $recordInfo .= "Time Cost: " . number_format($duration, 4) . " seconds" . PHP_EOL;
 
             if (!$done) {
-                throw new \Exception("Execute Failed");
+                throw new Exception("Execute Failed");
             }
 
             $afx = (new ApplicationModel())->update(
@@ -285,7 +286,7 @@ class ApplicationEntity
             HubCore::getLogger()->info("Recorded. " . $recordInfo, ['application_id' => $this->applicationId]);
 
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             if ($duration < 0) {
                 $duration = microtime(true) - $sqlBeginTime;
             }
@@ -306,7 +307,7 @@ class ApplicationEntity
 
             try {
                 $this->refresh();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 HubCore::getLogger()->error("refresh application entity failed: " . $e->getMessage());
             }
             $this->writeRecord(0, "EXECUTE", $errorMessage);
@@ -318,7 +319,7 @@ class ApplicationEntity
     /**
      * @param string[] $error
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function taskExecuteReadSQL(&$error)
     {
@@ -332,7 +333,7 @@ class ApplicationEntity
     /**
      * @param string[] $error
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function taskExecuteCallSQL(&$error)
     {
@@ -346,7 +347,7 @@ class ApplicationEntity
      * @param $results
      * @param $error
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function taskExecuteModifySQL(&$results, &$error)
     {
