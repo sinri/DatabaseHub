@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "b4ac8786ca3b6381c81faceae44dea90",
+  "content-hash": "2d3926f66e28db47d4f502b0abadbbac",
     "packages": [
         {
           "name": "analog/analog",
-          "version": "1.0.11-stable",
+          "version": "1.0.12-stable",
           "source": {
             "type": "git",
             "url": "https://github.com/jbroadway/analog.git",
-            "reference": "f04906be5a740794959ecceaaae307792cfe3b58"
+            "reference": "4ac87ac59555db6eaba734b2b022fcc296e8729d"
           },
           "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/jbroadway/analog/zipball/f04906be5a740794959ecceaaae307792cfe3b58",
-            "reference": "f04906be5a740794959ecceaaae307792cfe3b58",
+            "url": "https://api.github.com/repos/jbroadway/analog/zipball/4ac87ac59555db6eaba734b2b022fcc296e8729d",
+            "reference": "4ac87ac59555db6eaba734b2b022fcc296e8729d",
             "shasum": "",
             "mirrors": [
               {
@@ -62,7 +62,7 @@
             "logging",
             "syslog"
           ],
-          "time": "2018-12-08T15:36:38+00:00"
+          "time": "2019-03-05T22:41:22+00:00"
         },
       {
         "name": "greenlion/php-sql-parser",
@@ -128,16 +128,16 @@
       },
       {
             "name": "jaybizzle/crawler-detect",
-        "version": "v1.2.78",
+        "version": "v1.2.81",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-              "reference": "0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6"
+              "reference": "ffb1880f8e9610569d3bc70dc90bf07db311471d"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6",
-              "reference": "0f91f34d375ddd5d7034b9eaf6b74acd0b2a0ed6",
+              "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/ffb1880f8e9610569d3bc70dc90bf07db311471d",
+              "reference": "ffb1880f8e9610569d3bc70dc90bf07db311471d",
               "shasum": "",
               "mirrors": [
                 {
@@ -179,7 +179,7 @@
                 "crawlerdetect",
                 "php crawler detect"
             ],
-        "time": "2019-01-15T21:21:27+00:00"
+        "time": "2019-04-23T20:02:21+00:00"
         },
         {
           "name": "jdorn/sql-formatter",
@@ -491,6 +491,60 @@
             "time": "2018-11-20T15:27:04+00:00"
         },
         {
+          "name": "psr/simple-cache",
+          "version": "1.0.1",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/simple-cache.git",
+            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+            "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+            "shasum": "",
+            "mirrors": [
+              {
+                "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                "preferred": true
+              }
+            ]
+          },
+          "require": {
+            "php": ">=5.3.0"
+          },
+          "type": "library",
+          "extra": {
+            "branch-alias": {
+              "dev-master": "1.0.x-dev"
+            }
+          },
+          "autoload": {
+            "psr-4": {
+              "Psr\\SimpleCache\\": "src/"
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "PHP-FIG",
+              "homepage": "http://www.php-fig.org/"
+            }
+          ],
+          "description": "Common interfaces for simple caching",
+          "keywords": [
+            "cache",
+            "caching",
+            "psr",
+            "psr-16",
+            "simple-cache"
+          ],
+          "time": "2017-10-23T01:57:42+00:00"
+        },
+      {
             "name": "ralouphie/getallheaders",
             "version": "2.0.5",
             "source": {
@@ -584,16 +638,16 @@
         },
         {
             "name": "sinri/ark",
-          "version": "2.3",
+          "version": "2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark.git",
-              "reference": "73ae456afea7fd06baefa57b13ff03427f977885"
+              "reference": "d7827d03eb2b139a614cc6a1bc3e17a70964dcba"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark/zipball/73ae456afea7fd06baefa57b13ff03427f977885",
-              "reference": "73ae456afea7fd06baefa57b13ff03427f977885",
+              "url": "https://api.github.com/repos/sinri/Ark/zipball/d7827d03eb2b139a614cc6a1bc3e17a70964dcba",
+              "reference": "d7827d03eb2b139a614cc6a1bc3e17a70964dcba",
               "shasum": "",
               "mirrors": [
                 {
@@ -608,21 +662,21 @@
                 "php": "~7.0",
                 "ralouphie/getallheaders": "^2.0",
                 "ralouphie/mimey": "^1.0",
-                "sinri/ark-cache": "~1.0",
-              "sinri/ark-core": "~2.0"
+              "sinri/ark-cache": "~2.0",
+              "sinri/ark-core": "~2.2"
             },
             "require-dev": {
                 "ext-pcntl": "*",
               "sinri/ark-curl": "~2.0",
-                "sinri/ark-pdo": "~1.0",
-                "sinri/ark-queue": "~1.0"
+              "sinri/ark-pdo": "~1.5",
+              "sinri/ark-queue": "~2.2"
             },
             "suggest": {
                 "sinri/ark-couchdb": "~1.0",
               "sinri/ark-curl": "~2.0",
-                "sinri/ark-mail": "~1.0",
-                "sinri/ark-mysqli": "~1.0",
-                "sinri/ark-pdo": "~1.0",
+              "sinri/ark-mail": "~1.2",
+              "sinri/ark-mysqli": "~1.2",
+              "sinri/ark-pdo": "~1.5",
                 "sinri/ark-qr-builder": "~1.0",
                 "sinri/ark-redis": "~1.1",
                 "sinri/ark-sqlite3": "~1.1"
@@ -647,20 +701,20 @@
                 }
             ],
             "description": "A fundamental toolkit for PHP.",
-          "time": "2019-01-29T14:14:08+00:00"
+          "time": "2019-05-13T14:34:56+00:00"
         },
         {
             "name": "sinri/ark-cache",
-            "version": "1.0",
+          "version": "2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark-Cache.git",
-                "reference": "975ca8182a124282ee97f27c11ecbe5610e23795"
+              "reference": "224d0b4aa9ae54c3f05348cd11b918c2836b1d3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sinri/Ark-Cache/zipball/975ca8182a124282ee97f27c11ecbe5610e23795",
-                "reference": "975ca8182a124282ee97f27c11ecbe5610e23795",
+              "url": "https://api.github.com/repos/sinri/Ark-Cache/zipball/224d0b4aa9ae54c3f05348cd11b918c2836b1d3d",
+              "reference": "224d0b4aa9ae54c3f05348cd11b918c2836b1d3d",
               "shasum": "",
               "mirrors": [
                 {
@@ -669,6 +723,9 @@
                 }
               ]
             },
+          "require": {
+            "psr/simple-cache": "~1.0"
+          },
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -686,20 +743,20 @@
                 }
             ],
             "description": "The cache component for Ark 2",
-            "time": "2018-09-07T02:53:31+00:00"
+          "time": "2019-03-26T09:08:43+00:00"
         },
         {
             "name": "sinri/ark-core",
-          "version": "2.0",
+          "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark-Core.git",
-              "reference": "5c0eae9cfb2da4eefc06e92e9667f0d31c380c5c"
+              "reference": "fb5715e72b500ddc08dd52d9701d713fe49f48c6"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark-Core/zipball/5c0eae9cfb2da4eefc06e92e9667f0d31c380c5c",
-              "reference": "5c0eae9cfb2da4eefc06e92e9667f0d31c380c5c",
+              "url": "https://api.github.com/repos/sinri/Ark-Core/zipball/fb5715e72b500ddc08dd52d9701d713fe49f48c6",
+              "reference": "fb5715e72b500ddc08dd52d9701d713fe49f48c6",
               "shasum": "",
               "mirrors": [
                 {
@@ -729,7 +786,7 @@
                 }
             ],
             "description": "The core components of Ark 2",
-          "time": "2019-01-08T16:30:30+00:00"
+          "time": "2019-04-22T02:43:21+00:00"
         },
         {
           "name": "sinri/ark-curl",
@@ -777,16 +834,16 @@
         },
       {
             "name": "sinri/ark-mysqli",
-        "version": "1.1",
+        "version": "1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark-MySQLi.git",
-              "reference": "aef90b21412d7fcfc148c9ee63310598a937fc5e"
+              "reference": "e7d0c81bcf9c302330b1ef61da26c64f911b7ff0"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark-MySQLi/zipball/aef90b21412d7fcfc148c9ee63310598a937fc5e",
-              "reference": "aef90b21412d7fcfc148c9ee63310598a937fc5e",
+              "url": "https://api.github.com/repos/sinri/Ark-MySQLi/zipball/e7d0c81bcf9c302330b1ef61da26c64f911b7ff0",
+              "reference": "e7d0c81bcf9c302330b1ef61da26c64f911b7ff0",
               "shasum": "",
               "mirrors": [
                 {
@@ -816,20 +873,20 @@
                 }
             ],
             "description": "The mysqli component for Ark 2",
-        "time": "2019-01-09T08:15:00+00:00"
+        "time": "2019-03-29T13:55:20+00:00"
         },
         {
             "name": "sinri/ark-pdo",
-          "version": "1.4",
+          "version": "1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark-PDO.git",
-              "reference": "f52ca2f7695203bd81872c457d3c793d6b4775ac"
+              "reference": "066736154c05781284e220eea8da9f632f087c3b"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark-PDO/zipball/f52ca2f7695203bd81872c457d3c793d6b4775ac",
-              "reference": "f52ca2f7695203bd81872c457d3c793d6b4775ac",
+              "url": "https://api.github.com/repos/sinri/Ark-PDO/zipball/066736154c05781284e220eea8da9f632f087c3b",
+              "reference": "066736154c05781284e220eea8da9f632f087c3b",
               "shasum": "",
               "mirrors": [
                 {
@@ -860,20 +917,20 @@
                 }
             ],
             "description": "The PDO Component for Ark 2",
-          "time": "2019-01-09T05:22:49+00:00"
+          "time": "2019-04-23T02:48:25+00:00"
         },
       {
         "name": "sinri/ark-queue",
-        "version": "2.1",
+        "version": "2.3",
         "source": {
           "type": "git",
           "url": "https://github.com/sinri/Ark-Queue.git",
-          "reference": "78b802c91668ce211c102ae8b31b15e2a233bf6e"
+          "reference": "bf14fc0f82b484ba461b5347b8599274d58981c0"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/78b802c91668ce211c102ae8b31b15e2a233bf6e",
-          "reference": "78b802c91668ce211c102ae8b31b15e2a233bf6e",
+          "url": "https://api.github.com/repos/sinri/Ark-Queue/zipball/bf14fc0f82b484ba461b5347b8599274d58981c0",
+          "reference": "bf14fc0f82b484ba461b5347b8599274d58981c0",
           "shasum": "",
           "mirrors": [
             {
@@ -903,20 +960,20 @@
           }
         ],
         "description": "The queue component for Ark 2",
-        "time": "2019-01-22T15:10:43+00:00"
+        "time": "2019-05-16T05:51:54+00:00"
       },
       {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.10.0",
+        "version": "v1.11.0",
         "source": {
           "type": "git",
           "url": "https://github.com/symfony/polyfill-mbstring.git",
-          "reference": "c79c051f5b3a46be09205c73b80b346e4153e494"
+          "reference": "fe5e94c604826c35a32fa832f35bd036b6799609"
         },
         "dist": {
           "type": "zip",
-          "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/c79c051f5b3a46be09205c73b80b346e4153e494",
-          "reference": "c79c051f5b3a46be09205c73b80b346e4153e494",
+          "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fe5e94c604826c35a32fa832f35bd036b6799609",
+          "reference": "fe5e94c604826c35a32fa832f35bd036b6799609",
           "shasum": "",
           "mirrors": [
             {
@@ -934,7 +991,7 @@
         "type": "library",
         "extra": {
           "branch-alias": {
-            "dev-master": "1.9-dev"
+            "dev-master": "1.11-dev"
           }
         },
         "autoload": {
@@ -968,7 +1025,7 @@
           "portable",
           "shim"
         ],
-        "time": "2018-09-21T13:07:52+00:00"
+        "time": "2019-02-06T07:57:58+00:00"
         }
     ],
     "packages-dev": [],
@@ -980,7 +1037,8 @@
   "platform": {
     "ext-json": "*",
     "ext-mysqli": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "ext-openssl": "*"
   },
     "platform-dev": []
 }

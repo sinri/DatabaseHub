@@ -9,6 +9,7 @@
 namespace sinri\databasehub\queue;
 
 
+use Exception;
 use sinri\ark\queue\parallel\ParallelQueueDaemonDelegate;
 use sinri\ark\queue\QueueTask;
 use sinri\databasehub\core\HubCore;
@@ -156,7 +157,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
 
     /**
      * @param QueueTask $task
-     * @param \Exception $exception
+     * @param Exception $exception
      */
     public function whenTaskRaisedException($task, $exception)
     {
@@ -169,7 +170,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
         if ($afx) {
             try {
                 ApplicationEntity::instanceById($task->getTaskReference())->writeRecord(0, 'EXECUTE', "Exception thrown when being executed: " . $exception->getMessage());
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 HubCore::getLogger()->error("whenTaskRaisedException writeRecord failed: " . $e->getMessage());
             }
         } else {
@@ -187,7 +188,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
         try {
             $task = ApplicationExecuteTask::createTask($row['application_id']);
             return $task;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             HubCore::getLogger()->error("Error when checkNextTask: " . $e->getMessage());
             return false;
         }
@@ -206,17 +207,19 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
      * When a child process is forked
      * @param int $pid
      * @param string $note
+     * @param null|int|string $taskReference
      */
-    public function whenChildProcessForked($pid, $note = '')
+    public function whenChildProcessForked($pid, $note = '', $taskReference = null)
     {
-        HubCore::getLogger()->info("whenChildProcessForked", ["pid" => $pid, "note" => $note]);
+        HubCore::getLogger()->info("whenChildProcessForked", ["pid" => $pid, "note" => $note, 'taskReference' => $taskReference]);
     }
 
     /**
      * When a child process is observed dead by WAIT function
      * @param int $pid
+     * @param array $detail
      */
-    public function whenChildProcessConfirmedDead($pid)
+    public function whenChildProcessConfirmedDead($pid, $detail = [])
     {
         $rows = (new ApplicationModel())->selectRows(['process_id' => $pid]);
         if (empty($rows)) {
