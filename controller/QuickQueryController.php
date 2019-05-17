@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\DatabaseEntity;
@@ -21,7 +22,7 @@ use sinri\databasehub\model\UserModel;
 class QuickQueryController extends AbstractAuthController
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function permittedDatabases()
     {
@@ -50,14 +51,14 @@ class QuickQueryController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function syncExecute()
     {
         $database_id = $this->_readRequest("database_id", 0);
         if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
             $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
-            if (!$x) throw new \Exception("Not Permitted");
+            if (!$x) throw new Exception("Not Permitted");
         }
 
         $databaseEntity = DatabaseEntity::instanceById($database_id);
@@ -68,7 +69,7 @@ class QuickQueryController extends AbstractAuthController
         $processedSQL = SQLChecker::processSqlForQuickQuery($sql, $maxRows);
         $type = SQLChecker::getTypeOfSingleSql($processedSQL);
         if (!in_array($type, ['SELECT', 'SHOW', 'EXPLAIN'])) {
-            throw new \Exception("Not a read statement");
+            throw new Exception("Not a read statement");
         }
 
         $quickQueryId = (new QuickQueryModel())->insert([
@@ -80,7 +81,7 @@ class QuickQueryController extends AbstractAuthController
             'type' => QuickQueryModel::TYPE_SYNC,
         ]);
         if (empty($quickQueryId)) {
-            throw new \Exception("Cannot register task");
+            throw new Exception("Cannot register task");
         }
 
         $t1 = microtime(true);

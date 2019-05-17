@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\SessionEntity;
@@ -41,7 +42,7 @@ class LoginController extends ArkWebController
             $session = $this->plugin->validateAuthPair($username, $password);
 
             $this->_sayOK(['session' => $session]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }
     }
@@ -54,23 +55,23 @@ class LoginController extends ArkWebController
         try {
             $username = $this->_readRequest("username", "");
             if (empty($username)) {
-                throw new \Exception('参数错误，请勿非法调用');
+                throw new Exception('参数错误，请勿非法调用');
             }
             $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
             $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
             $secret_key =  md5($tp_code . 'AA' . md5($tp_verification));
             $username = (new PrpcryptLibrary($secret_key))->decrypt($username);
             if (empty($username)) {
-                throw new \Exception('参数解析错误，请勿非法调用');
+                throw new Exception('参数解析错误，请勿非法调用');
             }
             $row = (new UserModel())->selectRow(['username' => $username, "user_org" => "LEQEE"]);
             if (empty($row)) {
-                throw new \Exception('用户未建档，首次使用请登录PC初始化帐号');
+                throw new Exception('用户未建档，首次使用请登录PC初始化帐号');
             }
             $userEntity = UserEntity::instanceByRow($row);
             $session =  SessionEntity::createSessionForUser($userEntity);
             $this->_sayOK(['session' => $session]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }
     }
@@ -82,7 +83,7 @@ class LoginController extends ArkWebController
     {
         try {
             $this->_sayOK(['list' => (new UserEntity())->getAllUser()]);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->_sayFail($exception->getMessage());
         }
     }

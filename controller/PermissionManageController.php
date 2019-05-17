@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\UserEntity;
@@ -19,7 +20,7 @@ use sinri\databasehub\model\UserModel;
 class PermissionManageController extends AbstractAuthController
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUserPermission()
     {
@@ -27,9 +28,9 @@ class PermissionManageController extends AbstractAuthController
         $user_ids = $this->_readRequest("user_ids", '', '/^(\,|[\d])+$/');
         $database_id_list = $this->_readRequest("database_id_list", []);
 
-        if (empty($database_id_list)) throw new \Exception("No target databases given.");
+        if (empty($database_id_list)) throw new Exception("No target databases given.");
 
-        if (empty($user_ids)) throw new \Exception("No target user given.");
+        if (empty($user_ids)) throw new Exception("No target user given.");
 
         $users = explode(',', $user_ids);
         $result = [];
@@ -41,7 +42,7 @@ class PermissionManageController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function updateUserPermission()
     {
@@ -52,12 +53,12 @@ class PermissionManageController extends AbstractAuthController
 
         $databaseRow = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
         if (empty($databaseRow) || $databaseRow['status'] !== DatabaseModel::STATUS_NORMAL) {
-            throw new \Exception("It is not a normal database.");
+            throw new Exception("It is not a normal database.");
         }
 
         $userRow = (new UserModel())->selectRow(['user_id' => $user_id]);
         if (empty($userRow) || $userRow['status'] !== UserModel::USER_STATUS_NORMAL) {
-            throw new \Exception("It is not a normal user.");
+            throw new Exception("It is not a normal user.");
         }
 
         $insertion = [];
@@ -70,7 +71,7 @@ class PermissionManageController extends AbstractAuthController
                 PermissionModel::PERMISSION_QUICK_QUERY,
                 PermissionModel::PERMISSION_KILL,
             ])) {
-                throw new \Exception("Unknown Permission");
+                throw new Exception("Unknown Permission");
             }
             $insertion[] = [
                 'database_id' => $database_id,
@@ -85,9 +86,9 @@ class PermissionManageController extends AbstractAuthController
             if (!empty($insertion)) (new PermissionModel())->batchInsert($insertion);
             HubCore::getDB()->commit();
             $this->_sayOK();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             HubCore::getDB()->rollBack();
-            throw new \Exception("Cannot execute, rolled back.");
+            throw new Exception("Cannot execute, rolled back.");
         }
 
     }

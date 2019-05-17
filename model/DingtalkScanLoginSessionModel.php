@@ -9,6 +9,7 @@
 namespace sinri\databasehub\model;
 
 
+use Exception;
 use sinri\ark\database\model\ArkDatabaseTableModel;
 use sinri\ark\database\pdo\ArkPDO;
 use sinri\databasehub\core\HubCore;
@@ -25,7 +26,7 @@ class DingtalkScanLoginSessionModel extends ArkDatabaseTableModel
 
     /**
      * @return ArkPDO
-     * @throws \Exception
+     * @throws Exception
      */
     public function db()
     {

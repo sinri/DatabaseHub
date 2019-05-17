@@ -9,6 +9,7 @@
 namespace sinri\databasehub\core;
 
 
+use Exception;
 use PhpMyAdmin\SqlParser\Components\Limit;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
@@ -102,13 +103,13 @@ class SQLChecker
      * @param string $sql
      * @param int $max_limit
      * @return string The original sql if well limited, or the modified sql.
-     * @throws \Exception
+     * @throws Exception
      */
     public static function processSqlForQuickQuery($sql, $max_limit = 512)
     {
         $split_result = self::split($sql);
         if (empty($split_result)) {
-            throw new \Exception("The SQL seems have syntax problem.");
+            throw new Exception("The SQL seems have syntax problem.");
         }
         $sql = $split_result[0];
         $parser = new Parser($sql);
@@ -136,7 +137,7 @@ class SQLChecker
             // Now use my own repo and a customized version 4.1.2.2, fixed the issue on top
             $parser = new PHPSQLParser($sql, $calcPositions);
             return ($parser->parsed != false);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error = $e->getMessage();
             return false;
         }

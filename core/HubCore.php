@@ -9,6 +9,7 @@
 namespace sinri\databasehub\core;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\core\ArkLogger;
 use sinri\ark\database\pdo\ArkPDO;
@@ -35,7 +36,7 @@ class HubCore
 
     /**
      * @return ArkPDO
-     * @throws \Exception
+     * @throws Exception
      */
     public static function getDB()
     {

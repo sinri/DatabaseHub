@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\entity\AccountEntity;
 use sinri\databasehub\entity\DatabaseEntity;
@@ -20,7 +21,7 @@ class DatabaseManageController extends AbstractAuthController
     /**
      * @param $database_info
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     private function parseAndCheckDatabaseInfo($database_info)
     {
@@ -35,7 +36,7 @@ class DatabaseManageController extends AbstractAuthController
         $result = [];
         foreach ($keys as $key) {
             if (!isset($database_info[$key])) {
-                throw new \Exception("Database Info is lack of field " . $key);
+                throw new Exception("Database Info is lack of field " . $key);
             }
             $result[$key] = $database_info[$key];
         }
@@ -43,7 +44,7 @@ class DatabaseManageController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function add()
     {
@@ -52,13 +53,13 @@ class DatabaseManageController extends AbstractAuthController
         $database_info = $this->parseAndCheckDatabaseInfo($database_info);
         $database_id = (new DatabaseModel())->insert($database_info);
         if (empty($database_id)) {
-            throw new \Exception("Cannot add database item.");
+            throw new Exception("Cannot add database item.");
         }
         $this->_sayOK(['database_id' => $database_id]);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function edit()
     {
@@ -68,13 +69,13 @@ class DatabaseManageController extends AbstractAuthController
         $database_info = $this->parseAndCheckDatabaseInfo($database_info);
         $afx = (new DatabaseModel())->update(['database_id' => $database_id], $database_info);
         if (empty($afx)) {
-            throw new \Exception("Cannot edit database item.");
+            throw new Exception("Cannot edit database item.");
         }
         $this->_sayOK(['updated' => $afx, 'database_id' => $database_id]);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function remove()
     {
@@ -82,7 +83,7 @@ class DatabaseManageController extends AbstractAuthController
         $database_id = $this->_readRequest("database_id", '', '/^[\d]+$/');
         $afx = (new DatabaseModel())->delete(['database_id' => $database_id]);
         if (empty($afx)) {
-            throw new \Exception("Cannot edit database item.");
+            throw new Exception("Cannot edit database item.");
         }
         $this->_sayOK(['deleted' => $afx, 'database_id' => $database_id]);
     }
@@ -98,7 +99,7 @@ class DatabaseManageController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function advanceList()
     {
@@ -114,7 +115,7 @@ class DatabaseManageController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function editAccount()
     {
@@ -122,7 +123,7 @@ class DatabaseManageController extends AbstractAuthController
         $database_id = $this->_readRequest("database_id", '', '/^[\d]+$/');
         $databaseRow = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
         if (empty($databaseRow)) {
-            throw new \Exception("No such database");
+            throw new Exception("No such database");
         }
         $username = $this->_readRequest("username", '', '/^[\S]+$/');
         $password = $this->_readRequest("password");
@@ -132,14 +133,14 @@ class DatabaseManageController extends AbstractAuthController
             'password' => $password,
         ]);
         if (empty($afx)) {
-            throw new \Exception("Cannot create account.");
+            throw new Exception("Cannot create account.");
         }
 
         $this->_sayOK(['afx' => $afx]);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function removeAccount()
     {
@@ -148,7 +149,7 @@ class DatabaseManageController extends AbstractAuthController
         $account_id = $this->_readRequest("account_id", '', '/^[\d]+$/');
         $afx = (new AccountModel())->delete(['database_id' => $database_id, 'account_id' => $account_id]);
         if (empty($afx)) {
-            throw new \Exception("Cannot remove account.");
+            throw new Exception("Cannot remove account.");
         }
         (new DatabaseModel())->update(['database_id' => $database_id, 'default_account_id' => $account_id], ['default_account_id' => 0]);
 
@@ -156,7 +157,7 @@ class DatabaseManageController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function setDefaultAccount()
     {
@@ -167,21 +168,21 @@ class DatabaseManageController extends AbstractAuthController
 
             $databaseRow = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
             if (empty($databaseRow) || $databaseRow['status'] !== DatabaseModel::STATUS_NORMAL) {
-                throw new \Exception("It is not a normal database.");
+                throw new Exception("It is not a normal database.");
             }
             $accountRow = (new AccountModel())->selectRow(['account_id' => $account_id, 'database_id' => $database_id]);
             if (empty($accountRow)) {
-                throw new \Exception("It is not a correct account.");
+                throw new Exception("It is not a correct account.");
             }
             (new DatabaseModel())->update(['database_id' => $database_id], ['default_account_id' => $account_id]);
             $this->_sayOK();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function databaseAccountList()
     {

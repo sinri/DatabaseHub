@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
@@ -39,12 +40,12 @@ class DingtalkLoginController extends ArkWebController
             $dingtalkScanLoginSessionEntity = new DingtalkScanLoginSessionEntity();
             $insert_result = $dingtalkScanLoginSessionEntity->createToken();
             if (!$insert_result) {
-                throw new \Exception('会话建立失败，请刷新页面重试');
+                throw new Exception('会话建立失败，请刷新页面重试');
             }
             $this->_sayOK(['token' => $dingtalkScanLoginSessionEntity->token,
                 'tp_code' => HubCore::getConfig(['aa', 'tp_code'], ''),
                 'aa_domain' => HubCore::getConfig(['aa', 'domain'], 'https://account-auth-v3.leqee.com')]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
     }
@@ -58,19 +59,19 @@ class DingtalkLoginController extends ArkWebController
             $token = $this->_readRequest("client_data", '');
             $callback_data = $this->_readRequest("callback_data", '');
             if (empty($callback_data)) {
-                throw new \Exception('no data');
+                throw new Exception('no data');
             }
             $tp_code = HubCore::getConfig(['aa', 'tp_code'], "");
             $tp_verification = HubCore::getConfig(['aa', 'tp_verification'], "");
             $secret_key = md5($tp_code . 'AA' . md5($tp_verification));
             $user_name = (new PrpcryptLibrary($secret_key))->decrypt($callback_data);
             if (empty($user_name)) {
-                throw new \Exception('cannot decode data .' . $callback_data);
+                throw new Exception('cannot decode data .' . $callback_data);
             }
             $dingtalkScanLoginSessionEntity = (new DingtalkScanLoginSessionEntity())->getByToken($token);
             if (!$dingtalkScanLoginSessionEntity) {
                 HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " {$user_name} not find valid token, token:{$token}");
-                throw new \Exception('not find valid token ' . $token);
+                throw new Exception('not find valid token ' . $token);
             }
             $session = $this->plugin->validateAuthPair($user_name, '');
             HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . "{$user_name} session : " . json_encode($session));
@@ -79,7 +80,7 @@ class DingtalkLoginController extends ArkWebController
                 $dingtalkScanLoginSessionEntity->setUserSessionToken($session->token);
             }
             $this->_sayOK($session);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " Exception : " . $e->getMessage());
             $this->_sayFail($e->getMessage());
         }
@@ -94,15 +95,15 @@ class DingtalkLoginController extends ArkWebController
         try {
             $dingtalkScanLoginSessionEntity = (new DingtalkScanLoginSessionEntity())->getByToken($token);
             if (!$dingtalkScanLoginSessionEntity) {
-                throw new \Exception('会话已过期，请刷新页面重试', 500); // 挂断
+                throw new Exception('会话已过期，请刷新页面重试', 500); // 挂断
             }
             if (empty($dingtalkScanLoginSessionEntity->coreUserId)) {
-                throw new \Exception('等待扫码验证', 200); // 继续等待
+                throw new Exception('等待扫码验证', 200); // 继续等待
             }
             $session = SessionEntity::instanceByToken($dingtalkScanLoginSessionEntity->userSessionToken);
 
             $this->_sayOK(['session' => $session]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === 200) {
                 $this->_sayOK(['status' => 'WAIT', 'msg' => $e->getMessage()]);
             } else {

@@ -9,6 +9,7 @@
 namespace sinri\databasehub\model;
 
 
+use Exception;
 use sinri\ark\database\model\ArkDatabaseTableModel;
 use sinri\ark\database\pdo\ArkPDO;
 use sinri\databasehub\core\HubCore;
@@ -16,6 +17,8 @@ use sinri\databasehub\core\HubCore;
 class DatabaseModel extends ArkDatabaseTableModel
 {
     const ENGINE_MYSQL = "MYSQL";
+    const ENGINE_ALIYUN_POLARDB = "ALIYUN_POLARDB";
+    const ENGINE_ALIYUN_ADB="ALIYUN_ADB";
 
     const STATUS_NORMAL = "NORMAL";
     const STATUS_DISABLED = "DISABLED";
@@ -30,7 +33,7 @@ class DatabaseModel extends ArkDatabaseTableModel
 
     /**
      * @return ArkPDO
-     * @throws \Exception
+     * @throws Exception
      */
     public function db()
     {

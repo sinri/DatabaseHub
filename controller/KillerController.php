@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\entity\AccountEntity;
@@ -22,7 +23,7 @@ use sinri\databasehub\model\UserModel;
 class KillerController extends AbstractAuthController
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function permittedDatabases()
     {
@@ -51,7 +52,7 @@ class KillerController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function showProcessList()
     {
@@ -62,14 +63,14 @@ class KillerController extends AbstractAuthController
             $permissions = $this->session->user->getPermissionDictionary($database_id);
             $permissions = ArkHelper::readTarget($permissions, [$database_id, 'permissions']);
             if (!in_array(PermissionModel::PERMISSION_KILL, $permissions)) {
-                throw new \Exception("You cannot kill!");
+                throw new Exception("You cannot kill!");
             }
         }
 
         $data = (new DatabaseMySQLiEntity($databaseEntity))->showFullProcessList();
 
         if (!$data) {
-            throw new \Exception("Cannot list processes!");
+            throw new Exception("Cannot list processes!");
         }
         $this->_sayOK([
             "list" => $data,
@@ -77,20 +78,20 @@ class KillerController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function kill()
     {
         $database_id = $this->_readRequest("database_id", 0, '/^\d+$/');
         $username = $this->_readRequest("username", 0, '/^[\S]+$/');
         $tid = $this->_readRequest("tid", 0, '/^\d+$/');
-        if (empty($tid)) throw new \Exception("tid should not be zero");
+        if (empty($tid)) throw new Exception("tid should not be zero");
 
         $databaseEntity = DatabaseEntity::instanceById($database_id);
 
         $accountRow = (new AccountModel())->selectRow(['username' => $username, 'database_id' => $database_id]);
         if (empty($accountRow)) {
-            throw new \Exception("No such account");
+            throw new Exception("No such account");
         }
         $accountEntity = AccountEntity::instanceByRow($accountRow);
 
@@ -98,12 +99,12 @@ class KillerController extends AbstractAuthController
             $permissions = $this->session->user->getPermissionDictionary($database_id);
             $permissions = ArkHelper::readTarget($permissions, [$database_id, 'permissions']);
             if (!in_array(PermissionModel::PERMISSION_KILL, $permissions)) {
-                throw new \Exception("You cannot kill!");
+                throw new Exception("You cannot kill!");
             }
         }
 
         $done = (new DatabaseMySQLiEntity($databaseEntity, $accountEntity))->kill($tid);
-        if (!$done) throw new \Exception("Cannot kill " . $tid);
+        if (!$done) throw new Exception("Cannot kill " . $tid);
         $this->_sayOK(["done" => $done]);
     }
 }

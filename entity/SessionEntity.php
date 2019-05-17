@@ -9,6 +9,7 @@
 namespace sinri\databasehub\entity;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\model\SessionModel;
 use sinri\databasehub\model\UserModel;
@@ -27,7 +28,7 @@ class SessionEntity
     /**
      * @param $token
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function instanceByToken($token)
     {
@@ -36,7 +37,7 @@ class SessionEntity
         ArkHelper::quickNotEmptyAssert("Invalid Token!", $row);
 
         if ($row['expire'] <= time()) {
-            throw new \Exception("Session Expired");
+            throw new Exception("Session Expired");
         }
 
         $session = new SessionEntity();
@@ -47,7 +48,7 @@ class SessionEntity
         $session->user = UserEntity::instanceByUserId($row['user_id']);
 
         if ($session->user->status !== UserModel::USER_STATUS_NORMAL) {
-            throw new \Exception("User is not normal!");
+            throw new Exception("User is not normal!");
         }
 
         return $session;
@@ -56,7 +57,7 @@ class SessionEntity
     /**
      * @param UserEntity $user
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function createSessionForUser($user)
     {
@@ -85,7 +86,7 @@ class SessionEntity
     /**
      * @param $token
      * @return int
-     * @throws \Exception
+     * @throws Exception
      */
     public static function disableSession($token)
     {

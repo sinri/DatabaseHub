@@ -6,6 +6,8 @@
  * Time: 11:37 AM
  */
 
+use sinri\ark\database\pdo\ArkPDOConfig;
+
 $config = [
     'pdo' => [
         "host" => "",
@@ -13,8 +15,8 @@ $config = [
         "username" => "",
         "password" => "",
         "database" => "",
-        "charset" => \sinri\ark\database\pdo\ArkPDOConfig::CHARSET_UTF8,
-        "engine" => \sinri\ark\database\pdo\ArkPDOConfig::ENGINE_MYSQL,
+        "charset" => ArkPDOConfig::CHARSET_UTF8,
+        "engine" => ArkPDOConfig::ENGINE_MYSQL,
     ],
     "logger" => [
         "path" => __DIR__ . '/../log',

@@ -6,12 +6,16 @@
  * Time: 00:12
  */
 
+use sinri\ark\queue\parallel\ParallelQueueDaemon;
+use sinri\databasehub\core\HubCore;
+use sinri\databasehub\queue\DHQueueDelegate;
+
 require_once __DIR__ . '/autoload.php';
 
-$delegate = new \sinri\databasehub\queue\DHQueueDelegate();
-$daemon = new \sinri\ark\queue\parallel\ParallelQueueDaemon($delegate);
+$delegate = new DHQueueDelegate();
+$daemon = new ParallelQueueDaemon($delegate);
 $delegate->clearRuntimeCommand();
 
-\sinri\databasehub\core\HubCore::getLogger()->info("Queue Begins");
+HubCore::getLogger()->info("Queue Begins");
 
 $daemon->loop();

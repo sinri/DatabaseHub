@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\DingtalkScanLoginSessionEntity;
@@ -33,13 +34,13 @@ class CasController extends ArkWebController
         $ticket = $this->_readRequest("ticket", '');
         try {
             if (empty($ticket)) {
-                throw new \Exception('ticket is empty');
+                throw new Exception('ticket is empty');
             }
             $session_entity = (new LoginPluginWithLeqeeCAS())->validateAuthPair($ticket, null);
             setcookie('database_hub_token', $session_entity->token, $session_entity->expire, '/');
             setcookie('DatabaseHubUser', json_encode($session_entity->user), $session_entity->expire, '/');
             header('Location:/frontend/index.html');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
         }
     }
@@ -51,7 +52,7 @@ class CasController extends ArkWebController
     {
         try {
             $this->_sayOK(['cas_login_url' => $this->cas_url . '/login?service=' . $this->tp_code ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
     }
@@ -86,7 +87,7 @@ class CasController extends ArkWebController
                 }
             }
             $this->_sayOK();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
     }

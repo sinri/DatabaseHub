@@ -9,6 +9,7 @@
 namespace sinri\databasehub\plugin;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\io\curl\ArkCurl;
 use sinri\databasehub\core\HubCore;
@@ -29,7 +30,7 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
      * @param $username
      * @param $password
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public function validateAuthPair($username, $password)
     {
@@ -39,7 +40,7 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
         $dingtalkScanLoginSessionEntity = new DingtalkScanLoginSessionEntity();
         $insert_result = $dingtalkScanLoginSessionEntity->createToken();
         if (!$insert_result) {
-            throw new \Exception('会话建立失败，请刷新页面重试');
+            throw new Exception('会话建立失败，请刷新页面重试');
         }
         $dingtalkScanLoginSessionEntity->loginSessionId = $insert_result;
 
@@ -84,7 +85,7 @@ class LoginPluginWithLeqeeCAS extends LoginPlugin
             $dingtalkScanLoginSessionEntity->setUserSessionToken($sessionEntity->token);
             return $sessionEntity;
         }else {
-            throw new \Exception($result);
+            throw new Exception($result);
         }
     }
 }

@@ -6,6 +6,8 @@
  * Time: 9:56 AM
  */
 
+use sinri\ark\core\ArkHelper;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
-\sinri\ark\core\ArkHelper::registerAutoload("sinri\\databasehub", __DIR__);
+ArkHelper::registerAutoload("sinri\\databasehub", __DIR__);

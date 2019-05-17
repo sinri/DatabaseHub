@@ -9,6 +9,7 @@
 namespace sinri\databasehub\entity;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\model\PermissionModel;
 use sinri\databasehub\model\UserModel;
@@ -55,7 +56,7 @@ class UserEntity
     /**
      * @param int $userId
      * @return UserEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function instanceByUserId($userId)
     {
@@ -67,7 +68,7 @@ class UserEntity
     /**
      * @param null|int[] $databases
      * @return String[][] e.g. [ DATABASE_ID => [ "database_info"=>[...],"permissions"=>[PERMISSION_A, ...] ], ...]
-     * @throws \Exception
+     * @throws Exception
      */
     public function getPermissionDictionary($databases = null)
     {

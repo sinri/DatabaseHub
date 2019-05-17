@@ -9,6 +9,7 @@
 namespace sinri\databasehub\entity;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\model\AccountModel;
 use sinri\databasehub\model\DatabaseModel;
@@ -49,7 +50,7 @@ class DatabaseEntity
     /**
      * @param $databaseId
      * @return DatabaseEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public static function instanceById($databaseId)
     {

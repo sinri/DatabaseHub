@@ -9,6 +9,7 @@
 namespace sinri\databasehub\controller;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\database\model\ArkSQLCondition;
 use sinri\databasehub\core\AbstractAuthController;
@@ -26,7 +27,7 @@ class ApplicationController extends AbstractAuthController
     /**
      * @param $application
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     private function verifyApplication($application)
     {
@@ -34,12 +35,12 @@ class ApplicationController extends AbstractAuthController
         $data = [];
         foreach ($keys as $key) {
             if (!isset($application[$key])) {
-                throw new \Exception("Lack of field " . $key);
+                throw new Exception("Lack of field " . $key);
             }
             $data[$key] = $application[$key];
         }
         if (DatabaseEntity::instanceById($data['database_id'])->status !== DatabaseModel::STATUS_NORMAL) {
-            throw new \Exception("Target database is not normal");
+            throw new Exception("Target database is not normal");
         }
         if (!in_array($data['type'], [
             ApplicationModel::TYPE_DDL,
@@ -47,20 +48,20 @@ class ApplicationController extends AbstractAuthController
             ApplicationModel::TYPE_MODIFY,
             ApplicationModel::TYPE_READ,
         ])) {
-            throw new \Exception("Illegal Application Type");
+            throw new Exception("Illegal Application Type");
         }
 
         // check SQL Syntax
         $subSQLs = SQLChecker::split($data['sql']);
         HubCore::getLogger()->debug("SQL is broken down to " . count($subSQLs) . " parts");
         if (empty($subSQLs)) {
-            throw new \Exception("This seems not a valid SQL, April Fool?");
+            throw new Exception("This seems not a valid SQL, April Fool?");
         }
         foreach ($subSQLs as $subSQL) {
             $typeOfSubSQL = SQLChecker::getTypeOfSingleSql($subSQL);
             HubCore::getLogger()->debug("SQL type: " . json_encode($typeOfSubSQL), ["sql" => $subSQL]);
             if ($typeOfSubSQL === false) {
-                throw new \Exception("Not a valid SQL.");
+                throw new Exception("Not a valid SQL.");
             }
             switch ($data['type']) {
                 case ApplicationModel::TYPE_DDL:
@@ -70,14 +71,14 @@ class ApplicationController extends AbstractAuthController
                         SQLChecker::QUERY_TYPE_DROP,
                         SQLChecker::QUERY_TYPE_TRUNCATE,
                     ])) {
-                        throw new \Exception("Not a DDL statement.");
+                        throw new Exception("Not a DDL statement.");
                     }
                     break;
                 case ApplicationModel::TYPE_EXECUTE:
                     if (!in_array($typeOfSubSQL, [
                         SQLChecker::QUERY_TYPE_CALL,
                     ])) {
-                        throw new \Exception("Not an EXECUTE statement.");
+                        throw new Exception("Not an EXECUTE statement.");
                     }
                     break;
                 case ApplicationModel::TYPE_MODIFY:
@@ -87,7 +88,7 @@ class ApplicationController extends AbstractAuthController
                         SQLChecker::QUERY_TYPE_REPLACE,
                         SQLChecker::QUERY_TYPE_UPDATE,
                     ])) {
-                        throw new \Exception("Not a MODIFY statement.");
+                        throw new Exception("Not a MODIFY statement.");
                     }
                     break;
                 case ApplicationModel::TYPE_READ:
@@ -96,11 +97,11 @@ class ApplicationController extends AbstractAuthController
                         SQLChecker::QUERY_TYPE_EXPLAIN,
                         SQLChecker::QUERY_TYPE_SELECT,
                     ])) {
-                        throw new \Exception("Not a READ statement.");
+                        throw new Exception("Not a READ statement.");
                     }
                     break;
                 default:
-                    throw new \Exception("Unknown Type");
+                    throw new Exception("Unknown Type");
             }
 
         }
@@ -110,7 +111,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function create()
     {
@@ -123,7 +124,7 @@ class ApplicationController extends AbstractAuthController
         $application_id = (new ApplicationModel())->insert($application);
 
         if (empty($application_id)) {
-            throw new \Exception("Cannot create application.");
+            throw new Exception("Cannot create application.");
         }
 
         $applicationEntity = ApplicationEntity::instanceById($application_id);
@@ -133,7 +134,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function update()
     {
@@ -150,11 +151,11 @@ class ApplicationController extends AbstractAuthController
             ApplicationModel::STATUS_CANCELLED,
             ApplicationModel::STATUS_ERROR,
         ])) {
-            throw new \Exception("Now you cannot update this application.");
+            throw new Exception("Now you cannot update this application.");
         }
 
         if ($applicationEntity->applyUser->userId != $this->session->user->userId) {
-            throw new \Exception("You are not the applier.");
+            throw new Exception("You are not the applier.");
         }
 
         $afx = (new ApplicationModel())->update([
@@ -167,7 +168,7 @@ class ApplicationController extends AbstractAuthController
         ], $applicationUpdate);
 
         if (empty($afx)) {
-            throw new \Exception("Cannot update application.");
+            throw new Exception("Cannot update application.");
         }
 
         $applicationEntity = ApplicationEntity::instanceById($application_id);
@@ -177,7 +178,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function cancel()
     {
@@ -190,7 +191,7 @@ class ApplicationController extends AbstractAuthController
         ], ['status' => ApplicationModel::STATUS_CANCELLED,]);
 
         if (empty($afx)) {
-            throw new \Exception("Cannot cancel application.");
+            throw new Exception("Cannot cancel application.");
         }
 
         $applicationEntity = ApplicationEntity::instanceById($application_id);
@@ -200,7 +201,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function deny()
     {
@@ -213,7 +214,7 @@ class ApplicationController extends AbstractAuthController
             $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
             $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
             if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-                throw new \Exception("You have not approval permission on this application");
+                throw new Exception("You have not approval permission on this application");
             }
         }
 
@@ -230,7 +231,7 @@ class ApplicationController extends AbstractAuthController
         );
 
         if (empty($afx)) {
-            throw new \Exception("Cannot deny application.");
+            throw new Exception("Cannot deny application.");
         }
 
         $applicationEntity->refresh();
@@ -240,7 +241,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function approve()
     {
@@ -251,7 +252,7 @@ class ApplicationController extends AbstractAuthController
             $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
             $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
             if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-                throw new \Exception("You have not approval permission on this application");
+                throw new Exception("You have not approval permission on this application");
             }
         }
 
@@ -268,7 +269,7 @@ class ApplicationController extends AbstractAuthController
         );
 
         if (empty($afx)) {
-            throw new \Exception("Cannot approve application.");
+            throw new Exception("Cannot approve application.");
         }
 
         $applicationEntity->refresh();
@@ -307,7 +308,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function search()
     {
@@ -330,7 +331,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function myApprovals()
     {
@@ -362,7 +363,7 @@ class ApplicationController extends AbstractAuthController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function detail()
     {
@@ -371,7 +372,7 @@ class ApplicationController extends AbstractAuthController
             $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
             $applicationEntity = ApplicationEntity::instanceById($application_id);
             if (is_null($applicationEntity)) {
-                throw new \Exception('not find application');
+                throw new Exception('not find application');
             }
 
             $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
@@ -395,13 +396,13 @@ class ApplicationController extends AbstractAuthController
             }
             $detail = $applicationEntity->getDetail();
             $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function downloadExportedContentAsCSV()
     {

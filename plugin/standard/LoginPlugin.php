@@ -9,6 +9,7 @@
 namespace sinri\databasehub\plugin\standard;
 
 
+use Exception;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\entity\UserEntity;
 
@@ -24,7 +25,7 @@ abstract class LoginPlugin
     /**
      * @param UserEntity $user
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     final public function createSession($user)
     {

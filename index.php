@@ -6,15 +6,19 @@
  * Time: 10:14 AM
  */
 
+use sinri\ark\io\ArkWebOutput;
+use sinri\ark\web\ArkRouteErrorHandler;
+use sinri\databasehub\filter\MainFilter;
+
 require_once __DIR__ . '/autoload.php';
 
 Ark()->webService()->getRouter()->setErrorHandler(
-    \sinri\ark\web\ArkRouteErrorHandler::buildWithCallback(
+    ArkRouteErrorHandler::buildWithCallback(
         function ($error_message, $status_code) {
             Ark()->webOutput()->sendHTTPCode($status_code ? $status_code : 200);
             Ark()->webOutput()->setContentTypeHeader("application/json");
             Ark()->webOutput()->jsonForAjax(
-                \sinri\ark\io\ArkWebOutput::AJAX_JSON_CODE_FAIL,
+                ArkWebOutput::AJAX_JSON_CODE_FAIL,
                 [
                     "status" => $status_code,
                     "error" => $error_message,
@@ -29,7 +33,7 @@ Ark()->webService()->getRouter()->loadAllControllersInDirectoryAsCI(
     "api/",
     "\\sinri\\databasehub\\controller\\",
     [
-        \sinri\databasehub\filter\MainFilter::class
+        MainFilter::class
     ]
 );
 

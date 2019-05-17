@@ -6,6 +6,8 @@
  * Time: 4:33 PM
  */
 
+use sinri\ark\cli\ArkCliProgram;
+
 require_once __DIR__ . '/autoload.php';
 
-\sinri\ark\cli\ArkCliProgram::run("sinri\databasehub\\");
+ArkCliProgram::run("sinri\databasehub\\");

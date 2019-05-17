@@ -9,6 +9,7 @@
 namespace sinri\databasehub\plugin;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\io\curl\ArkCurl;
 use sinri\databasehub\core\HubCore;
@@ -28,7 +29,7 @@ class LoginPluginWithDingtalk extends LoginPlugin
      * @param $username
      * @param $password
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public function validateAuthPair($username, $password = '')
     {
@@ -74,9 +75,9 @@ class LoginPluginWithDingtalk extends LoginPlugin
             $userEntity = UserEntity::instanceByRow($row);
             return SessionEntity::createSessionForUser($userEntity);
         } elseif ($code === 'FAIL') {
-            throw new \Exception(ArkHelper::readTarget($json, ['data']));
+            throw new Exception(ArkHelper::readTarget($json, ['data']));
         } else {
-            throw new \Exception("Unknown AAv3 API Code: " . json_encode($code));
+            throw new Exception("Unknown AAv3 API Code: " . json_encode($code));
         }
     }
 }

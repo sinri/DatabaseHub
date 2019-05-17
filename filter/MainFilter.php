@@ -9,6 +9,7 @@
 namespace sinri\databasehub\filter;
 
 
+use Exception;
 use sinri\ark\web\ArkRequestFilter;
 use sinri\databasehub\entity\SessionEntity;
 
@@ -42,7 +43,7 @@ class MainFilter extends ArkRequestFilter
             $token = Ark()->webInput()->readRequest("token", "");
             $preparedData['session'] = SessionEntity::instanceByToken($token);
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $responseCode = 403;
             $error = "Session Error. " . $exception->getMessage();
             return false;

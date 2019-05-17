@@ -9,6 +9,7 @@
 namespace sinri\databasehub\plugin;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\databasehub\entity\SessionEntity;
 use sinri\databasehub\entity\UserEntity;
@@ -22,7 +23,7 @@ class LoginPluginStandalone extends LoginPlugin
      * @param $username
      * @param $password
      * @return SessionEntity
-     * @throws \Exception
+     * @throws Exception
      */
     public function validateAuthPair($username, $password)
     {
@@ -30,7 +31,7 @@ class LoginPluginStandalone extends LoginPlugin
         ArkHelper::quickNotEmptyAssert("Cannot Find User!", $row);
 
         if (!password_verify($password, $row['password'])) {
-            throw new \Exception("Password Error!");
+            throw new Exception("Password Error!");
         }
 
         $session = $this->createSession(UserEntity::instanceByRow($row));

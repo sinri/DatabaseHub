@@ -9,6 +9,7 @@
 namespace sinri\databasehub\core;
 
 
+use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\web\implement\ArkWebController;
 use sinri\databasehub\entity\SessionEntity;
@@ -28,7 +29,7 @@ abstract class AbstractAuthController extends ArkWebController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function onlyAdminCanDoThis()
     {
@@ -39,7 +40,7 @@ abstract class AbstractAuthController extends ArkWebController
             ||
             $this->session->user->userType !== UserModel::USER_TYPE_ADMIN
         ) {
-            throw new \Exception("You do not hold the permission to access!", 401);
+            throw new Exception("You do not hold the permission to access!", 401);
         }
 //        ArkHelper::quickNotEmptyAssert(
 //            "You are not admin!",

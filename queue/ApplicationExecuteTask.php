@@ -9,6 +9,7 @@
 namespace sinri\databasehub\queue;
 
 
+use Exception;
 use sinri\ark\queue\parallel\ParallelQueueTask;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\ApplicationEntity;
@@ -23,7 +24,7 @@ class ApplicationExecuteTask extends ParallelQueueTask
     /**
      * @param $application_id
      * @return ApplicationExecuteTask
-     * @throws \Exception
+     * @throws Exception
      */
     public static function createTask($application_id)
     {
@@ -65,7 +66,7 @@ class ApplicationExecuteTask extends ParallelQueueTask
      * To prepare and lock task before executing.
      * You should update property $readyToExecute as the result of this method
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function beforeExecute()
     {
