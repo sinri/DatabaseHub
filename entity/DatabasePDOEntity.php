@@ -44,7 +44,7 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
 
         $this->arkPDO = new ArkPDO(new ArkPDOConfig($dict));
 
-        $this->charset = "utf8";
+        $this->charset = "UTF-8";
         $this->arkPDO->connect();
     }
 
@@ -66,12 +66,14 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             // streaming it!
             $csvFile = fopen($csvPath, 'w');
 
-            $this->arkPDO->getAllAsStream($query, function ($row, $index) use ($charset, $csvFile) {
+            $this->arkPDO->getAllAsStream($query, function ($row, $index) use ($charset, &$csvFile) {
                 if ($index === 1) {
                     //title row
                     fputcsv($csvFile, array_keys($row));
                 }
-                array_walk($row, 'self::transCharset', array($this->charset, $charset));
+                if ($this->charset != $charset) {
+                    array_walk($row, 'self::transCharset', array($this->charset, $charset));
+                }
                 fputcsv($csvFile, array_values($row));
 
                 return true;

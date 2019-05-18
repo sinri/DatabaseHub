@@ -35,7 +35,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
             $account = $database->getDefaultAccount();
         }
 
-        $this->charset = "utf8";
+        $this->charset = "UTF-8";
 
         $config = new ArkMySQLiConfig([
             ArkMySQLiConfig::CONFIG_TITLE => $database->databaseName,
