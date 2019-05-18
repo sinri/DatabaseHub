@@ -23,7 +23,8 @@
     "jdorn/sql-formatter": "^1.2",
     "sinri/ark-curl": "^2.0",
     "sinri/ark-core": "^2.0",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "ext-pdo": "*"
   },
   "repositories": {
     "packagist": {
