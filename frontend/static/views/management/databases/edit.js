@@ -29,7 +29,7 @@ const EditDatabasePage = {
                 </form-item>
                 
                 <form-item label="Engine" prop="engine">
-                    <i-select disabled v-model="form.model.engine">
+                    <i-select v-model="form.model.engine">
                         <i-option v-for="item in CONSTANTS.DATABASE_TYPE" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>
