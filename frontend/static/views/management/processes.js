@@ -8,7 +8,7 @@ const ProcessesPage = {
                                    v-model.trim="query.database_id">
                              <i-option v-for="item in permittedDatabases"
                                        :key="item.databaseId"
-                                       :value="item.databaseId">{{ item.databaseName }}</i-option>
+                                       :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
                          </i-select>
                      </form-item>
                      <form-item>
