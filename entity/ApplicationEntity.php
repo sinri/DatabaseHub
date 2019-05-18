@@ -394,10 +394,10 @@ class ApplicationEntity
             if (is_array($data)) {
                 foreach ($data as $key => $value) {
                     $encode = @mb_detect_encoding($value);
-                    if (!$value) {
+                    if ($value === null || $value === false) {
                         $data[$key] = '';
-                    } else if ($value !== 'UTF-8') {
-                        $data[$key] = @mb_convert_encoding($value, 'UTF-8', $encode);
+                    } else if ($encode !== 'ASCII') {
+                        $data[$key] = @mb_convert_encoding($value, 'UTF-8', 'GBK');
                     } else {
                         $data[$key] = $value;
                     }
