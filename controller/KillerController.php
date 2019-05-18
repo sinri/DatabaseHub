@@ -14,7 +14,6 @@ use sinri\ark\core\ArkHelper;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\entity\AccountEntity;
 use sinri\databasehub\entity\DatabaseEntity;
-use sinri\databasehub\entity\DatabaseMySQLiEntity;
 use sinri\databasehub\model\AccountModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\PermissionModel;
@@ -67,7 +66,8 @@ class KillerController extends AbstractAuthController
             }
         }
 
-        $data = (new DatabaseMySQLiEntity($databaseEntity))->showFullProcessList();
+        $worker = $databaseEntity->getWorkerEntity(null);
+        $data = $worker->showFullProcessList();
 
         if (!$data) {
             throw new Exception("Cannot list processes!");
@@ -103,7 +103,8 @@ class KillerController extends AbstractAuthController
             }
         }
 
-        $done = (new DatabaseMySQLiEntity($databaseEntity, $accountEntity))->kill($tid);
+        $worker = $databaseEntity->getWorkerEntity($accountEntity);
+        $done = $worker->kill($tid);
         if (!$done) throw new Exception("Cannot kill " . $tid);
         $this->_sayOK(["done" => $done]);
     }

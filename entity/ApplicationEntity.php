@@ -326,7 +326,7 @@ class ApplicationEntity
         HubCore::getLogger()->info("Begin SQL Export", ['application_id' => $this->applicationId]);
         HubCore::getLogger()->info($this->sql);
         $csv_path = $this->getExportedFilePath();
-        $written = (new DatabaseMySQLiEntity($this->database))->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'gbk');
+        $written = $this->database->getWorkerEntity()->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'gbk');
         return $written;
     }
 
@@ -339,7 +339,7 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL CALL:");
         HubCore::getLogger()->info($this->sql);
-        $done = (new DatabaseMySQLiEntity($this->database))->executeCall($this->getRemarkedSQL(), $error);
+        $done = $this->database->getWorkerEntity()->executeCall($this->getRemarkedSQL(), $error);
         return $done;
     }
 
@@ -353,7 +353,7 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL Query Remarked:");
         HubCore::getLogger()->info($this->getRemarkedSQL());
-        $ret = (new DatabaseMySQLiEntity($this->database))->executeMulti($this->getRemarkedSQL(), $this->type, $results, $error);
+        $ret = $this->database->getWorkerEntity()->executeMulti($this->getRemarkedSQL(), $this->type, $results, $error);
         return $ret;
     }
 

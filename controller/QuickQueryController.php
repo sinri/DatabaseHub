@@ -13,7 +13,6 @@ use Exception;
 use sinri\databasehub\core\AbstractAuthController;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\DatabaseEntity;
-use sinri\databasehub\entity\DatabaseMySQLiEntity;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\PermissionModel;
 use sinri\databasehub\model\QuickQueryModel;
@@ -85,7 +84,7 @@ class QuickQueryController extends AbstractAuthController
         }
 
         $t1 = microtime(true);
-        $done = (new DatabaseMySQLiEntity($databaseEntity))->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
+        $done = $databaseEntity->getWorkerEntity(null)->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
         $t2 = microtime(true);
 
         // record quick queries

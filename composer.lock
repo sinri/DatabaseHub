@@ -877,16 +877,16 @@
         },
         {
             "name": "sinri/ark-pdo",
-          "version": "1.5.4",
+          "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark-PDO.git",
-              "reference": "066736154c05781284e220eea8da9f632f087c3b"
+              "reference": "529a15a05cf433eef1fd05cef4a9f03b9407bf6f"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/sinri/Ark-PDO/zipball/066736154c05781284e220eea8da9f632f087c3b",
-              "reference": "066736154c05781284e220eea8da9f632f087c3b",
+              "url": "https://api.github.com/repos/sinri/Ark-PDO/zipball/529a15a05cf433eef1fd05cef4a9f03b9407bf6f",
+              "reference": "529a15a05cf433eef1fd05cef4a9f03b9407bf6f",
               "shasum": "",
               "mirrors": [
                 {
@@ -917,7 +917,7 @@
                 }
             ],
             "description": "The PDO Component for Ark 2",
-          "time": "2019-04-23T02:48:25+00:00"
+          "time": "2019-05-17T15:43:07+00:00"
         },
       {
         "name": "sinri/ark-queue",

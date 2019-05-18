@@ -56,11 +56,12 @@ class SQLChecker
         if (is_array($parser->statements)) {
             foreach ($parser->statements as $statement) {
                 $single_sql = self::dealStatement($statement);
+                if ('' === trim($single_sql)) continue;
                 $result[] = $single_sql;
             }
         } else {
             $single_sql = self::dealStatement($parser->statements);
-            $result[] = $single_sql;
+            if ('' !== trim($single_sql)) $result[] = $single_sql;
         }
         return $result;
     }

@@ -43,7 +43,9 @@ const CONSTANTS = {
         'NO'
     ],
     DATABASE_TYPE: [
-        'MYSQL'
+        'MYSQL',
+        'ALIYUN_POLARDB',
+        'ALIYUN_ADB'
     ],
     DATABASE_STATUS: [
         'NORMAL',

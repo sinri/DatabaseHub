@@ -15,7 +15,7 @@ use sinri\ark\database\mysqli\ArkMySQLiConfig;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\model\ApplicationModel;
 
-class DatabaseMySQLiEntity
+class DatabaseMySQLiEntity implements DatabaseWorkerEntity
 {
     /**
      * @var ArkMySQLi
@@ -48,8 +48,6 @@ class DatabaseMySQLiEntity
         ]);
         $this->mysqliAgent = (new ArkMySQLi($config));
         $this->mysqliAgent->connect();
-
-        return $this->mysqliAgent;
     }
 
     public function close()
@@ -98,6 +96,8 @@ class DatabaseMySQLiEntity
             array_walk($row, 'self::transCharset', array($this->charset, $charset));
             fputcsv($csvFile, array_values($row));
         } while ($row = $result->fetch_array(MYSQLI_ASSOC));
+
+        fclose($csvFile);
 
         $result->free();
         $this->mysqliAgent->getInstanceOfMySQLi()->close();

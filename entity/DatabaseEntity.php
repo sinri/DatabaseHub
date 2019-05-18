@@ -101,4 +101,24 @@ class DatabaseEntity
         $item['default_account'] = $this->defaultAccount ? $this->defaultAccount->username : "";
         return $item;
     }
+
+    /**
+     * @param AccountEntity $accountEntity
+     * @return DatabaseWorkerEntity
+     * @throws Exception
+     */
+    public function getWorkerEntity($accountEntity = null)
+    {
+        switch ($this->engine) {
+            case DatabaseModel::ENGINE_ALIYUN_ADB:
+                $worker = new DatabasePDOEntity($this, $accountEntity);
+                break;
+            case DatabaseModel::ENGINE_MYSQL:
+            case DatabaseModel::ENGINE_ALIYUN_POLARDB:
+            default:
+                $worker = new DatabaseMySQLiEntity($this, $accountEntity);
+                break;
+        }
+        return $worker;
+    }
 }
