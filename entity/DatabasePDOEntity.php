@@ -110,7 +110,7 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             return false;
         }
         try {
-            return $this->arkPDO->executeInTransaction(function () use ($results, $sqlList) {
+            return $this->arkPDO->executeInTransaction(function () use (&$results, &$error, $sqlList) {
                 foreach ($sqlList as $sqlIndex => $sql) {
                     $afx = $this->arkPDO->exec($sql);
                     if ($afx === false) {
@@ -161,7 +161,7 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
 
         try {
             HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " QUICK QUERY SQL: " . $query);
-            $this->arkPDO->getAllAsStream($query, function ($row, $rowIndex) use ($data, $limit) {
+            $this->arkPDO->getAllAsStream($query, function ($row, $rowIndex) use (&$data, &$error, $limit) {
                 if ($limit > 0 && count($data) >= $limit) {
                     $error[] = "SQL返回行数超过上限（{$limit}）！";
                     return false;
