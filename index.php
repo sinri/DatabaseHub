@@ -15,6 +15,7 @@ require_once __DIR__ . '/autoload.php';
 Ark()->webService()->getRouter()->setErrorHandler(
     ArkRouteErrorHandler::buildWithCallback(
         function ($error_message, $status_code) {
+            // here status might be too large, such as from PDO exception with mysql error...
             Ark()->webOutput()->sendHTTPCode($status_code ? $status_code : 200);
             Ark()->webOutput()->setContentTypeHeader("application/json");
             Ark()->webOutput()->jsonForAjax(

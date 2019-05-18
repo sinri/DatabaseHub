@@ -54,55 +54,59 @@ class QuickQueryController extends AbstractAuthController
      */
     public function syncExecute()
     {
-        $database_id = $this->_readRequest("database_id", 0);
-        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
-            $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
-            if (!$x) throw new Exception("Not Permitted");
+        try {
+            $database_id = $this->_readRequest("database_id", 0);
+            if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+                $x = (new PermissionModel())->selectRowsForCount(['database_id' => $database_id, 'user_id' => $this->session->user->userId]);
+                if (!$x) throw new Exception("Not Permitted");
+            }
+
+            $databaseEntity = DatabaseEntity::instanceById($database_id);
+
+            $maxRows = 512;
+
+            $sql = $this->_readRequest('sql', '');
+            $processedSQL = SQLChecker::processSqlForQuickQuery($sql, $maxRows);
+            $type = SQLChecker::getTypeOfSingleSql($processedSQL);
+            if (!in_array($type, ['SELECT', 'SHOW', 'EXPLAIN'])) {
+                throw new Exception("Not a read statement");
+            }
+
+            $quickQueryId = (new QuickQueryModel())->insert([
+                'database_id' => $databaseEntity->databaseId,
+                'sql' => $processedSQL,
+                'raw_sql' => $sql,
+                'apply_user' => $this->session->user->userId,
+                'apply_time' => QuickQueryModel::now(),
+                'type' => QuickQueryModel::TYPE_SYNC,
+            ]);
+            if (empty($quickQueryId)) {
+                throw new Exception("Cannot register task");
+            }
+
+            $t1 = microtime(true);
+            $done = $databaseEntity->getWorkerEntity(null)->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
+            $t2 = microtime(true);
+
+            // record quick queries
+            (new QuickQueryModel())->update(
+                ['id' => $quickQueryId],
+                [
+                    'duration' => ($t2 - $t1),
+                    'remark' => ($done ? "DONE, fetched " . count($data) . " rows." : "FAILED.") . PHP_EOL . implode(PHP_EOL, $error),
+                ]
+            );
+
+
+            $this->_sayOK([
+                'done' => $done,
+                'data' => $data,
+                'error' => $error,
+                'query_time' => $duration,
+                'total_time' => ($t2 - $t1),
+            ]);
+        } catch (Exception $exception) {
+            throw new Exception($exception->getMessage(), 500);
         }
-
-        $databaseEntity = DatabaseEntity::instanceById($database_id);
-
-        $maxRows = 512;
-
-        $sql = $this->_readRequest('sql', '');
-        $processedSQL = SQLChecker::processSqlForQuickQuery($sql, $maxRows);
-        $type = SQLChecker::getTypeOfSingleSql($processedSQL);
-        if (!in_array($type, ['SELECT', 'SHOW', 'EXPLAIN'])) {
-            throw new Exception("Not a read statement");
-        }
-
-        $quickQueryId = (new QuickQueryModel())->insert([
-            'database_id' => $databaseEntity->databaseId,
-            'sql' => $processedSQL,
-            'raw_sql' => $sql,
-            'apply_user' => $this->session->user->userId,
-            'apply_time' => QuickQueryModel::now(),
-            'type' => QuickQueryModel::TYPE_SYNC,
-        ]);
-        if (empty($quickQueryId)) {
-            throw new Exception("Cannot register task");
-        }
-
-        $t1 = microtime(true);
-        $done = $databaseEntity->getWorkerEntity(null)->quickQuery($processedSQL, $data, $error, $maxRows, $duration);
-        $t2 = microtime(true);
-
-        // record quick queries
-        (new QuickQueryModel())->update(
-            ['id' => $quickQueryId],
-            [
-                'duration' => ($t2 - $t1),
-                'remark' => ($done ? "DONE, fetched " . count($data) . " rows." : "FAILED.") . PHP_EOL . implode(PHP_EOL, $error),
-            ]
-        );
-
-
-        $this->_sayOK([
-            'done' => $done,
-            'data' => $data,
-            'error' => $error,
-            'query_time' => $duration,
-            'total_time' => ($t2 - $t1),
-        ]);
     }
 }
