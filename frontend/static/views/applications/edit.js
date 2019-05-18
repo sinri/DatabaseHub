@@ -20,7 +20,7 @@ const EditApplicationPage = {
                     <i-select v-model="form.model.database_id" style="width:200px">
                         <i-option v-for="item in databaseList" 
                             :key="item.databaseId" 
-                            :value="item.databaseId">{{ item.databaseName }}</i-option>
+                            :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
                     </i-select>
                 </form-item>
                 

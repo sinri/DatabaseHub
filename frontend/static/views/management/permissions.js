@@ -16,7 +16,7 @@ const PermissionsPage = {
                                    v-model="query.database_list">
                              <i-option v-for="item in permittedDatabases"
                                        :key="item.databaseId"
-                                       :value="item">{{ item.databaseName }}</i-option>
+                                       :value="item">{{ item.databaseName }} ({{ item.engine }})</i-option>
                          </i-select>
                      </form-item>
                     

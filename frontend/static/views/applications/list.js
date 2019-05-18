@@ -15,7 +15,7 @@ const ApplicationListPage = {
                                    v-model.trim="queryForm.database_id">
                              <i-option v-for="item in databaseList"
                                        :key="item.databaseId"
-                                       :value="item.databaseId">{{ item.databaseName }}</i-option>
+                                       :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
                          </i-select>
                      </form-item>
                      <form-item>
@@ -130,7 +130,7 @@ const ApplicationListPage = {
                     {
                         title: 'Database',
                         render: (h, {row}) => {
-                            return h('div', row.database.databaseName)
+                            return h('div', row.database.databaseName + " (" + row.database.engine + ")")
                         }
                     },
                     {
