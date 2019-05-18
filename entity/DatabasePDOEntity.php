@@ -160,11 +160,13 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
         $data = [];
 
         try {
+            HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . " QUICK QUERY SQL: " . $query);
             $this->arkPDO->getAllAsStream($query, function ($row, $rowIndex) use ($data, $limit) {
                 if ($limit > 0 && count($data) >= $limit) {
                     $error[] = "SQL返回行数超过上限（{$limit}）！";
                     return false;
                 }
+                HubCore::getLogger()->info(__METHOD__ . '@' . __LINE__ . ' fetched row ' . $rowIndex . ': ' . json_encode($row));
                 $data[] = $row;
                 return true;
             });
