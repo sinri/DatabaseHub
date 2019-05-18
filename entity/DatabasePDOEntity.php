@@ -9,6 +9,7 @@ use sinri\ark\database\pdo\ArkPDO;
 use sinri\ark\database\pdo\ArkPDOConfig;
 use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
+use sinri\databasehub\model\DatabaseModel;
 
 class DatabasePDOEntity implements DatabaseWorkerEntity
 {
@@ -26,13 +27,19 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             $account = $database->getDefaultAccount();
         }
 
-        $this->arkPDO = new ArkPDO(new ArkPDOConfig([
+        $dict = [
             ArkPDOConfig::CONFIG_TITLE => $database->databaseName,
             ArkPDOConfig::CONFIG_HOST => $database->host,
             ArkPDOConfig::CONFIG_PORT => $database->port,
             ArkPDOConfig::CONFIG_USERNAME => $account->username,
             ArkPDOConfig::CONFIG_PASSWORD => $account->getPassword(),
-        ]));
+        ];
+
+        if ($database->engine === DatabaseModel::ENGINE_ALIYUN_ADB) {
+            $dict[ArkPDOConfig::CONFIG_DATABASE] = $database->databaseName;
+        }
+
+        $this->arkPDO = new ArkPDO(new ArkPDOConfig($dict));
 
         $this->charset = "utf8";
         $this->arkPDO->connect();
