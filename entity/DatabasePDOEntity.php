@@ -40,6 +40,8 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             $dict[ArkPDOConfig::CONFIG_OPTIONS] = [];
         }
 
+        HubCore::getLogger()->debug(__METHOD__ . '@' . __LINE__, ['dict' => $dict]);
+
         $this->arkPDO = new ArkPDO(new ArkPDOConfig($dict));
 
         $this->charset = "utf8";
@@ -169,9 +171,6 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             return true;
         } catch (Exception $exception) {
             $error[] = $this->arkPDO->getPDOErrorDescription();
-            if (!empty($result)) {
-                $result->free();
-            }
             return false;
         }
     }
