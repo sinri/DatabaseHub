@@ -7,7 +7,7 @@ const ApprovalListPage = {
                          <i-input type="text" placeholder="Title" v-model.trim="queryForm.title" />
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Database" style="width: 160px;" clearable
+                         <i-select placeholder="Database" style="width: 160px;" clearable filterable
                                    v-model.trim="queryForm.database_id">
                              <i-option v-for="item in databaseList"
                                        :key="item.databaseId"
@@ -15,7 +15,7 @@ const ApprovalListPage = {
                          </i-select>
                      </form-item>
                      <form-item>
-                         <i-select placeholder="Apply User" style="width: 160px;" clearable
+                         <i-select placeholder="Apply User" style="width: 160px;" clearable filterable
                                    v-model.trim="queryForm.apply_user">
                             <i-option v-for="item in allUserList" 
                                 :key="item.userId" 
