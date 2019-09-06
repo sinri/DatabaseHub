@@ -21,7 +21,7 @@ const CreateDatabasePage = {
                 </form-item>
                 
                 <form-item label="Status" prop="status">
-                    <i-select v-model="form.model.status">
+                    <i-select clearable filterable v-model="form.model.status">
                         <i-option v-for="item in CONSTANTS.DATABASE_STATUS" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>
@@ -29,7 +29,7 @@ const CreateDatabasePage = {
                 </form-item>
                 
                 <form-item label="Engine" prop="engine">
-                    <i-select v-model="form.model.engine">
+                    <i-select clearable filterable v-model="form.model.engine">
                         <i-option v-for="item in CONSTANTS.DATABASE_TYPE" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>

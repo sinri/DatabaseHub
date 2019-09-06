@@ -4,7 +4,7 @@ const QuickQueryPage = {
             <div>
                 <i-form action="javascript:;" inline>
                      <form-item>
-                         <i-select placeholder="Database" style="width: 160px;" clearable
+                         <i-select placeholder="Database" style="width: 160px;" clearable filterable
                                    v-model.trim="executeParams.database_id">
                              <i-option v-for="item in permittedDatabases"
                                        :key="item.databaseId"

@@ -17,7 +17,7 @@ const EditApplicationPage = {
                 </form-item>
                 
                 <form-item label="Database" prop="database_id">
-                    <i-select v-model="form.model.database_id" style="width:200px">
+                    <i-select clearable filterable v-model="form.model.database_id" style="width:200px">
                         <i-option v-for="item in databaseList" 
                             :key="item.databaseId" 
                             :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
@@ -25,7 +25,7 @@ const EditApplicationPage = {
                 </form-item>
                 
                 <form-item label="Type" prop="type">
-                    <i-select v-model="form.model.type" style="width:200px">
+                    <i-select clearable filterable v-model="form.model.type" style="width:200px">
                         <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>
