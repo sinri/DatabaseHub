@@ -17,6 +17,7 @@ use sinri\databasehub\core\HubCore;
 /**
  * Class UserPermittedApprovalModel
  * THIS IS FOR THE VIEW!
+ * 20190523 Need add field : `a`.`process_id` AS `process_id`, done in LEQEE.COM
  * @package sinri\databasehub\model
  */
 class UserPermittedApprovalModel extends ArkDatabaseTableModel

@@ -45,7 +45,8 @@ const CONSTANTS = {
     DATABASE_TYPE: [
         'MYSQL',
         'ALIYUN_POLARDB',
-        'ALIYUN_ADB'
+        'ALIYUN_ADB',
+        'ALIYUN_ADB3',
     ],
     DATABASE_STATUS: [
         'NORMAL',
@@ -67,4 +68,4 @@ const CONSTANTS = {
         'ADMIN',
         'USER'
     ]
-}
+};

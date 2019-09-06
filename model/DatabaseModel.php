@@ -19,6 +19,7 @@ class DatabaseModel extends ArkDatabaseTableModel
     const ENGINE_MYSQL = "MYSQL";
     const ENGINE_ALIYUN_POLARDB = "ALIYUN_POLARDB";
     const ENGINE_ALIYUN_ADB="ALIYUN_ADB";
+    const ENGINE_ALIYUN_ADB3 = "ALIYUN_ADB3";
 
     const STATUS_NORMAL = "NORMAL";
     const STATUS_DISABLED = "DISABLED";

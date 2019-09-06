@@ -115,6 +115,7 @@ class DatabaseEntity
                 break;
             case DatabaseModel::ENGINE_MYSQL:
             case DatabaseModel::ENGINE_ALIYUN_POLARDB:
+            case DatabaseModel::ENGINE_ALIYUN_ADB3:
             default:
                 $worker = new DatabaseMySQLiEntity($this, $accountEntity);
                 break;
