@@ -35,6 +35,16 @@ class QueryNotepadController extends AbstractAuthController
     }
 
     /**
+     * 获取记事本内容
+     */
+    public function getQueryNotepadDetail()
+    {
+        $id = $this->_readRequest("id", '', '/^[\d]+$/');
+        $result = $this->queryNotepadEntity->getQueryNotepadDetail($id, $this->session->user->userId);
+        $this->_sayOK(['notepad_detail' => $result]);
+    }
+
+    /**
      * 编辑记事本
      */
     public function editUserQueryNotepad()

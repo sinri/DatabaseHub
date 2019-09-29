@@ -50,11 +50,23 @@ class QueryNotepadEntity
      */
     public function getUserAllQueryNotepads($user_id)
     {
-        $rows = $this->queryNotepadModel->selectRows(['user_id' => $user_id]);
+        $rows = $this->queryNotepadModel->selectRows(['user_id' => $user_id], 0, 0, 'id,user_id,title,create_time,update_time');
         if (empty($rows)) return null;
         return array_map(function ($row) {
             return $this->loadEntity($row);
         }, $rows);
+    }
+
+    /**
+     * @param $id
+     * @param $user_id
+     * @return QueryNotepadEntity[]|null
+     */
+    public function getQueryNotepadDetail($id, $user_id)
+    {
+        $row = $this->queryNotepadModel->selectRow(['id' => $id, 'user_id' => $user_id]);
+        if (empty($row)) return null;
+        return $this->loadEntity($row);
     }
 
     /**
@@ -68,7 +80,7 @@ class QueryNotepadEntity
         $entity->id = $row['id'];
         $entity->userId = $row['user_id'];
         $entity->title = $row['title'];
-        $entity->content = $row['content'];
+        $entity->content = $row['content'] ?? null;
         $entity->create_time = $row['create_time'];
         $entity->update_time = $row['update_time'];
         return $entity;
