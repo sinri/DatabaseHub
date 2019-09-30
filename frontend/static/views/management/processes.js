@@ -122,7 +122,7 @@ const ProcessesPage = {
         noSleepProcessTable () {
             return this.processTable.data.filter((item) => {
                 return !item.Command || item.Command.toLowerCase() !== 'sleep'
-            })
+            }).sort((smaller, bigger) => bigger.Time - smaller.Time)
         }
     },
     methods: {
