@@ -188,15 +188,45 @@
     bottom: 10px;
     left: 0;
 }
-.c-query-notepads-drawer-content .search-input {
-    display: block;
-    margin: 0 auto 15px;
-    width: 240px;
+.c-query-notepads-drawer-header {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
 }
 .c-query-notepads-drawer-content-body {
     overflow: auto;
     flex: auto;
     padding: 20px;
+}
+.c-query-notepads-drawer-content-body .notepads-search {
+    position: sticky;
+    top: -20px;
+    padding: 10px;
+    background-color: #fff;
+    text-align: center;
+}
+.c-query-notepads-drawer-content-body .search-input {
+    width: 240px;
+}
+.c-query-notepads-drawer-content-body .notepad-list {
+    margin-top: 20px;
+    list-style: none;
+}
+.c-query-notepads-drawer-content-body .notepad-list li {
+    display: flex;
+    padding: 0 10px;
+    height: 46px;
+    align-items: center;
+    border-top: 1px solid #efefef;
+}
+.c-query-notepads-drawer-content-body .notepad-list li:hover {
+    background-color: #e8e8e8;
+}
+.c-query-notepads-drawer-content-body .notepad-list .notepad-list-item-title {
+    flex: auto;
+}
+.c-query-notepads-drawer-content-body .notepad-list button + button {
+    margin-left: 4px;
 }
 .c-query-notepads-drawer-content-footer {
     display: flex;
@@ -207,24 +237,4 @@
 }
 .c-query-notepads-drawer-content-footer button + button {
     margin-left: 10px;
-}
-
-.notepad-list {
-    list-style: none;
-}
-.notepad-list li {
-    display: flex;
-    padding: 0 10px;
-    height: 46px;
-    align-items: center;
-    border-top: 1px solid #efefef;
-}
-.notepad-list li:hover {
-    background-color: #e8e8e8;
-}
-.notepad-list .notepad-list-item-title {
-    flex: auto;
-}
-.notepad-list button + button {
-    margin-left: 4px;
 }

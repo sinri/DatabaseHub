@@ -9,8 +9,7 @@ Vue.component('query-notepads-drawer', {
         </i-select>
         <i-button type="success" @click="showDrawer">Query Notepads</i-button>
         <Drawer :closable="false" :width="600" v-model="drawerVisible">
-            <div class="drawer-header" slot="header" style="display: flex;flex-shrink: 0;justify-content: center;">
-                
+            <div class="c-query-notepads-drawer-header" slot="header">
                 <ButtonGroup>
                     <i-button :type="currentPane === 'list' ? 'primary' : 'default'" @click="setPane('list')">Notepads</i-button>
                     <i-button :type="currentPane === 'create' ? 'primary' : 'default'" @click="setPane('create')">Create Notepads</i-button>
@@ -20,9 +19,11 @@ Vue.component('query-notepads-drawer', {
             <div class="c-query-notepads-drawer-content">
                 <div class="c-query-notepads-drawer-content-body">
                     <template v-if="currentPane === 'list'">
-                        <i-input class="search-input" placeholder="Filter by title" clearable
-                            prefix="ios-search"
-                            v-model="filterTitle" />
+                        <div class="notepads-search">
+                            <i-input class="search-input" placeholder="Filter by title" clearable
+                                prefix="ios-search"
+                                v-model="filterTitle" />
+                        </div>
                         <ul class="notepad-list">
                             <li v-for="(notepad, index) in lowerCasedAllQueryNotepads"
                                 :title="notepad.title" 
@@ -63,12 +64,13 @@ Vue.component('query-notepads-drawer', {
                 </div>
                 <div class="c-query-notepads-drawer-content-footer"
                     v-if="currentPane !== 'list'">
+                    <i-button type="error"
+                        :disabled="form.loading || !form.model.id"
+                        @click="handleDelete(form.model.id)"
+                        v-if="currentPane === 'edit'">Delete</i-button>
                     <i-button
                         :disabled="form.loading" 
                         @click="onResetForm">Reset Form</i-button>
-                    <i-button type="error"
-                        :disabled="form.loading || !form.model.id"
-                        @click="handleDelete(form.model.id)">Delete</i-button>
                     <i-button type="primary"
                         :disabled="form.loading"
                         @click="onSubmitForm">Submit Form</i-button>
