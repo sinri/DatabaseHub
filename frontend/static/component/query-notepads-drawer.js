@@ -35,6 +35,8 @@ Vue.component('query-notepads-drawer', {
                                 <i-button size="small" type="error" shape="circle" @click="deleteUserQueryNotepad(notepad.id, index)">Delete</i-button>
                             </li>
                         </ul>
+                        <p style="text-align: center;" 
+                           v-if="lowerCasedAllQueryNotepads.length === 0">暂无数据</p>
                     </template>
                     <template v-if="currentPane === 'create' || currentPane === 'edit'">
                         <i-form ref="form" label-position="top"
