@@ -224,6 +224,7 @@
 }
 .c-query-notepads-drawer-content-body .notepad-list .notepad-list-item-title {
     flex: auto;
+    margin-right: 10px;
 }
 .c-query-notepads-drawer-content-body .notepad-list button + button {
     margin-left: 4px;
