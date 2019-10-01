@@ -166,6 +166,49 @@
 }
 
 /* for query-notepads-drawer */
+.c-query-notepads-drawer .ivu-select-item,
+.c-query-notepads-drawer-content .ivu-select-item,
+.notepad-list .notepad-list-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.c-query-notepads-drawer .ivu-select-item {
+    max-width: 400px;
+}
+.c-query-notepads-drawer-content .ivu-select-item {
+    max-width: 560px;
+}
+.c-query-notepads-drawer-content {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+}
+.c-query-notepads-drawer-content .search-input {
+    display: block;
+    margin: 0 auto 15px;
+    width: 240px;
+}
+.c-query-notepads-drawer-content-body {
+    overflow: auto;
+    flex: auto;
+    padding: 20px;
+}
+.c-query-notepads-drawer-content-footer {
+    display: flex;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    justify-content: center;
+    border-top: 1px solid #e8e8e8;
+}
+.c-query-notepads-drawer-content-footer button + button {
+    margin-left: 10px;
+}
+
 .notepad-list {
     list-style: none;
 }
@@ -181,9 +224,6 @@
 }
 .notepad-list .notepad-list-item-title {
     flex: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 .notepad-list button + button {
     margin-left: 4px;

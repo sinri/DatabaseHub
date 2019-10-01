@@ -1,6 +1,6 @@
 Vue.component('query-notepads-drawer', {
     template: `
-    <div class="query-notepads-drawer">
+    <div class="c-query-notepads-drawer">
         <i-select placeholder="Select one to insert" style="width: 260px;" clearable filterable
             @on-change="handleInsert">
             <i-option v-for="notepad in allQueryNotepads"
@@ -17,10 +17,10 @@ Vue.component('query-notepads-drawer', {
                     <i-button :type="currentPane === 'edit' ? 'primary' : 'default'" @click="setPane('edit')">Edit NotePads</i-button>
                 </ButtonGroup>
             </div>
-            <div class="c-drawer" style="display: flex;flex-direction: column;position: absolute;top: 0;right: 0;bottom: 10px;left: 0;">
-                <div class="c-drawer-body" style="overflow: auto;flex: auto;padding: 20px;">
+            <div class="c-query-notepads-drawer-content">
+                <div class="c-query-notepads-drawer-content-body">
                     <template v-if="currentPane === 'list'">
-                        <i-input placeholder="Filter by title" clearable style="display: block; margin: 0 auto 15px;width: 240px;"
+                        <i-input class="search-input" placeholder="Filter by title" clearable
                             prefix="ios-search"
                             v-model="filterTitle" />
                         <ul class="notepad-list">
@@ -61,10 +61,17 @@ Vue.component('query-notepads-drawer', {
                         </i-form>
                     </template>
                 </div>
-                <div class="drawer-footer" style="display: flex;flex-shrink: 0;padding: 10px 16px;justify-content: center;border-top: 1px solid #e8e8e8;"
+                <div class="c-query-notepads-drawer-content-footer"
                     v-if="currentPane !== 'list'">
-                    <i-button :disabled="form.loading" @click="onResetForm" style="margin-right: 10px;">Reset Form</i-button>
-                    <i-button type="primary" :disabled="form.loading"  @click="onSubmitForm">Submit Form</i-button>
+                    <i-button
+                        :disabled="form.loading" 
+                        @click="onResetForm">Reset Form</i-button>
+                    <i-button type="error"
+                        :disabled="form.loading || !form.model.id"
+                        @click="handleDelete(form.model.id)">Delete</i-button>
+                    <i-button type="primary"
+                        :disabled="form.loading"
+                        @click="onSubmitForm">Submit Form</i-button>
                 </div>
             </div>
         </Drawer>
@@ -167,6 +174,14 @@ Vue.component('query-notepads-drawer', {
             this.setPane('edit')
             this.form.model.id = id
             this.setFormContent(id)
+        },
+        handleDelete (id) {
+            const index = this.allQueryNotepads.findIndex(item => item.id === id)
+
+            if (index === -1) return
+
+            this.deleteUserQueryNotepad(id, index)
+            this.onResetForm()
         },
 
         onResetForm () {
