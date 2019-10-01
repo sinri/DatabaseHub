@@ -131,6 +131,28 @@ const API = {
         url: 'QuickQueryController/syncExecute'
     },
 
+    // QueryNotepadController
+    getCurrentUserAllQueryNotepads: {
+        desc: 'Get current user all query notepads.',
+        url: 'QueryNotepadController/getCurrentUserAllQueryNotepads'
+    },
+    getQueryNotepadDetail: {
+        desc: 'Get query notepad detail by id.',
+        url: 'QueryNotepadController/getQueryNotepadDetail'
+    },
+    editUserQueryNotepad: {
+        desc: 'Edit query notepad.',
+        url: 'QueryNotepadController/editUserQueryNotepad'
+    },
+    deleteUserQueryNotepad: {
+        desc: 'Delete query notepad.',
+        url: 'QueryNotepadController/deleteUserQueryNotepad'
+    },
+    createUserQueryNotepad: {
+        desc: 'Create query notepad.',
+        url: 'QueryNotepadController/createUserQueryNotepad'
+    },
+
     // KillerController
     killerPermittedDatabases: {
         desc: 'List the permitted databases.',

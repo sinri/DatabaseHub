@@ -17,8 +17,10 @@ const QuickQueryPage = {
                             :loading="queryResult.isLoading"
                             @click="syncExecute">Sync Execute</i-button>
                      </form-item>
-                     
-                      <form-item style="display: block;">
+                      
+                     <query-notepads-drawer style="float: right;" @on-insert="handleInsert" />
+                         
+                      <form-item style="display: block;margin: 0;">
                          <codemirror ref="codeMirror" style="font-size: 14px;"
                             :options="codeMirrorOptions"
                             v-model="executeParams.sql"></codemirror>
@@ -120,6 +122,9 @@ const QuickQueryPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
+        },
+        handleInsert (sql) {
+            this.executeParams.sql = sql
         }
     },
     mounted () {

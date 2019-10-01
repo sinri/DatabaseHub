@@ -164,3 +164,27 @@
 .pre-line {
     white-space: pre-line;
 }
+
+/* for query-notepads-drawer */
+.notepad-list {
+    list-style: none;
+}
+.notepad-list li {
+    display: flex;
+    padding: 0 10px;
+    height: 46px;
+    align-items: center;
+    border-top: 1px solid #efefef;
+}
+.notepad-list li:hover {
+    background-color: #e8e8e8;
+}
+.notepad-list .notepad-list-item-title {
+    flex: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notepad-list button + button {
+    margin-left: 4px;
+}
