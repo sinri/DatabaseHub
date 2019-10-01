@@ -120,6 +120,29 @@
     border-bottom: 1px solid #e8eaec;
     vertical-align: middle;
 }
+.c-native-table th span {
+    vertical-align: middle;
+}
+.c-native-table-sort {
+    display: inline-flex;
+    flex-direction: column;
+}
+.c-native-table-sort {
+    display: inline-flex;
+    flex-direction: column;
+    font-size: 16px;
+}
+.c-native-table-sort i {
+    overflow: hidden;
+    display: block;
+    height: 6px;
+    color: #c5c8ce;
+    line-height: 6px;
+    cursor: pointer;
+ }
+.c-native-table-sort i.on {
+    color: #2d8cf0;
+}
 .c-native-table tbody tr:hover td {
     background-color: #ebf7ff;
 }
