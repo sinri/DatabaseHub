@@ -7,8 +7,8 @@ Vue.component('query-notepads-drawer', {
                 :key="notepad.id"
                 :value="notepad.id">{{ notepad.title }}</i-option>
         </i-select>
-        <i-button type="success" @click="showDrawer">Query Notepads</i-button>
-        <Drawer :closable="false" :width="600" v-model="drawerVisible">
+        <i-button type="success" @click="showDrawer">My Notepads</i-button>
+        <Drawer :mask-closable="false" :width="600" v-model="drawerVisible">
             <div class="c-query-notepads-drawer-header" slot="header">
                 <ButtonGroup>
                     <i-button :type="currentPane === 'list' ? 'primary' : 'default'" @click="setPane('list')">Notepads</i-button>
@@ -30,7 +30,7 @@ Vue.component('query-notepads-drawer', {
                                 :key="notepad.id"
                                 v-if="notepad.lowerCasedTitle.includes(lowerCasedFilterTitle)">
                                 <p class="notepad-list-item-title">{{ notepad.title }}</p>
-                                <i-button size="small" type="success" shape="circle" @click="handleInsert(notepad.id)">Insert</i-button>
+                                <i-button size="small" type="success" shape="circle" @click="handleInsert(notepad.id)">Load</i-button>
                                 <i-button size="small" type="primary" shape="circle" @click="handleEdit(notepad.id)">Edit</i-button>
                                 <i-button size="small" type="error" shape="circle" @click="deleteUserQueryNotepad(notepad.id, index)">Delete</i-button>
                             </li>
@@ -70,6 +70,9 @@ Vue.component('query-notepads-drawer', {
                         :disabled="form.loading || !form.model.id"
                         @click="handleDelete(form.model.id)"
                         v-if="currentPane === 'edit'">Delete</i-button>
+                    <i-button type="success"
+                        :disabled="form.loading || !form.model.id"
+                        @click="handleInsert(form.model.id)">Load</i-button>
                     <i-button
                         :disabled="form.loading" 
                         @click="onResetForm">Reset Form</i-button>
