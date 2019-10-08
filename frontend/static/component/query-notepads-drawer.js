@@ -70,15 +70,9 @@ Vue.component('query-notepads-drawer', {
                         :disabled="form.loading || !form.model.id"
                         @click="handleDelete(form.model.id)"
                         v-if="currentPane === 'edit'">Delete</i-button>
-                    <i-button type="success"
-                        :disabled="form.loading || !form.model.id"
-                        @click="handleInsert(form.model.id)">Load</i-button>
-                    <i-button
-                        :disabled="form.loading" 
-                        @click="onResetForm">Reset Form</i-button>
                     <i-button type="primary"
                         :disabled="form.loading"
-                        @click="onSubmitForm">Submit Form</i-button>
+                        @click="onSubmitForm">Save</i-button>
                 </div>
             </div>
         </Drawer>
