@@ -1,7 +1,7 @@
 Vue.component('query-notepads-drawer', {
     template: `
     <div class="c-query-notepads-drawer">
-        <i-select placeholder="Select one to insert" style="width: 260px;" clearable filterable
+        <i-select placeholder="Select one to load" style="width: 260px;" clearable filterable
             @on-change="handleInsert">
             <i-option v-for="notepad in allQueryNotepads"
                 :key="notepad.id"
