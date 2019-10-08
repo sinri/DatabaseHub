@@ -120,6 +120,29 @@
     border-bottom: 1px solid #e8eaec;
     vertical-align: middle;
 }
+.c-native-table th span {
+    vertical-align: middle;
+}
+.c-native-table-sort {
+    display: inline-flex;
+    flex-direction: column;
+}
+.c-native-table-sort {
+    display: inline-flex;
+    flex-direction: column;
+    font-size: 16px;
+}
+.c-native-table-sort i {
+    overflow: hidden;
+    display: block;
+    height: 6px;
+    color: #c5c8ce;
+    line-height: 6px;
+    cursor: pointer;
+ }
+.c-native-table-sort i.on {
+    color: #2d8cf0;
+}
 .c-native-table tbody tr:hover td {
     background-color: #ebf7ff;
 }
@@ -163,4 +186,79 @@
 
 .pre-line {
     white-space: pre-line;
+}
+
+/* for query-notepads-drawer */
+.c-query-notepads-drawer .ivu-select-item,
+.c-query-notepads-drawer-content .ivu-select-item,
+.notepad-list .notepad-list-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.c-query-notepads-drawer .ivu-select-item {
+    max-width: 400px;
+}
+.c-query-notepads-drawer-content .ivu-select-item {
+    max-width: 560px;
+}
+.c-query-notepads-drawer-content {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+}
+.c-query-notepads-drawer-header {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+}
+.c-query-notepads-drawer-content-body {
+    overflow: auto;
+    flex: auto;
+    padding: 20px;
+}
+.c-query-notepads-drawer-content-body .notepads-search {
+    position: sticky;
+    top: -20px;
+    padding: 10px;
+    background-color: #fff;
+    text-align: center;
+}
+.c-query-notepads-drawer-content-body .search-input {
+    width: 240px;
+}
+.c-query-notepads-drawer-content-body .notepad-list {
+    margin-top: 20px;
+    list-style: none;
+}
+.c-query-notepads-drawer-content-body .notepad-list li {
+    display: flex;
+    padding: 0 10px;
+    height: 46px;
+    align-items: center;
+    border-top: 1px solid #efefef;
+}
+.c-query-notepads-drawer-content-body .notepad-list li:hover {
+    background-color: #e8e8e8;
+}
+.c-query-notepads-drawer-content-body .notepad-list .notepad-list-item-title {
+    flex: auto;
+    margin-right: 10px;
+}
+.c-query-notepads-drawer-content-body .notepad-list button + button {
+    margin-left: 4px;
+}
+.c-query-notepads-drawer-content-footer {
+    display: flex;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    justify-content: center;
+    border-top: 1px solid #e8e8e8;
+}
+.c-query-notepads-drawer-content-footer button + button {
+    margin-left: 10px;
 }
