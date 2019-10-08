@@ -221,8 +221,8 @@ Vue.component('query-notepads-drawer', {
         },
 
         getCurrentUserAllQueryNotepads () {
-            ajax('getCurrentUserAllQueryNotepads').then(({query_notepad_list = []}) => {
-                this.allQueryNotepads = query_notepad_list;
+            ajax('getCurrentUserAllQueryNotepads').then(({query_notepad_list}) => {
+                this.allQueryNotepads = query_notepad_list || [];
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
