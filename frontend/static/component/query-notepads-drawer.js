@@ -1,7 +1,9 @@
 Vue.component('query-notepads-drawer', {
     template: `
     <div class="c-query-notepads-drawer">
-        <i-select placeholder="Select one to load" style="width: 260px;" clearable filterable
+        <i-select ref="quickSelect" placeholder="Select one to load" style="width: 260px;"
+            clearable
+            filterable
             @on-change="handleInsert">
             <i-option v-for="notepad in allQueryNotepads"
                 :key="notepad.id"
@@ -40,10 +42,10 @@ Vue.component('query-notepads-drawer', {
                     </template>
                     <template v-if="currentPane === 'create' || currentPane === 'edit'">
                         <i-form ref="form" label-position="top"
-                            :model="form.model" 
+                            :model="form.model"
                             :rules="form.rules">
                             <form-item label="Notepad" prop="id" v-show="currentPane === 'edit'">
-                                <i-select placeholder="Database" filterable
+                                <i-select placeholder="Notepad" filterable
                                            @on-change="setFormContent"
                                            v-model.trim="form.model.id">
                                      <i-option v-for="notepad in allQueryNotepads"
@@ -161,7 +163,6 @@ Vue.component('query-notepads-drawer', {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
-
         handleInsert (id) {
             if (!id) return
 
