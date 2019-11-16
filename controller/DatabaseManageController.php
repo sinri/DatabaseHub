@@ -93,7 +93,10 @@ class DatabaseManageController extends AbstractAuthController
         $list = (new DatabaseModel())->selectRows(['status' => DatabaseModel::STATUS_NORMAL]);
         $databases = [];
         foreach ($list as $item) {
-            $databases[] = DatabaseEntity::instanceByRow($item);
+            $databaseEntity = DatabaseEntity::instanceByRow($item);
+            $databaseEntityAsArray = json_decode(json_encode($databaseEntity), true);
+            $databaseEntityAsArray['max_sql_length'] = $databaseEntity->getMaxSQLLength();
+            $databases[] = $databaseEntityAsArray;
         }
         $this->_sayOK(['list' => $databases]);
     }

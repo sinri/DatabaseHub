@@ -60,4 +60,6 @@ interface DatabaseWorkerEntity
      * @return bool
      */
     public function kill($tid);
+
+    public function selectRows($sql);
 }

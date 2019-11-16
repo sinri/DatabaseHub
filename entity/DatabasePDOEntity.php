@@ -198,4 +198,14 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
     {
         return false;
     }
+
+    /**
+     * @param $sql
+     * @return array
+     * @throws Exception
+     */
+    public function selectRows($sql)
+    {
+        return $this->arkPDO->safeQueryAll($sql);
+    }
 }
