@@ -293,4 +293,37 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     {
         return $this->mysqliAgent->getInstanceOfMySQLi()->kill($tid);
     }
+
+    public function selectRows($sql)
+    {
+        $error = [];
+        $data = [];
+        try {
+            $multiQueryDone = $this->mysqliAgent->getInstanceOfMySQLi()->multi_query($sql);
+            if (!$multiQueryDone) {
+                throw new Exception("MySQLi multi_query cannot be done for query: " . $sql);
+            }
+            $result = $this->mysqliAgent->getInstanceOfMySQLi()->store_result();
+            if (!$result) {
+                throw new Exception("MySQLi store_result failed, returned " . json_encode($result));
+            }
+
+            HubCore::getLogger()->info("look here the result", ["result" => $result]);
+            if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+                do {
+                    $data[] = $row;
+                } while ($row = $result->fetch_array(MYSQLI_ASSOC));
+            }
+            $result->free();
+            $this->mysqliAgent->getInstanceOfMySQLi()->close();
+            return $data;
+        } catch (Exception $exception) {
+            $error[] = $this->mysqliAgent->getInstanceOfMySQLi()->error;
+            if (!empty($result)) {
+                $result->free();
+            }
+            $this->mysqliAgent->getInstanceOfMySQLi()->close();
+            throw new Exception(implode("|", $error));
+        }
+    }
 }

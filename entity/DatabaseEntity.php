@@ -122,4 +122,15 @@ class DatabaseEntity
         }
         return $worker;
     }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function getMaxSQLLength()
+    {
+        $worker = $this->getWorkerEntity();
+        $rows = $worker->selectRows("show variables like 'max_allowed_packet';");
+        return $rows;
+    }
 }
