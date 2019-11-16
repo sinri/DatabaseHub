@@ -60,7 +60,8 @@ const ProcessesPage = {
                     },
                     {
                         title: 'Time',
-                        key: 'Time'
+                        key: 'Time',
+                        sortable: true
                     },
                     {
                         title: 'State',
