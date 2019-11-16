@@ -131,6 +131,6 @@ class DatabaseEntity
     {
         $worker = $this->getWorkerEntity();
         $rows = $worker->selectRows("show variables like 'max_allowed_packet';");
-        return $rows;
+        return $rows[0]['Value'];
     }
 }
