@@ -45,6 +45,8 @@ class ApplicationEntity
 
     public $processId;
 
+    public $sqlFileName;
+
     /**
      * @param array $row
      * @return ApplicationEntity
@@ -72,6 +74,7 @@ class ApplicationEntity
         $entity->duration = $row['duration'];
         $entity->parallelable = $row['parallelable'];
         $entity->processId = $row['process_id'];
+        $entity->sqlFileName = $row['sql_file_name'];
 
         return $entity;
     }
@@ -108,6 +111,7 @@ class ApplicationEntity
         $this->duration = $row['duration'];
         $this->parallelable = $row['parallelable'];
         $this->processId = $row['process_id'];
+        $this->sqlFileName = $row['sql_file_name'];
     }
 
     /**
@@ -220,6 +224,10 @@ class ApplicationEntity
                 $duration = $sqlEndTime - $sqlBeginTime;
             } elseif ($this->type == ApplicationModel::TYPE_EXECUTE) {
                 $done = $this->taskExecuteCallSQL($error);
+                $sqlEndTime = microtime(true);
+                $duration = $sqlEndTime - $sqlBeginTime;
+            } elseif ($this->type == ApplicationModel::TYPE_FILE) {
+                $done = $this->taskExecuteFileSQL($error);
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
             } else {
@@ -357,9 +365,10 @@ class ApplicationEntity
         return $ret;
     }
 
-    private function getRemarkedSQL()
+    private function getRemarkedSQL($sql = '')
     {
-        return $this->sql . PHP_EOL . " -- From Database Hub, AID " . $this->applicationId . " AUTHOR " . $this->applyUser->username;
+        $sql = $this->type == ApplicationModel::TYPE_FILE ? $sql : $this->sql;
+        return $sql . PHP_EOL . " -- From Database Hub, AID " . $this->applicationId . " AUTHOR " . $this->applyUser->username;
     }
 
     /**
@@ -407,5 +416,34 @@ class ApplicationEntity
         }
         fclose($handle);
         return $rows;
+    }
+
+    /**
+     * @param string[] $error
+     * @return bool
+     * @throws Exception
+     */
+    protected function taskExecuteFileSQL(&$error)
+    {
+        $destination = 'sql_files';
+        $file_path = $this->storageDirectory($destination). DIRECTORY_SEPARATOR . $this->sqlFileName;
+        if (!file_exists($file_path)) {
+            throw new Exception('sql file not exist!');
+        }
+        $this->sql = file_get_contents($file_path);
+        HubCore::getLogger()->info("Begin File SQL Call", ['application_id' => $this->applicationId]);
+        HubCore::getLogger()->info($this->sql);
+        $done = $this->database->getWorkerEntity()->executeCall($this->getRemarkedSQL(), $error);
+        return $done;
+    }
+
+    /**
+     * @param string $relativePath
+     * @return string
+     */
+    private function storageDirectory($relativePath = '')
+    {
+        $dir = HubCore::getConfig(['store', 'path'], '');
+        return $dir . DIRECTORY_SEPARATOR . $relativePath;
     }
 }
