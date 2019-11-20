@@ -31,10 +31,10 @@ class ApplicationController extends AbstractAuthController
      */
     private function verifyApplication($application)
     {
-        $keys = ['title', 'description', 'database_id', 'sql', 'type', 'sql_file_name'];
+        $keys = ['title', 'description', 'database_id', 'sql', 'type'];
         $data = [];
         foreach ($keys as $key) {
-            if (!array_key_exists($key, $application)) {
+            if (!isset($application[$key])) {
                 throw new Exception("Lack of field " . $key);
             }
             $data[$key] = $application[$key];
@@ -42,18 +42,11 @@ class ApplicationController extends AbstractAuthController
         if (DatabaseEntity::instanceById($data['database_id'])->status !== DatabaseModel::STATUS_NORMAL) {
             throw new Exception("Target database is not normal");
         }
-        if ($data['type'] === ApplicationModel::TYPE_FILE) {
-            $target_file = $this->storageDirectory($data['sql_file_name']);
-            if (!file_exists($target_file)) {
-                throw new Exception("Sql file is not exist!");
-            }
-            return $data;
-        }
         if (!in_array($data['type'], [
             ApplicationModel::TYPE_DDL,
             ApplicationModel::TYPE_EXECUTE,
             ApplicationModel::TYPE_MODIFY,
-            ApplicationModel::TYPE_READ
+            ApplicationModel::TYPE_READ,
         ])) {
             throw new Exception("Illegal Application Type");
         }
@@ -445,78 +438,4 @@ class ApplicationController extends AbstractAuthController
                 break;
         }
     }
-
-    /**
-     * 上传sql文件
-     */
-    public function uploadSqlFile()
-    {
-        try {
-            $folder_name =$this->_readRequest('folder_name', '');
-            $destination = 'sql_files';
-            $file = $_FILES[$folder_name];
-            $parts = explode(".", $file['name']);
-            $file_type = strtolower($parts[count($parts) - 1]);
-            if (!in_array($file_type, ['txt', 'sql'])) {
-                throw new Exception('请上传txt或sql文件');
-            }
-
-            $file_hash = md5_file($file['tmp_name']);
-            $target_file = $this->storageDirectory($destination);
-            $this->ensureDirectoryExists($target_file);
-            $target_file .= DIRECTORY_SEPARATOR . $file_hash . '.' . $file_type;
-            $mv_done = move_uploaded_file($file['tmp_name'], $target_file);
-            if (!$mv_done) {
-                throw new Exception('文件保存失败');
-            }
-            $this->_sayOK(['file_name' => $file_hash . '.' . $file_type]);
-        } catch (Exception $exception) {
-            $this->_sayFail($exception->getMessage());
-        }
-    }
-
-    /**
-     * @param string $relativePath
-     * @return string
-     */
-    private function storageDirectory($relativePath = '')
-    {
-        $dir = HubCore::getConfig(['store', 'path'], '');
-        $this->ensureDirectoryExists($dir);
-        return $dir . DIRECTORY_SEPARATOR . $relativePath;
-    }
-
-    /**
-     * @param $dir
-     */
-    private function ensureDirectoryExists($dir)
-    {
-        if (!file_exists($dir)) {
-            if (mkdir($dir, 0777, true)) {
-                chmod($dir, 0777);
-            }
-        }
-    }
-
-    /**
-     * 显示图片
-     * @throws Exception
-     */
-    public function downloadSqlFile()
-    {
-        try {
-            $file_name =$this->_readRequest('file_name', '');
-            $application_id =$this->_readRequest('application_id', '');
-            $application = ApplicationEntity::instanceById($application_id);
-            if (empty($application) || $application->sqlFileName !== $file_name) {
-                throw new Exception('params error');
-            }
-            $destination = 'sql_files';
-            $target_file = $this->storageDirectory($destination) . DIRECTORY_SEPARATOR . $file_name;
-            $this->_getOutputHandler()->downloadFileIndirectly($target_file, 'application/octet-stream', 'sql' . $application_id);
-        } catch (Exception $exception) {
-            $this->_sayFail($exception->getMessage());
-        }
-    }
-
 }
