@@ -115,6 +115,7 @@ class ApplicationController extends AbstractAuthController
      */
     public function create()
     {
+        $this->checkAjaxHttpRefer();
         // Create new application
         $application = $this->_readRequest('application');
         $application = $this->verifyApplication($application);
@@ -130,7 +131,7 @@ class ApplicationController extends AbstractAuthController
         $applicationEntity = ApplicationEntity::instanceById($application_id);
         $applicationEntity->writeRecord($this->session->user->userId, "APPLY", "");
 
-        $this->_sayOK(['application_id' => $application_id, 'referer' => $this->checkAjaxHttpRefer()]);
+        $this->_sayOK(['application_id' => $application_id]);
     }
 
     /**
@@ -441,20 +442,23 @@ class ApplicationController extends AbstractAuthController
 
     /**
      * 检测ajax接口请求来源
-     * @return mixed
+     * @param $path
+     * @return bool
+     * @throws Exception
      */
-    private function checkAjaxHttpRefer()
+    private function checkAjaxHttpRefer($path = '')
     {
         $http_refer = $_SERVER['HTTP_REFERER'];
         if (!empty($http_refer)) {
             $url_parser = parse_url($http_refer);
             if (isset($url_parser['scheme']) && isset($url_parser['host']) && isset($url_parser['path'])) {
                 if ($url_parser['scheme'] == 'https' and in_array($url_parser['host'], ['database-hub-test.leqee.com','databasehub.leqee.com'])) {
-                    return $url_parser['path'];
+                    if (empty($path) || (!empty($path) && $path == $url_parser['path'])) {
+                        return true;
+                    }
                 }
             }
-            return $url_parser;
         }
-        return $http_refer;
+        throw new Exception('您的请求来源异常，请检查! ' . $http_refer);
     }
 }
