@@ -130,7 +130,7 @@ class ApplicationController extends AbstractAuthController
         $applicationEntity = ApplicationEntity::instanceById($application_id);
         $applicationEntity->writeRecord($this->session->user->userId, "APPLY", "");
 
-        $this->_sayOK(['application_id' => $application_id]);
+        $this->_sayOK(['application_id' => $application_id, 'referer' => $this->checkAjaxHttpRefer()]);
     }
 
     /**
@@ -437,5 +437,23 @@ class ApplicationController extends AbstractAuthController
                 $this->_sayOK(['output' => $output]);
                 break;
         }
+    }
+
+    /**
+     * 检测ajax接口请求来源
+     * @return mixed
+     */
+    private function checkAjaxHttpRefer()
+    {
+        $http_refer = $_SERVER['HTTP_REFERER'];
+        if (!empty($http_refer)) {
+            $url_parser = parse_url($http_refer);
+            if (isset($url_parser['scheme']) && isset($url_parser['host']) && isset($url_parser['path'])) {
+                if ($url_parser['scheme'] == 'https' and in_array($url_parser['host'], ['test-account-auth-v3.leqee.com','account-auth-v3.leqee.com'])) {
+                    return $url_parser['path'];
+                }
+            }
+        }
+        return $http_refer;
     }
 }
