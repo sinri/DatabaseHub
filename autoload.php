@@ -10,4 +10,6 @@ use sinri\ark\core\ArkHelper;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+date_default_timezone_set("Asia/Shanghai");
+
 ArkHelper::registerAutoload("sinri\\databasehub", __DIR__);
