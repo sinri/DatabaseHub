@@ -41,6 +41,15 @@ interface DatabaseWorkerEntity
     public function executeCall($query, &$error);
 
     /**
+     * @param string $database
+     * @param array $conditions
+     * @param string $store_path
+     * @param string[] $error
+     * @return bool
+     */
+    public function executeExportStructure($database, $conditions, $store_path, &$error);
+
+    /**
      * @param string $query
      * @param array $data
      * @param null|string[] $error
@@ -62,4 +71,10 @@ interface DatabaseWorkerEntity
     public function kill($tid);
 
     public function selectRows($sql);
+
+    /**
+     * @param $database
+     * @return array
+     */
+    public function getStructureSimpleDetail($database);
 }

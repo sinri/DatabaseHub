@@ -39,11 +39,9 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             $dict[ArkPDOConfig::CONFIG_DATABASE] = $database->databaseName;
             $dict[ArkPDOConfig::CONFIG_OPTIONS] = [];
         }
-
         HubCore::getLogger()->debug(__METHOD__ . '@' . __LINE__, ['dict' => $dict]);
 
         $this->arkPDO = new ArkPDO(new ArkPDOConfig($dict));
-
         $this->charset = "UTF-8";
         $this->arkPDO->connect();
     }
@@ -208,4 +206,168 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
     {
         return $this->arkPDO->safeQueryAll($sql);
     }
+
+    /**
+     * @param $sql
+     * @param $column_index
+     * @param $reset_auto_increment
+     * @param $drop_if_exist
+     * @param $drop_type
+     * @param $drop_name
+     * @return string
+     * @throws Exception
+     */
+    public function fetchSQLResult($sql, $column_index = 1, $reset_auto_increment = true, $drop_if_exist = true, $drop_type = '', $drop_name = '')
+    {
+        $lines = $this->arkPDO->getCol($sql, $column_index);
+        if (empty($lines)) return "";
+        $text = "-- BLOCK BEGIN --" . PHP_EOL;
+
+        $text .= "-- " . $sql . PHP_EOL;
+
+        $sql = "";
+        foreach ($lines as $lineNo => $line) {
+            if ($drop_type === 'TABLE' && $reset_auto_increment) {
+                $line = preg_replace('/\s+AUTO_INCREMENT=\d+\s+/', ' ', $line);
+            }
+            $line = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_]+`\s+/', ' ', $line);
+            $sql .= $line . PHP_EOL;
+        }
+        if ($drop_if_exist) {
+            if ($drop_type == 'TABLE') {
+                if (strpos($sql, 'CREATE TABLE') !== 0) {
+                    $drop_type = 'VIEW';
+                }
+            }
+            $text .= "DROP {$drop_type} IF EXISTS {$drop_name};" . PHP_EOL;
+        }
+        $text .= $sql;
+        $text .= "-- BLOCK END --" . PHP_EOL . ";" . PHP_EOL;
+        return $text;
+    }
+
+    /**
+     * @param string $database
+     * @param array $conditions
+     * ['drop_if_exist'=> false,
+     * 'show_create_database' => false,
+     * 'reset_auto_increment' => false,
+     * 'show_create_table' => [],
+     * 'show_create_function' => [],
+     * 'show_create_procedure' => [],
+     * 'show_create_trigger' => []]
+     * @param string $store_path
+     * @param string[] $error
+     * @return bool
+     * @throws Exception
+     */
+    public function executeExportStructure($database, $conditions, $store_path, &$error)
+    {
+        $snapshot = '';
+        $drop_if_exist = $conditions['drop_if_exist'];
+        $error = array();
+        if ($conditions['show_create_database']) {
+            $snapshot .= $this->fetchSQLResult('show create database `' . $database . '`;');
+        }
+
+        $snapshot .= "use " . $database . ";" . PHP_EOL;
+
+        // tables
+        if (!empty($conditions['show_create_table'])) {
+            if ($conditions['show_create_table'] != 'ALL') {
+                $tableNames = $conditions['show_create_table'];
+            } else {
+                $sql = "show tables in `{$database}`;";
+                $tableNames = $this->arkPDO->getCol($sql);
+            }
+            if (!empty($tableNames)) {
+                foreach ($tableNames as $tableName) {
+                    $sql = "show create table `{$database}`.`{$tableName}`;";
+                    $snapshot .= $this->fetchSQLResult($sql, 1, $conditions['reset_auto_increment'],
+                        $drop_if_exist, 'TABLE', "`{$database}`.`{$tableName}`");
+                }
+            }
+        }
+
+        // functions
+        if (!empty($conditions['show_create_function'])) {
+            if ($conditions['show_create_function'] != 'ALL') {
+                $functionNames = $conditions['show_create_function'];
+            } else {
+                $sql = "SHOW FUNCTION STATUS where db='{$database}';";
+                $functionNames = $this->arkPDO->getCol($sql, 1);
+            }
+            if (!empty($functionNames)) {
+                foreach ($functionNames as $functionName) {
+                    $sql = "show create function `{$database}`.`{$functionName}`;";
+                    $snapshot .= $this->fetchSQLResult($sql,2, false,
+                        $drop_if_exist, 'FUNCTION', "`{$database}`.`{$functionName}`");
+                }
+            }
+        }
+
+        // procedures
+        if (!empty($conditions['show_create_procedure'])) {
+            if ($conditions['show_create_procedure'] != 'ALL') {
+                $procedureNames = $conditions['show_create_procedure'];
+            } else {
+                $sql = "SHOW PROCEDURE STATUS where db='{$database}';";
+                $procedureNames = $this->arkPDO->getCol($sql, 1);
+            }
+            if (!empty($procedureNames)) {
+                foreach ($procedureNames as $procedureName) {
+                    $sql = "show create procedure `{$database}`.`{$procedureName}`;";
+                    $snapshot .= $this->fetchSQLResult($sql, 2, false,
+                        $drop_if_exist, 'PROCEDURE', "`{$database}`.`{$procedureName}`");
+                }
+            }
+        }
+
+        //triggers
+        if (!empty($conditions['show_create_trigger'])) {
+            if ($conditions['show_create_trigger'] != 'ALL') {
+                $triggerNames = $conditions['show_create_trigger'];
+            } else {
+                $sql = "show triggers in `{$database}`;";
+                $triggerNames = $this->arkPDO->getCol($sql);
+            }
+            if (!empty($triggerNames)) {
+                foreach ($triggerNames as $triggerName) {
+                    $sql = "show create trigger `{$database}`.`{$triggerName}`;";
+                    $snapshot .= $this->fetchSQLResult($sql, 2, false,
+                        $drop_if_exist, 'TRIGGER', "`{$database}`.`{$triggerName}`");
+                }
+            }
+        }
+
+        return file_put_contents($store_path, $snapshot);
+    }
+
+    /**
+     * @param string $database
+     * @return array
+     * @throws Exception
+     */
+    public function getStructureSimpleDetail($database)
+    {
+        $data = [];
+        // tables
+        $sql = "show tables in `{$database}`;";
+        $data['tables'] = $this->arkPDO->getCol($sql);
+
+        // functions
+        $sql = "SHOW FUNCTION STATUS where db='{$database}';";
+        $data['functions'] = $this->arkPDO->getCol($sql, 1);
+
+        // procedures
+        $sql = "SHOW PROCEDURE STATUS where db='{$database}';";
+        $data['procedures'] = $this->arkPDO->getCol($sql, 1);
+
+        //triggers
+        $sql = "show triggers in `{$database}`;";
+        $data['triggers'] = $this->arkPDO->getCol($sql);
+
+        return $data;
+    }
+
 }

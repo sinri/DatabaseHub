@@ -148,13 +148,16 @@ class ApplicationEntity
      */
     public function getExportedFileInfo()
     {
-        $should_have_file = ($this->type === ApplicationModel::TYPE_READ && $this->status === ApplicationModel::STATUS_DONE);
+        $should_have_file = (($this->type === ApplicationModel::TYPE_READ || $this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) && $this->status === ApplicationModel::STATUS_DONE);
         $info = [
             "should_have_file" => $should_have_file,
         ];
         if (!$should_have_file) return $info;
-
-        $path = $this->getExportedFilePath();
+        if ($this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+            $path = $this->getExportedFilePath();
+        } else {
+            $path = $this->getExportedSqlPath();
+        }
         if (file_exists($path)) {
             $info["path"] = $path;
             $info["size"] = filesize($path);
@@ -220,6 +223,10 @@ class ApplicationEntity
                 $duration = $sqlEndTime - $sqlBeginTime;
             } elseif ($this->type == ApplicationModel::TYPE_EXECUTE) {
                 $done = $this->taskExecuteCallSQL($error);
+                $sqlEndTime = microtime(true);
+                $duration = $sqlEndTime - $sqlBeginTime;
+            } elseif ($this->type == ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+                $done = $this->taskExecuteExportStructure($error);
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
             } else {
@@ -344,6 +351,21 @@ class ApplicationEntity
     }
 
     /**
+     * @param string[] $error
+     * @return bool
+     * @throws Exception
+     */
+    protected function taskExecuteExportStructure(&$error)
+    {
+        HubCore::getLogger()->info("Begin STRUCTURE SQL EXPORT:");
+        HubCore::getLogger()->info($this->sql);
+        $conditions = json_decode($this->sql, true);
+        $sql_path = $this->getExportedSqlPath();
+        $done = $this->database->getWorkerEntity()->executeExportStructure($this->database->databaseName, $conditions, $sql_path, $error);
+        return $done;
+    }
+
+    /**
      * @param $results
      * @param $error
      * @return bool
@@ -369,6 +391,15 @@ class ApplicationEntity
     {
         $csv_path = HubCore::getConfig(['store', 'path'], __DIR__ . '/../store') . '/app_' . $this->applicationId . ".csv";
         return $csv_path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExportedSqlPath()
+    {
+        $sql_path = HubCore::getConfig(['store', 'path'], __DIR__ . '/../store') . '/structure_' . $this->applicationId . "_" . $this->database->databaseName . ".sql";
+        return $sql_path;
     }
 
     /**

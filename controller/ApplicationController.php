@@ -47,8 +47,30 @@ class ApplicationController extends AbstractAuthController
             ApplicationModel::TYPE_EXECUTE,
             ApplicationModel::TYPE_MODIFY,
             ApplicationModel::TYPE_READ,
+            ApplicationModel::TYPE_EXPORT_STRUCTURE
         ])) {
             throw new Exception("Illegal Application Type");
+        }
+
+        // check TYPE_EXPORT_STRUCTURE
+        if ($data['type'] === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+            $condtions = json_decode($data['sql'], true);
+            $need_keys = ['bool' => ['show_create_database', 'drop_if_exist', 'reset_auto_increment'],
+                'array' => ['show_create_table', 'show_create_function', 'show_create_procedure', 'show_create_trigger']];
+            foreach ($need_keys as $type => $items) {
+                foreach ($items as $item) {
+                    if (!array_key_exists($item, $condtions)) {
+                        throw new Exception('Params ' . $item . ' Not Find');
+                    }
+                    if ($type === 'bool' && !is_bool($condtions[$item])) {
+                        throw new Exception('Params ' . $item . ' Not Bool');
+                    }
+                    if ($type === 'array' && !(is_array($condtions[$item]) || $condtions[$item] === 'ALL')) {
+                        throw new Exception('Params ' . $item . ' Not Array Or "ALL"');
+                    }
+                }
+            }
+            return $data;
         }
 
         // check SQL Syntax
@@ -460,5 +482,17 @@ class ApplicationController extends AbstractAuthController
             }
         }
         throw new Exception('您的请求来源异常，请检查! ' . $http_refer);
+    }
+
+    /**
+     * 获取数据库结构信息
+     * @throws Exception
+     */
+    public function getDatabaseStructure()
+    {
+        $database_id = $this->_readRequest('database_id', '', '/^\d+$/');
+        $database = DatabaseEntity::instanceById($database_id);
+        $result = $database->getWorkerEntity()->getStructureSimpleDetail($database->databaseName);
+        $this->_sayOK(['result' => $result]);
     }
 }
