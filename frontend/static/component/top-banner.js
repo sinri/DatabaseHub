@@ -67,7 +67,19 @@ Vue.component('top-banner', {
                 {
                     name: 'createApplicationPage',
                     icon: 'ios-create',
-                    text: 'Apply'
+                    text: 'Apply',
+                    children: [
+                        {
+                            name: 'createApplicationPage',
+                            icon: 'ios-create',
+                            text: 'Apply'
+                        },
+                        {
+                            name: 'structureExportApplicationPage',
+                            icon: 'logo-buffer',
+                            text: 'Structure Export'
+                        }
+                    ]
                 },
                 {
                     name: 'approvalListPage',
