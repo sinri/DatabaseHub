@@ -34,12 +34,12 @@ const StructureExportApplicationPage = {
                             </i-select>
                         </form-item>
                         
-                        <form-item label="SQL" prop="sql">
-                            <codemirror style="font-size: 14px;"
-                                :options="codeMirrorOptions"
-                                v-model.trim="form.model.sql"></codemirror>
+                        <form-item label="Tables" prop="Tables">
+                            <Transfer
+                            :data="[]"
+                            target-keys="['id']"></Transfer>
                         </form-item>
-                                        
+
                         <form-item>
                             <Row>
                                 <i-col span="12"><i-button @click="back">Back</i-button></i-col>
@@ -63,7 +63,15 @@ const StructureExportApplicationPage = {
                     description: '',
                     database_id: '',
                     type: '',
-                    sql: ''
+                    sql: {
+                        show_create_database: '', // bool
+                        drop_if_exist: '', // bool
+                        reset_auto_increment: '', // bool
+                        show_create_table: '', // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_function: '', // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_procedure: '', // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_trigger: '', // array 全部传字符串'ALL',空数组表示全不选
+                    }
                 },
                 rules: {
                     title: [
@@ -83,15 +91,8 @@ const StructureExportApplicationPage = {
                     ]
                 }
             },
-            databaseList: [],
-            codeMirrorOptions: {
-                tabSize: 4,
-                styleActiveLine: true,
-                lineNumbers: true,
-                line: true,
-                mode: 'text/x-mysql',
-                theme: 'panda-syntax'
-            }
+            databaseStructureCache: {}, // 缓存数据库结构信息
+            databaseList: []
         };
     },
     methods: {
@@ -110,6 +111,8 @@ const StructureExportApplicationPage = {
         save () {
             const data = JSON.parse(JSON.stringify(this.form.model));
 
+            data.sql = JSON.stringify(data.sql)
+
             ajax('createApplication', {
                 application: data
             }).then(() => {
@@ -122,6 +125,17 @@ const StructureExportApplicationPage = {
         getDatabaseList () {
             ajax('commonDatabaseList').then(({list}) => {
                 this.databaseList = list;
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
+        getDatabaseStructure (database_id) {
+            const databaseStructure = this.databaseStructureCache[database_id]
+
+            if (typeof databaseStructure !== 'undefined') return databaseStructure
+
+            ajax('getDatabaseStructure', {database_id}).then(({result}) => {
+                this.databaseStructureCache[database_id] = result
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
