@@ -230,7 +230,7 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
             if ($drop_type === 'TABLE' && $reset_auto_increment) {
                 $line = preg_replace('/\s+AUTO_INCREMENT=\d+\s+/', ' ', $line);
             }
-            $line = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_]+`\s+/', ' ', $line);
+            $line = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_%]+`\s+/', ' ', $line);
             $sql .= $line . PHP_EOL;
         }
         if ($drop_if_exist) {
