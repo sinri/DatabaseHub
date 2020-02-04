@@ -288,6 +288,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     /**
      * @param $tid
      * @return bool
+     * @throws Exception
      */
     public function kill($tid)
     {

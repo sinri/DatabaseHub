@@ -154,9 +154,9 @@ class ApplicationEntity
         ];
         if (!$should_have_file) return $info;
         if ($this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
-            $path = $this->getExportedFilePath();
-        } else {
             $path = $this->getExportedSqlPath();
+        } else {
+            $path = $this->getExportedFilePath();
         }
         if (file_exists($path)) {
             $info["path"] = $path;

@@ -8,7 +8,6 @@
 
 namespace sinri\databasehub\controller;
 
-
 use Exception;
 use sinri\ark\core\ArkHelper;
 use sinri\ark\database\model\ArkSQLCondition;
@@ -55,8 +54,19 @@ class ApplicationController extends AbstractAuthController
         // check TYPE_EXPORT_STRUCTURE
         if ($data['type'] === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
             $condtions = json_decode($data['sql'], true);
-            $need_keys = ['bool' => ['show_create_database', 'drop_if_exist', 'reset_auto_increment'],
-                'array' => ['show_create_table', 'show_create_function', 'show_create_procedure', 'show_create_trigger']];
+            $need_keys = [
+                'bool' => [  // true or false
+                    'show_create_database',
+                    'drop_if_exist',
+                    'reset_auto_increment'
+                ],
+                'array' => [ // array or 'ALL'
+                    'show_create_table',
+                    'show_create_function',
+                    'show_create_procedure',
+                    'show_create_trigger'
+                ]
+            ];
             foreach ($need_keys as $type => $items) {
                 foreach ($items as $item) {
                     if (!array_key_exists($item, $condtions)) {
@@ -431,7 +441,11 @@ class ApplicationController extends AbstractAuthController
     {
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
         $application = ApplicationEntity::instanceById($application_id);
-        $csv_path = $application->getExportedFilePath();
+        if ($application->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+            $csv_path = $application->getExportedSqlPath();
+        } else {
+            $csv_path = $application->getExportedFilePath();
+        }
 
         $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title);
         $downloadFileName = urlencode($downloadFileName);
@@ -494,5 +508,15 @@ class ApplicationController extends AbstractAuthController
         $database = DatabaseEntity::instanceById($database_id);
         $result = $database->getWorkerEntity()->getStructureSimpleDetail($database->databaseName);
         $this->_sayOK(['result' => $result]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testTaskExecute()
+    {
+ //       $task_id = $this->_readRequest('task_id', '', '/^\d+$/');
+//        $task = ApplicationEntity::instanceById($task_id);
+//        $task->taskExecute();
     }
 }
