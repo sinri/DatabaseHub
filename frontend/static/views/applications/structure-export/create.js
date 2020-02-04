@@ -1,4 +1,4 @@
-const StructureExportApplicationPage = {
+const CreateStructureExportApplicationPage = {
     template: `
         <layout>
             <h2 class="title">Structure Export Application</h2>

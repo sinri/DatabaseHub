@@ -75,7 +75,7 @@ Vue.component('top-banner', {
                             text: 'Apply'
                         },
                         {
-                            name: 'structureExportApplicationPage',
+                            name: 'createStructureExportApplicationPage',
                             icon: 'logo-buffer',
                             text: 'Structure Export'
                         }

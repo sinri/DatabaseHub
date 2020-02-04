@@ -64,6 +64,8 @@
 <script src="static/views/applications/detail.js"></script>
 <script src="static/views/applications/preview.js"></script>
 <script src="static/views/applications/structure-export/create.js"></script>
+<script src="static/views/applications/structure-export/edit.js"></script>
+<script src="static/views/applications/structure-export/detail.js"></script>
 
 <script src="static/views/approvals/list.js"></script>
 
@@ -112,10 +114,20 @@ const routes = [
                 component: DetailApplicationPage
             },
             {
-                path: 'structureExport',
-                name: 'structureExportApplicationPage',
-                component: StructureExportApplicationPage
-            }
+                path: 'structureExport/create',
+                name: 'createStructureExportApplicationPage',
+                component: CreateStructureExportApplicationPage
+            },
+            {
+                path: 'structureExport/edit',
+                name: 'editStructureExportApplicationPage',
+                component: EditStructureExportApplicationPage
+            },
+            {
+                path: 'structureExport/detail',
+                name: 'detailStructureExportApplicationPage',
+                component: DetailStructureExportApplicationPage
+            },
         ]
     },
     { path: '/approvals', name: 'approvalsPage', component: { template: `<router-view></router-view>`},
@@ -199,7 +211,7 @@ SinriQF.config.TokenName = 'database_hub_token';
 router.beforeEach((to, from, next) => {
     // 检测登录状态
     if (!SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
-        window.location.href = 'login.html';
+        //window.location.href = 'login.html';
     }
 
     next()
