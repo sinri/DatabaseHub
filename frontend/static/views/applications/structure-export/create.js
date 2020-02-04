@@ -33,11 +33,45 @@ const CreateStructureExportApplicationPage = {
                                     :value="item">{{ item }}</i-option>
                             </i-select>
                         </form-item>
+
+                        <form-item label="show_create_database" props="sql.show_create_database">
+                            <Switch v-model="form.model.sql.show_create_database" />
+                        </form-item>
+
+                        <form-item label="drop_if_exist" props="sql.drop_if_exist">
+                            <Switch v-model="form.model.sql.drop_if_exist" />
+                        </form-item>
+
+                        <form-item label="reset_auto_increment" props="sql.reset_auto_increment">
+                            <Switch v-model="form.model.sql.reset_auto_increment" />
+                        </form-item>
                         
-                        <form-item label="Tables" prop="Tables">
-                            <Transfer
-                            :data="[]"
-                            target-keys="['id']"></Transfer>
+                        <form-item label="Tables" prop="sql.show_create_table">
+                            <Transfer></Transfer>
+                        </form-item>
+
+                        <form-item label="Create Function" prop="sql.show_create_function">
+                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
+                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
+                                    :key="item" 
+                                    :value="item">{{ item }}</i-option>
+                            </i-select>
+                        </form-item>
+
+                        <form-item label="Create Procedure" prop="sql.show_create_procedure">
+                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
+                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
+                                    :key="item" 
+                                    :value="item">{{ item }}</i-option>
+                            </i-select>
+                        </form-item>
+
+                        <form-item label="Create Trigger" prop="sql.show_create_trigger">
+                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
+                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
+                                    :key="item" 
+                                    :value="item">{{ item }}</i-option>
+                            </i-select>
                         </form-item>
 
                         <form-item>
