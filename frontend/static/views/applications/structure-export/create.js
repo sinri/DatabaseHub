@@ -19,59 +19,27 @@ const CreateStructureExportApplicationPage = {
                         </form-item>
                         
                         <form-item label="Database" prop="database_id">
-                            <i-select clearable filterable v-model="form.model.database_id" style="width:200px">
+                            <i-select clearable filterable @on-change="handleDatabaseChange" v-model="form.model.database_id" style="width:200px">
                                 <i-option v-for="item in databaseList" 
                                     :key="item.databaseId" 
                                     :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
                             </i-select>
                         </form-item>
                         
-                        <form-item label="Type" prop="type">
-                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
-                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
-                                    :key="item" 
-                                    :value="item">{{ item }}</i-option>
-                            </i-select>
+                        <form-item label="Show Create Database" props="sql.show_create_database">
+                            <i-switch v-model="form.model.sql.show_create_database" />
                         </form-item>
 
-                        <form-item label="show_create_database" props="sql.show_create_database">
-                            <Switch v-model="form.model.sql.show_create_database" />
+                        <form-item label="Drop If Exist" props="sql.drop_if_exist">
+                            <i-switch v-model="form.model.sql.drop_if_exist" />
                         </form-item>
 
-                        <form-item label="drop_if_exist" props="sql.drop_if_exist">
-                            <Switch v-model="form.model.sql.drop_if_exist" />
-                        </form-item>
-
-                        <form-item label="reset_auto_increment" props="sql.reset_auto_increment">
-                            <Switch v-model="form.model.sql.reset_auto_increment" />
+                        <form-item label="Reset Auto Increment" props="sql.reset_auto_increment">
+                            <i-switch v-model="form.model.sql.reset_auto_increment" />
                         </form-item>
                         
                         <form-item label="Tables" prop="sql.show_create_table">
                             <Transfer></Transfer>
-                        </form-item>
-
-                        <form-item label="Create Function" prop="sql.show_create_function">
-                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
-                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
-                                    :key="item" 
-                                    :value="item">{{ item }}</i-option>
-                            </i-select>
-                        </form-item>
-
-                        <form-item label="Create Procedure" prop="sql.show_create_procedure">
-                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
-                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
-                                    :key="item" 
-                                    :value="item">{{ item }}</i-option>
-                            </i-select>
-                        </form-item>
-
-                        <form-item label="Create Trigger" prop="sql.show_create_trigger">
-                            <i-select clearable filterable v-model="form.model.type" style="width:200px">
-                                <i-option v-for="item in CONSTANTS.APPLICATION_TYPES" 
-                                    :key="item" 
-                                    :value="item">{{ item }}</i-option>
-                            </i-select>
                         </form-item>
 
                         <form-item>
@@ -96,15 +64,12 @@ const CreateStructureExportApplicationPage = {
                     title: '',
                     description: '',
                     database_id: '',
-                    type: '',
+                    type: 'EXPORT_STRUCTURE',
                     sql: {
-                        show_create_database: '', // bool
-                        drop_if_exist: '', // bool
-                        reset_auto_increment: '', // bool
-                        show_create_table: '', // array 全部传字符串'ALL',空数组表示全不选
-                        show_create_function: '', // array 全部传字符串'ALL',空数组表示全不选
-                        show_create_procedure: '', // array 全部传字符串'ALL',空数组表示全不选
-                        show_create_trigger: '', // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_database: true, // bool
+                        drop_if_exist: false, // bool
+                        reset_auto_increment: true, // bool
+                        show_create_table: '' // array 全部传字符串'ALL',空数组表示全不选
                     }
                 },
                 rules: {
@@ -162,6 +127,11 @@ const CreateStructureExportApplicationPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
+        },
+        handleDatabaseChange (database_id) {
+            if (typeof database_id === 'undefined') return
+
+            this.getDatabaseStructure(database_id)
         },
         getDatabaseStructure (database_id) {
             const databaseStructure = this.databaseStructureCache[database_id]
