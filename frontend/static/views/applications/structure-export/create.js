@@ -1,3 +1,4 @@
+window._cache_databaseStructure = {} // 缓存数据库结构信息
 const CreateStructureExportApplicationPage = {
     template: `
         <layout>
@@ -39,7 +40,13 @@ const CreateStructureExportApplicationPage = {
                         </form-item>
                         
                         <form-item label="Tables" prop="sql.show_create_table">
-                            <Transfer></Transfer>
+                            <div style="margin-bottom: 8px;">
+                                <i-button  @click="handleSelectAllTables">Select All</i-button> / <i-button @click="handleClearTables">Clear</i-button>
+                            </div>
+                            <select size="10" multiple v-model="form.model.sql.show_create_table" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
+                                <option v-for="item in databaseStructure.tables" :key="item" :value="item">{{ item }}</option>
+                            </select>
+                            {{ form.model.sql.show_create_table }}
                         </form-item>
 
                         <form-item>
@@ -90,9 +97,25 @@ const CreateStructureExportApplicationPage = {
                     ]
                 }
             },
-            databaseStructureCache: {}, // 缓存数据库结构信息
+            databaseStructure: {
+                tables: [],
+                functions: [],
+                procedures: [],
+                triggers: []
+            },
             databaseList: []
         };
+    },
+    computed: {
+        databaseTables () {
+            const databaseStructure = this.
+
+            console.log(databaseStructure)
+
+            if (typeof databaseStructure === 'undefined') return []
+
+            return databaseStructure.tables
+        }
     },
     methods: {
         back () {
@@ -133,19 +156,31 @@ const CreateStructureExportApplicationPage = {
 
             this.getDatabaseStructure(database_id)
         },
+        handleSelectAllTables () {
+            this.form.model.sql.show_create_table = this.databaseStructure.tables
+        },
+        handleClearTables () {
+            this.form.model.sql.show_create_table = []
+        },
         getDatabaseStructure (database_id) {
-            const databaseStructure = this.databaseStructureCache[database_id]
+            const databaseStructure = window._cache_databaseStructure[database_id]
 
-            if (typeof databaseStructure !== 'undefined') return databaseStructure
+            if (typeof databaseStructure !== 'undefined') {
+                this.databaseStructure = databaseStructure
+
+                return
+            }
 
             ajax('getDatabaseStructure', {database_id}).then(({result}) => {
-                this.databaseStructureCache[database_id] = result
+                this.databaseStructure = result
+                window._cache_databaseStructure[database_id] = result
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         }
     },
     mounted () {
+        window._cache_databaseStructure = {}
         this.getDatabaseList()
     }
 };
