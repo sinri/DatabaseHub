@@ -13,12 +13,12 @@ use sinri\databasehub\entity\DatabaseWorkerEntity;
 
 class DDCompare
 {
-    public $showSameCompareResults = false;
+    public $showSameCompareResults = true;
     public $showSameLinesInDiffDetails = true;
-    public $ignoreTableAutoIncrement = false;
-    public $ignoreDefiner = false;
-    public $ignoreTableUsingBTree = false;
-    public $ignoreTableRowFormat = false;
+    public $ignoreTableAutoIncrement = true;
+    public $ignoreDefiner = true;
+    public $ignoreTableUsingBTree = true;
+    public $ignoreTableRowFormat = true;
     //public $ignoreFunctionDefiner = false;
     //public $ignoreProcedureDefiner = false;
 
@@ -44,6 +44,8 @@ class DDCompare
 
     protected $nickNameA;
     protected $nickNameB;
+
+    protected $result;
 
     /**
      * DDCompare constructor.
@@ -73,22 +75,22 @@ class DDCompare
         try {
             $strA = $this->workerEntityA->getCol($sql, $columnIndex);
         } catch (Exception $exception) {
-            //echo $this->configA->getNick()." ".implode(";",$this->workerEntityA->getPDOErrorInfo())." ".$exception->getMessage().PHP_EOL;
+            $this->result[] = $this->nickNameA."  ".$exception->getMessage();
             $strA = [];
         }
         if (empty($strA)) {
             // does not exist in A
-            echo "- " . ($this->nickNameA . " dos not contain {$targetName}.") . PHP_EOL;
+            $this->result[] = "- " . ($this->nickNameA . " dos not contain {$targetName}.");
         }
         try {
             $strB = $this->workerEntityB->getCol($sql, $columnIndex);
         } catch (Exception $exception) {
-            //echo $this->configB->getNick()." ".implode(";",$this->workerEntityB->getPDOErrorInfo())." ".$exception->getMessage().PHP_EOL;
+            $this->result[] = $this->nickNameA."  ".$exception->getMessage();
             $strB = [];
         }
         if (empty($strB)) {
             // does not exist in B
-            echo "+ " . ($this->nickNameB . " dos not contain {$targetName}.") . PHP_EOL;
+            $this->result[] = "+ " . ($this->nickNameB . " dos not contain {$targetName}.");
         }
 
         if (!empty($strA) && !empty($strB)) {
@@ -101,8 +103,8 @@ class DDCompare
                 $strB = preg_replace('/\s+AUTO_INCREMENT=\d+\s+/', ' ', $strB);
             }
             if ($this->ignoreDefiner) {
-                $strA = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_]+`\s+/', ' ', $strA);
-                $strB = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_]+`\s+/', ' ', $strB);
+                $strA = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_%]+`\s+/', ' ', $strA);
+                $strB = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_%]+`\s+/', ' ', $strB);
             }
             if ($this->ignoreTableUsingBTree) {
                 $strA = preg_replace('/\s+USING BTREE/', '', $strA);
@@ -123,10 +125,10 @@ class DDCompare
                 }
             }
             if ($hasDifference) {
-                echo "! DIFF of " . $targetName . ": ";
-                echo PHP_EOL . MBDiff::toString($diff, PHP_EOL, $this->showSameLinesInDiffDetails);
+                $this->result[] = "! DIFF of " . $targetName . ": ";
+                $this->result[] = PHP_EOL . MBDiff::toString($diff, PHP_EOL, $this->showSameLinesInDiffDetails);
             } elseif ($this->showSameCompareResults) {
-                echo "  About " . $targetName . ": SAME" . PHP_EOL;
+                $this->result[] = "  About " . $targetName . ": SAME";
             }
         }
 
@@ -145,7 +147,6 @@ class DDCompare
 
         $cols = array_merge($colsA, $colsB);
         $cols = array_unique($cols);
-
         return $cols;
     }
 
@@ -173,7 +174,7 @@ class DDCompare
         }
 
         if (empty($databaseNames)) {
-            echo "! No database name found in both." . PHP_EOL;
+            $this->result[] = "! No database name found in both.";
             return;
         }
 
@@ -191,7 +192,7 @@ class DDCompare
     {
 //        PDOHelper::assertLegalName($databaseName);
 //        PDOHelper::assertLegalName($tableName);
-
+        //$this->result[] = $databaseName;
         $sql = "show create table `{$databaseName}`.`{$tableName}`;";
         $this->fetchShowResultAndCompare("Table {$databaseName}.{$tableName}", $sql);
     }
@@ -212,7 +213,7 @@ class DDCompare
                 $tableNamesA = [];
             }
             if (empty($tableNamesA)) {
-                echo "- " . $this->nickNameA . " does not contain tables in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "- " . $this->nickNameA . " does not contain tables in Database {$databaseName}.";
             }
             try {
                 $tableNamesB = $this->workerEntityB->getCol($sql, 0);
@@ -220,7 +221,7 @@ class DDCompare
                 $tableNamesB = [];
             }
             if (empty($tableNamesB)) {
-                echo "+ " . $this->nickNameB . " does not contain tables in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "+ " . $this->nickNameB . " does not contain tables in Database {$databaseName}.";
             }
 
             $tableNames = array_merge($tableNamesA, $tableNamesB);
@@ -228,7 +229,7 @@ class DDCompare
         }
 
         if (empty($tableNames)) {
-            echo "! No table name found in both." . PHP_EOL;
+            $this->result[] = "! No table name found in both.";
             return;
         }
 
@@ -269,7 +270,7 @@ class DDCompare
                 $functionsA = [];
             }
             if (empty($functionsA)) {
-                echo "- " . $this->nickNameA . " does not contain functions in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "- " . $this->nickNameA . " does not contain functions in Database {$databaseName}.";
             }
 
             try {
@@ -278,7 +279,7 @@ class DDCompare
                 $functionsB = [];
             }
             if (empty($functionsB)) {
-                echo "+ " . $this->nickNameB . " does not contain functions in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "+ " . $this->nickNameB . " does not contain functions in Database {$databaseName}.";
             }
 
             $functionNames = array_merge($functionsA, $functionsB);
@@ -286,7 +287,7 @@ class DDCompare
         }
 
         if (empty($functionNames)) {
-            echo "! No function name found in both." . PHP_EOL;
+            $this->result[] = "! No function name found in both.";
             return;
         }
 
@@ -327,7 +328,7 @@ class DDCompare
                 $functionsA = [];
             }
             if (empty($functionsA)) {
-                echo "- " . $this->nickNameA . " does not contain procedures in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "- " . $this->nickNameA . " does not contain procedures in Database {$databaseName}.";
             }
 
             try {
@@ -336,7 +337,7 @@ class DDCompare
                 $functionsB = [];
             }
             if (empty($functionsB)) {
-                echo "+ " . $this->nickNameB . " does not contain procedures in Database {$databaseName}." . PHP_EOL;
+                $this->result[] = "+ " . $this->nickNameB . " does not contain procedures in Database {$databaseName}.";
             }
 
             $procedureNames = array_merge($functionsA, $functionsB);
@@ -344,7 +345,7 @@ class DDCompare
         }
 
         if (empty($procedureNames)) {
-            echo "! No procedure name found in both." . PHP_EOL;
+            $this->result[] = "! No procedure name found in both.";
             return;
         }
 
@@ -354,6 +355,7 @@ class DDCompare
     }
 
     /**
+     * @return string[]
      * @throws Exception
      */
     public function quickCompareEntireRDS()
@@ -369,10 +371,12 @@ class DDCompare
             $this->compareFunctionsDDL($databaseName);
             $this->compareProceduresDDL($databaseName);
         }
+        return $this->result;
     }
 
     /**
      * @param $databaseNames
+     * @return string[]
      * @throws Exception
      */
     public function quickCompareDatabases($databaseNames)
@@ -386,6 +390,7 @@ class DDCompare
             $this->compareFunctionsDDL($databaseName);
             $this->compareProceduresDDL($databaseName);
         }
+        return $this->result;
     }
 
 }
