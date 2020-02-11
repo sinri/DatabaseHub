@@ -370,4 +370,15 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
         return $data;
     }
 
+    /**
+     * @param $sql
+     * @param null $columnIndex
+     * @return array|mixed
+     * @throws Exception
+     */
+    public function getCol($sql, $columnIndex = null)
+    {
+        return $this->arkPDO->getCol($sql, $columnIndex);
+    }
+
 }

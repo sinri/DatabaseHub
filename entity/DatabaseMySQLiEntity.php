@@ -295,6 +295,11 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
         return $this->mysqliAgent->getInstanceOfMySQLi()->kill($tid);
     }
 
+    /**
+     * @param $sql
+     * @return array
+     * @throws Exception
+     */
     public function selectRows($sql)
     {
         $error = [];

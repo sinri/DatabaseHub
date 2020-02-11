@@ -77,4 +77,11 @@ interface DatabaseWorkerEntity
      * @return array
      */
     public function getStructureSimpleDetail($database);
+
+    /**
+     * @param $sql
+     * @param $columnIndex
+     * @return mixed
+     */
+    public function getCol($sql, $columnIndex = null);
 }

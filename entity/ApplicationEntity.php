@@ -11,6 +11,7 @@ namespace sinri\databasehub\entity;
 
 use Exception;
 use sinri\databasehub\core\HubCore;
+use sinri\databasehub\library\DDCompare;
 use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\RecordModel;
@@ -229,6 +230,10 @@ class ApplicationEntity
                 $done = $this->taskExecuteExportStructure($error);
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
+            } elseif ($this->type == ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+                $done = $this->taskExecuteDatabaseCompare($error);
+                $sqlEndTime = microtime(true);
+                $duration = $sqlEndTime - $sqlBeginTime;
             } else {
                 $done = $this->taskExecuteModifySQL($results, $error);
                 HubCore::getLogger()->info(
@@ -403,6 +408,15 @@ class ApplicationEntity
     }
 
     /**
+     * @return string
+     */
+    public function getExportedTxtPath()
+    {
+        $sql_path = HubCore::getConfig(['store', 'path'], __DIR__ . '/../store') . '/app_' . $this->applicationId . ".txt";
+        return $sql_path;
+    }
+
+    /**
      * @return string[][]
      */
     public function getExportedContentPreview()
@@ -439,4 +453,26 @@ class ApplicationEntity
         fclose($handle);
         return $rows;
     }
+
+    /**
+     * @param string[] $error
+     * @return bool
+     * @throws Exception
+     */
+    protected function taskExecuteDatabaseCompare(&$error)
+    {
+        HubCore::getLogger()->info("Begin DD Compare:");
+        HubCore::getLogger()->info($this->sql);
+        $conditions = json_decode($this->sql, true);
+        $databaseA = DatabaseEntity::instanceById($this->database->databaseId);
+        $databaseB = DatabaseEntity::instanceByConfig($conditions['compare_database_config']);
+        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases($conditions['select_compare_databases']);
+        $snapshot = "";
+        foreach ($result as $item) {
+            $snapshot .= $item . PHP_EOL;
+        }
+        $sql_path = $this->getExportedTxtPath();
+        return file_put_contents($sql_path, $snapshot);
+    }
+
 }

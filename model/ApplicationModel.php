@@ -21,6 +21,7 @@ class ApplicationModel extends ArkDatabaseTableModel
     const TYPE_EXECUTE = "EXECUTE";
     const TYPE_DDL = "DDL";
     const TYPE_EXPORT_STRUCTURE = "EXPORT_STRUCTURE";
+    const TYPE_DATABASE_COMPARE = "DATABASE_COMPARE";
 
     const STATUS_APPLIED = "APPLIED";
     const STATUS_DENIED = "DENIED";
