@@ -76,7 +76,10 @@ const CreateStructureExportApplicationPage = {
                         show_create_database: true, // bool
                         drop_if_exist: false, // bool
                         reset_auto_increment: true, // bool
-                        show_create_table: '' // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_table: '', // array 全部传字符串'ALL',空数组表示全不选
+                        show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
+                        show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
+                        show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
                     }
                 },
                 rules: {
@@ -107,15 +110,7 @@ const CreateStructureExportApplicationPage = {
         };
     },
     computed: {
-        databaseTables () {
-            const databaseStructure = this.
-
-            console.log(databaseStructure)
-
-            if (typeof databaseStructure === 'undefined') return []
-
-            return databaseStructure.tables
-        }
+        
     },
     methods: {
         back () {
@@ -162,17 +157,24 @@ const CreateStructureExportApplicationPage = {
         handleClearTables () {
             this.form.model.sql.show_create_table = []
         },
+        setStructure (databaseStructure) {
+            const {functions = [], procedures = [], triggers =[]} = databaseStructure
+
+            this.databaseStructure = databaseStructure
+            this.form.model.sql.show_create_function = functions
+            this.form.model.sql.show_create_procedure = procedures
+            this.form.model.sql.show_create_trigger = triggers
+        },
         getDatabaseStructure (database_id) {
             const databaseStructure = window._cache_databaseStructure[database_id]
 
             if (typeof databaseStructure !== 'undefined') {
-                this.databaseStructure = databaseStructure
-
+                this.setStructure(databaseStructure)
                 return
             }
 
             ajax('getDatabaseStructure', {database_id}).then(({result}) => {
-                this.databaseStructure = result
+                this.setStructure(result)
                 window._cache_databaseStructure[database_id] = result
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);

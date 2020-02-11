@@ -19,9 +19,6 @@ const DetailStructureExportApplicationPage = {
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Create time:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.createTime }}</span></div>
             </div>
             <p style="margin: 10px 0;padding: 5px;">{{ detail.application.description }}</p>
-            <codemirror style="font-size: 14px;"
-                        :options="codeMirrorOptions"
-                        v-model="detail.application.sql"></codemirror>
             <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="success" v-if="detail.can_decide"
                     @click="approveApplication">Approve</i-button>
@@ -47,9 +44,6 @@ const DetailStructureExportApplicationPage = {
             </div>
             <div slot="footer" >
                 <h2>History</h2>
-                <!--<native-table-->
-                    <!--:columns="historyTableColumns"-->
-                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
                 <application-history :history="detail.application.history"></application-history>
             </div> 
         </layout-drawer>
@@ -66,15 +60,6 @@ const DetailStructureExportApplicationPage = {
                     result_file: [],
                     preview_table: []
                 }
-            },
-            codeMirrorOptions: {
-                tabSize: 4,
-                styleActiveLine: true,
-                lineNumbers: true,
-                line: true,
-                mode: 'text/x-mysql',
-                theme: 'panda-syntax',
-                readOnly: true,
             },
             allUserMap: JSON.parse(localStorage.getItem('allUserMap'))
         };
