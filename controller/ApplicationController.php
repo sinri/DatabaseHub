@@ -16,6 +16,7 @@ use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
+use sinri\databasehub\library\DDCompare;
 use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\UserModel;
@@ -46,7 +47,8 @@ class ApplicationController extends AbstractAuthController
             ApplicationModel::TYPE_EXECUTE,
             ApplicationModel::TYPE_MODIFY,
             ApplicationModel::TYPE_READ,
-            ApplicationModel::TYPE_EXPORT_STRUCTURE
+            ApplicationModel::TYPE_EXPORT_STRUCTURE,
+            ApplicationModel::TYPE_DATABASE_COMPARE
         ])) {
             throw new Exception("Illegal Application Type");
         }
@@ -78,6 +80,26 @@ class ApplicationController extends AbstractAuthController
                     if ($type === 'array' && !(is_array($condtions[$item]) || $condtions[$item] === 'ALL')) {
                         throw new Exception('Params ' . $item . ' Not Array Or "ALL"');
                     }
+                }
+            }
+            return $data;
+        }
+
+        // check TYPE_DATABASE_COMPARE
+        if ($data['type'] === ApplicationModel::TYPE_DATABASE_COMPARE) {
+            $condtions = json_decode($data['sql'], true);
+            if (!array_key_exists('compare_database_config', $condtions)) {
+                throw new Exception('Params compare_database_config Not Find');
+            }
+
+            if (!array_key_exists('select_compare_databases', $condtions)) {
+                throw new Exception('Params select_compare_databases Not Find');
+            }
+
+            $need_keys = ['host', 'port', 'engine', 'username', 'password'];
+            foreach ($need_keys as $item) {
+                if (!array_key_exists($item, $condtions['compare_database_config'])) {
+                    throw new Exception('Params ' . $item . ' Not Find');
                 }
             }
             return $data;
@@ -442,14 +464,16 @@ class ApplicationController extends AbstractAuthController
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
         $application = ApplicationEntity::instanceById($application_id);
         if ($application->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
-            $csv_path = $application->getExportedSqlPath();
+            $file_path = $application->getExportedSqlPath();
+        } elseif ($application->type === ApplicationModel::TYPE_DATABASE_COMPARE) {
+            $file_path = $application->getExportedTxtPath();
         } else {
-            $csv_path = $application->getExportedFilePath();
+            $file_path = $application->getExportedFilePath();
         }
 
         $downloadFileName = str_replace(['/', '\\', ':', '*', '"', '<', '>', '|', '?'], '_', "DatabaseHub_" . $application->applicationId . "_" . $application->title);
         $downloadFileName = urlencode($downloadFileName);
-        $this->_getOutputHandler()->downloadFileIndirectly($csv_path, null, $downloadFileName);
+        $this->_getOutputHandler()->downloadFileIndirectly($file_path, null, $downloadFileName);
     }
 
     public function checkWorkerStatus()
@@ -515,8 +539,21 @@ class ApplicationController extends AbstractAuthController
      */
     public function testTaskExecute()
     {
- //       $task_id = $this->_readRequest('task_id', '', '/^\d+$/');
+//        $task_id = $this->_readRequest('task_id', '', '/^\d+$/');
 //        $task = ApplicationEntity::instanceById($task_id);
 //        $task->taskExecute();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDDCompare()
+    {
+//        $databaseA = DatabaseEntity::instanceById(6);
+//        $databaseB = DatabaseEntity::instanceById(7);
+//        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases(['octet']);
+//        foreach ($result as $item) {
+//            echo $item . PHP_EOL;
+//        }
     }
 }

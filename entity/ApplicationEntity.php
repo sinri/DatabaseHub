@@ -149,13 +149,18 @@ class ApplicationEntity
      */
     public function getExportedFileInfo()
     {
-        $should_have_file = (($this->type === ApplicationModel::TYPE_READ || $this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) && $this->status === ApplicationModel::STATUS_DONE);
+        $should_have_file = (($this->type === ApplicationModel::TYPE_READ
+                || $this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE
+                || $this->type === ApplicationModel::TYPE_DATABASE_COMPARE
+            ) && $this->status === ApplicationModel::STATUS_DONE);
         $info = [
             "should_have_file" => $should_have_file,
         ];
         if (!$should_have_file) return $info;
         if ($this->type === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
             $path = $this->getExportedSqlPath();
+        } elseif ($this->type === ApplicationModel::TYPE_DATABASE_COMPARE) {
+            $path = $this->getExportedTxtPath();
         } else {
             $path = $this->getExportedFilePath();
         }
@@ -230,7 +235,7 @@ class ApplicationEntity
                 $done = $this->taskExecuteExportStructure($error);
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
-            } elseif ($this->type == ApplicationModel::TYPE_EXPORT_STRUCTURE) {
+            } elseif ($this->type == ApplicationModel::TYPE_DATABASE_COMPARE) {
                 $done = $this->taskExecuteDatabaseCompare($error);
                 $sqlEndTime = microtime(true);
                 $duration = $sqlEndTime - $sqlBeginTime;
@@ -465,11 +470,13 @@ class ApplicationEntity
         HubCore::getLogger()->info($this->sql);
         $conditions = json_decode($this->sql, true);
         $databaseA = DatabaseEntity::instanceById($this->database->databaseId);
-        $databaseB = DatabaseEntity::instanceByConfig($conditions['compare_database_config']);
+        $config = $conditions['compare_database_config'];
+        $config['database_name'] = current($conditions['select_compare_databases']);
+        $databaseB = DatabaseEntity::instanceByConfig($config);
         $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases($conditions['select_compare_databases']);
         $snapshot = "";
         foreach ($result as $item) {
-            $snapshot .= $item . PHP_EOL;
+            $snapshot .= $item . "\r\n";
         }
         $sql_path = $this->getExportedTxtPath();
         return file_put_contents($sql_path, $snapshot);
