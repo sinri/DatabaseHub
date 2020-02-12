@@ -46,7 +46,6 @@ const CreateStructureExportApplicationPage = {
                             <select size="10" multiple v-model="form.model.sql.show_create_table" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
                                 <option v-for="item in databaseStructure.tables" :key="item" :value="item">{{ item }}</option>
                             </select>
-                            {{ form.model.sql.show_create_table }}
                         </form-item>
 
                         <form-item>

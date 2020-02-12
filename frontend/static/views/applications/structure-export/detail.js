@@ -19,6 +19,38 @@ const DetailStructureExportApplicationPage = {
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Create time:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.createTime }}</span></div>
             </div>
             <p style="margin: 10px 0;padding: 5px;">{{ detail.application.description }}</p>
+            <i-form ref="form" style="width: 90%;"
+                :label-width="120"
+                :model="detail.application.sql" 
+            >
+                <form-item label="Show Create Database">
+                    <i-switch disabled v-model="detail.application.sql.show_create_database" />
+                </form-item>
+
+                <form-item label="Drop If Exist">
+                    <i-switch disabled v-model="detail.application.sql.drop_if_exist" />
+                </form-item>
+
+                <form-item label="Reset Auto Increment">
+                    <i-switch disabled v-model="detail.application.sql.reset_auto_increment" />
+                </form-item>
+
+                <form-item label="Tables">
+                    <Tag v-for="item in detail.application.sql.show_create_table" :key="item">{{ item }}</Tag>
+                </form-item>
+
+                <form-item label="Function">
+                    <Tag v-for="item in detail.application.sql.show_create_function" :key="item">{{ item }}</Tag>
+                </form-item>
+
+                <form-item label="procedure">
+                    <Tag v-for="item in detail.application.sql.show_create_procedure" :key="item">{{ item }}</Tag>
+                </form-item>
+
+                <form-item label="Trigger">
+                    <Tag v-for="item in detail.application.sql.show_create_trigger" :key="item">{{ item }}</Tag>
+                </form-item>
+            </i-form>
             <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="success" v-if="detail.can_decide"
                     @click="approveApplication">Approve</i-button>
@@ -54,6 +86,7 @@ const DetailStructureExportApplicationPage = {
             isLoading: false,
             detail: {
                 application: {
+                    sql: {},
                     applyUser: {},
                     database: {},
                     history: [],
@@ -116,6 +149,7 @@ const DetailStructureExportApplicationPage = {
 
                     return item;
                 });
+                res.application.sql = JSON.parse(res.application.sql)
                 this.detail = res
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
