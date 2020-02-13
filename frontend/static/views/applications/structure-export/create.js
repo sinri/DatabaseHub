@@ -4,62 +4,93 @@ const CreateStructureExportApplicationPage = {
         <layout>
             <h2 class="title">Structure Export Application</h2>
             <divider></divider>
-            <Tabs v-model="type">
-                <TabPane label="TABLES" name="TABLES">
-                    <i-form ref="form" style="width: 90%;"
-                    :label-width="120"
-                    :model="form.model" 
-                    :rules="form.rules"
-                    >
-                        <form-item label="Title" prop="title">
-                            <i-input clearable v-model.trim="form.model.title" style="width:400px" />
-                        </form-item>
+            <i-form ref="form" style="width: 90%;"
+                :label-width="120"
+                :model="form.model" 
+                :rules="form.rules"
+            >
+                <form-item label="Title" prop="title">
+                    <i-input clearable v-model.trim="form.model.title" style="width:400px" />
+                </form-item>
+                
+                <form-item label="Description" prop="description">
+                    <i-input clearable type="textarea" v-model.trim="form.model.description" />
+                </form-item>
+                
+                <form-item label="Database" prop="database_id">
+                    <i-select clearable filterable @on-change="handleDatabaseChange" v-model="form.model.database_id" style="width:200px">
+                        <i-option v-for="item in databaseList" 
+                            :key="item.databaseId" 
+                            :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
+                    </i-select>
+                </form-item>
                         
-                        <form-item label="Description" prop="description">
-                            <i-input clearable type="textarea" v-model.trim="form.model.description" />
-                        </form-item>
-                        
-                        <form-item label="Database" prop="database_id">
-                            <i-select clearable filterable @on-change="handleDatabaseChange" v-model="form.model.database_id" style="width:200px">
-                                <i-option v-for="item in databaseList" 
-                                    :key="item.databaseId" 
-                                    :value="item.databaseId">{{ item.databaseName }} ({{ item.engine }})</i-option>
-                            </i-select>
-                        </form-item>
-                        
-                        <form-item label="Show Create Database" props="sql.show_create_database">
-                            <i-switch v-model="form.model.sql.show_create_database" />
-                        </form-item>
+                <form-item label="Show Create Database" required>
+                    <i-switch v-model="form.model.sql.show_create_database" />
+                </form-item>
 
-                        <form-item label="Drop If Exist" props="sql.drop_if_exist">
-                            <i-switch v-model="form.model.sql.drop_if_exist" />
-                        </form-item>
+                <form-item label="Drop If Exist" required>
+                    <i-switch v-model="form.model.sql.drop_if_exist" />
+                </form-item>
 
-                        <form-item label="Reset Auto Increment" props="sql.reset_auto_increment">
-                            <i-switch v-model="form.model.sql.reset_auto_increment" />
-                        </form-item>
-                        
-                        <form-item label="Tables" prop="sql.show_create_table">
-                            <div style="margin-bottom: 8px;">
-                                <i-button  @click="handleSelectAllTables">Select All</i-button> / <i-button @click="handleClearTables">Clear</i-button>
+                <form-item label="Reset Auto Increment" required>
+                    <i-switch v-model="form.model.sql.reset_auto_increment" />
+                </form-item>
+                <form-item label="Options">
+                    <Collapse v-model="type">
+                        <Panel name="TABLES">
+                            TABLES
+                            <div slot="content">
+                                <div style="margin-bottom: 8px;">
+                                    <i-button  @click="handleSelectAll('show_create_table', 'tables')">Select All</i-button> / <i-button @click="handleClear('show_create_table')">Clear</i-button>
+                                </div>
+                                <select size="10" multiple v-model="form.model.sql.show_create_table" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
+                                    <option v-for="item in databaseStructure.tables" :key="item" :value="item">{{ item }}</option>
+                                </select>
                             </div>
-                            <select size="10" multiple v-model="form.model.sql.show_create_table" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
-                                <option v-for="item in databaseStructure.tables" :key="item" :value="item">{{ item }}</option>
-                            </select>
-                        </form-item>
-
-                        <form-item>
-                            <Row>
-                                <i-col span="12"><i-button @click="back">Back</i-button></i-col>
-                                <i-col span="12" style="text-align: right"><i-button type="primary" @click="onSubmit">Submit</i-button></i-col>
-                            </Row>
-                        </form-item>
-                    </i-form>
-                </TabPane>
-                <TabPane label="FUNCTIONS" name="FUNCTIONS">FUNCTIONS</TabPane>
-                <TabPane label="PROCEDURES" name="PROCEDURES">PROCEDURES</TabPane>
-                <TabPane label="TRIGGERS" name="TRIGGERS">TRIGGERS</TabPane>
-            </Tabs>
+                        </Panel>
+                        <Panel name="FUNCTIONS">
+                            FUNCTIONS
+                            <div slot="content">
+                                <div style="margin-bottom: 8px;">
+                                    <i-button  @click="handleSelectAll('show_create_function', 'functions')">Select All</i-button> / <i-button @click="handleClear('show_create_function')">Clear</i-button>
+                                </div>
+                                <select size="10" multiple v-model="form.model.sql.show_create_function" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
+                                    <option v-for="item in databaseStructure.functions" :key="item" :value="item">{{ item }}</option>
+                                </select>
+                            </div>
+                        </Panel>
+                        <Panel name="PROCEDURES">
+                            PROCEDURES
+                            <div slot="content">
+                                <div style="margin-bottom: 8px;">
+                                    <i-button  @click="handleSelectAll('show_create_procedure', 'procedures')">Select All</i-button> / <i-button @click="handleClear('show_create_procedure')">Clear</i-button>
+                                </div>
+                                <select size="10" multiple v-model="form.model.sql.show_create_procedure" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
+                                    <option v-for="item in databaseStructure.procedures" :key="item" :value="item">{{ item }}</option>
+                                </select>
+                            </div>
+                        </Panel>
+                        <Panel name="TRIGGERS">
+                            TRIGGERS
+                            <div slot="content">
+                                <div style="margin-bottom: 8px;">
+                                    <i-button  @click="handleSelectAll('show_create_trigger', 'triggers')">Select All</i-button> / <i-button @click="handleClear('show_create_trigger')">Clear</i-button>
+                                </div>
+                                <select size="10" multiple v-model="form.model.sql.show_create_trigger" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
+                                    <option v-for="item in databaseStructure.triggers" :key="item" :value="item">{{ item }}</option>
+                                </select>
+                            </div>
+                        </Panel>
+                    </Collapse>
+                </form-item>
+                <form-item>
+                    <Row>
+                        <i-col span="12"><i-button @click="back">Back</i-button></i-col>
+                        <i-col span="12" style="text-align: right"><i-button type="primary" @click="onSubmit">Submit</i-button></i-col>
+                    </Row>
+                </form-item>
+            </i-form>
         </layout>
     `,
     data () {
@@ -92,9 +123,6 @@ const CreateStructureExportApplicationPage = {
                         {required: true, message: '不能为空'}
                     ],
                     type: [
-                        {required: true, message: '不能为空'}
-                    ],
-                    sql: [
                         {required: true, message: '不能为空'}
                     ]
                 }
@@ -150,19 +178,14 @@ const CreateStructureExportApplicationPage = {
 
             this.getDatabaseStructure(database_id)
         },
-        handleSelectAllTables () {
-            this.form.model.sql.show_create_table = this.databaseStructure.tables
+        handleSelectAll (name, val) {
+            this.form.model.sql[name] = this.databaseStructure[val]
         },
-        handleClearTables () {
-            this.form.model.sql.show_create_table = []
+        handleClear (name) {
+            this.form.model.sql[name] = []
         },
         setStructure (databaseStructure) {
-            const {functions = [], procedures = [], triggers =[]} = databaseStructure
-
             this.databaseStructure = databaseStructure
-            this.form.model.sql.show_create_function = functions
-            this.form.model.sql.show_create_procedure = procedures
-            this.form.model.sql.show_create_trigger = triggers
         },
         getDatabaseStructure (database_id) {
             const databaseStructure = window._cache_databaseStructure[database_id]
