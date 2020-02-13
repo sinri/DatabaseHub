@@ -205,7 +205,7 @@ SinriQF.config.TokenName = 'database_hub_token';
 router.beforeEach((to, from, next) => {
     // 检测登录状态
     if (!SinriQF.cookies.getCookie(SinriQF.config.TokenName)) {
-        //window.location.href = 'login.html';
+        window.location.href = 'login.html';
     }
 
     next()
