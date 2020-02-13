@@ -1,4 +1,4 @@
-const DetailStructureExportApplicationPage = {
+Vue.component('structure-export-application-preview', {
     template: `
         <spin fix v-if="isLoading"></spin>
         <layout-drawer v-else>
@@ -38,41 +38,35 @@ const DetailStructureExportApplicationPage = {
                 <form-item label="TABLES" v-if="detail.application.sql.show_create_table.length > 0">
                     <template v-if="detail.application.sql.show_create_table[0] === 'ALL'">ALL</template>
                     <template v-else>
-                        <Tag v-for="item in detail.application.sql.show_create_table" :key="item">{{ item }}</Tag>
+                        <Tag v-for="item in detail.application.sql.show_create_table.slice(0, 20)" :key="item">{{ item }}</Tag>
+                        <span v-if="detail.application.sql.show_create_table.length > 20">...</span>
                     </template>
                 </form-item>
 
                 <form-item label="FUNCTIONS" v-if="detail.application.sql.show_create_function.length > 0">
                     <template v-if="detail.application.sql.show_create_function[0] === 'ALL'">ALL</template>
                     <template v-else>
-                        <Tag v-for="item in detail.application.sql.show_create_function" :key="item">{{ item }}</Tag>
+                        <Tag v-for="item in detail.application.sql.show_create_function.slice(0, 20)" :key="item">{{ item }}</Tag>
+                        <span v-if="detail.application.sql.show_create_function.length > 20">...</span>
                     </template>
                 </form-item>
 
                 <form-item label="PROCEDURES" v-if="detail.application.sql.show_create_procedure.length > 0">
                     <template v-if="detail.application.sql.show_create_procedure[0] === 'ALL'">ALL</template>
                     <template v-else>    
-                        <Tag v-for="item in detail.application.sql.show_create_procedure" :key="item">{{ item }}</Tag>
+                        <Tag v-for="item in detail.application.sql.show_create_procedure.slice(0, 20)" :key="item">{{ item }}</Tag>
+                        <span v-if="detail.application.sql.show_create_procedure.length > 20">...</span>
                     </template>
                 </form-item>
 
                 <form-item label="TRIGGERS" v-if="detail.application.sql.show_create_trigger.length > 0">
                     <template v-if="detail.application.sql.show_create_trigger[0] === 'ALL'">ALL</template>
                     <template v-else>
-                        <Tag v-for="item in detail.application.sql.show_create_trigger" :key="item">{{ item }}</Tag>
+                        <Tag v-for="item in detail.application.sql.show_create_trigger.slice(0, 20)" :key="item">{{ item }}</Tag>
+                        <span v-if="detail.application.sql.show_create_trigger.length > 20">...</span>
                     </template>
                 </form-item>
             </i-form>
-            <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
-                <i-button type="success" v-if="detail.can_decide"
-                    @click="approveApplication">Approve</i-button>
-                <i-button type="error" v-if="detail.can_decide" 
-                    @click="denyApplication">Deny</i-button>
-                <i-button type="warn" v-if="detail.can_cancel"
-                    @click="cancelApplication">Cancel</i-button>
-                <i-button v-if="detail.can_edit"
-                    @click="goEditApplicationPage">Edit</i-button>
-            </div>            
             <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
                 <h2 style="text-align: right;" v-if="detail.application.result_file.should_have_file">
@@ -82,15 +76,34 @@ const DetailStructureExportApplicationPage = {
                 </h2>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
             </div>
-            <div slot="footer" >
+            <div>
                 <h2>History</h2>
                 <application-history :history="detail.application.history"></application-history>
-            </div> 
+            </div>
+            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
+                type="flex" justify="space-around" class="code-row-bg">
+                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
+                    <i-button type="success" @click="approveApplication">Approve</i-button>
+                </Col>
+                <Col span="5" v-if="detail.can_edit" style="text-align: center;">
+                    <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
+                </Col>
+                <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
+                    <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
+                </Col>
+                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
+                    <i-button type="error"  @click="denyApplication">Deny</i-button>
+                </Col>
+            </Row>
         </layout-drawer>
     `,
+    props: {
+        applicationId: {
+            type: [Number, String]
+        }
+    },
     data () {
         return {
-            applicationId: 0,
             isLoading: false,
             detail: {
                 application: {
@@ -112,7 +125,7 @@ const DetailStructureExportApplicationPage = {
     },
     methods: {
         init () {
-            this.getApplicationDetail();
+            this.getApplicationDetail()
         },
         updateLoading (bool) {
             this.isLoading = bool;
@@ -131,7 +144,7 @@ const DetailStructureExportApplicationPage = {
                     return item;
                 });
                 res.application.sql = JSON.parse(res.application.sql)
-                
+
                 this.detail = res
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
@@ -181,7 +194,7 @@ const DetailStructureExportApplicationPage = {
                 database_id: this.detail.application.database.databaseId,
                 type: this.detail.application.type,
                 sql: this.detail.application.sql
-            };
+            }
 
             this.$router.push({
                 name: 'editApplicationPage',
@@ -195,10 +208,14 @@ const DetailStructureExportApplicationPage = {
             let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
             console.log("downloadExportedContentAsCSV: ", url);
             window.location.href = (url);
+            /*
+            axios.post(SinriQF.config.ApiBase + api.url, {
+                application_id: this.applicationId,
+                token: SinriQF.api.getTokenFromCookie()
+            }).then(({data}) => {
+                exportCsv.download(filename, data);
+            });
+            */
         }
-    },
-    mounted () {
-        this.applicationId = this.$route.query.applicationId;
-        this.init();
     }
-};
+});

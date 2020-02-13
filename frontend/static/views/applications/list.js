@@ -68,6 +68,12 @@ const ApplicationListPage = {
                     :application-id="previewer.applicationId"
                     @update="onSearch"></application-preview>
             </drawer>
+            <drawer width="700" :styles="{padding: 0}" :closable="false"
+                v-model="structureExportPreviewer.drawerVisible">
+                <structure-export-application-preview ref="structureExportApplicationDetail"
+                    :application-id="structureExportPreviewer.applicationId"
+                    @update="onSearch"></structure-export-application-preview>
+            </drawer>
             
             <Row slot="pagination">
                 <i-col span="24" style="text-align: right">
@@ -184,8 +190,7 @@ const ApplicationListPage = {
                                     },
                                     props: {
                                         size: 'small',
-                                        type: 'success',
-                                        disabled: row.type === 'EXPORT_STRUCTURE'
+                                        type: 'success'
                                     }
                                 }, 'Preview')
                             ])
@@ -198,6 +203,10 @@ const ApplicationListPage = {
             allUserList: [],
             databaseList: [],
             previewer: {
+                applicationId: 0,
+                drawerVisible: false
+            },
+            structureExportPreviewer: {
                 applicationId: 0,
                 drawerVisible: false
             }
@@ -279,12 +288,21 @@ const ApplicationListPage = {
             window.open(href, '_blank');
         },
         previewApplication (item) {
-            this.previewer.applicationId = item.applicationId;
-            this.previewer.drawerVisible = true;
-
-            this.$nextTick(() => {
-                this.$refs.applicationDetail.init()
-            })
+            if (item.type === 'EXPORT_STRUCTURE') {
+                this.structureExportPreviewer.applicationId = item.applicationId;
+                this.structureExportPreviewer.drawerVisible = true;
+    
+                this.$nextTick(() => {
+                    this.$refs.structureExportApplicationDetail.init()
+                })
+            } else {
+                this.previewer.applicationId = item.applicationId;
+                this.previewer.drawerVisible = true;
+    
+                this.$nextTick(() => {
+                    this.$refs.applicationDetail.init()
+                })
+            }
         },
         getAllUserList () {
             this.allUserList = JSON.parse(localStorage.getItem('allUserList'));
