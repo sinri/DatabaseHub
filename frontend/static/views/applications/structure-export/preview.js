@@ -36,7 +36,7 @@ Vue.component('structure-export-application-preview', {
                 </form-item>
 
                 <form-item label="TABLES" v-if="detail.application.sql.show_create_table.length > 0">
-                    <template v-if="detail.application.sql.show_create_table[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_table === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_table.slice(0, 20)" :key="item">{{ item }}</Tag>
                         <span v-if="detail.application.sql.show_create_table.length > 20">...</span>
@@ -44,7 +44,7 @@ Vue.component('structure-export-application-preview', {
                 </form-item>
 
                 <form-item label="FUNCTIONS" v-if="detail.application.sql.show_create_function.length > 0">
-                    <template v-if="detail.application.sql.show_create_function[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_function === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_function.slice(0, 20)" :key="item">{{ item }}</Tag>
                         <span v-if="detail.application.sql.show_create_function.length > 20">...</span>
@@ -52,7 +52,7 @@ Vue.component('structure-export-application-preview', {
                 </form-item>
 
                 <form-item label="PROCEDURES" v-if="detail.application.sql.show_create_procedure.length > 0">
-                    <template v-if="detail.application.sql.show_create_procedure[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_procedure === 'ALL'">ALL</template>
                     <template v-else>    
                         <Tag v-for="item in detail.application.sql.show_create_procedure.slice(0, 20)" :key="item">{{ item }}</Tag>
                         <span v-if="detail.application.sql.show_create_procedure.length > 20">...</span>
@@ -60,7 +60,7 @@ Vue.component('structure-export-application-preview', {
                 </form-item>
 
                 <form-item label="TRIGGERS" v-if="detail.application.sql.show_create_trigger.length > 0">
-                    <template v-if="detail.application.sql.show_create_trigger[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_trigger === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_trigger.slice(0, 20)" :key="item">{{ item }}</Tag>
                         <span v-if="detail.application.sql.show_create_trigger.length > 20">...</span>
@@ -80,13 +80,10 @@ Vue.component('structure-export-application-preview', {
                 <h2>History</h2>
                 <application-history :history="detail.application.history"></application-history>
             </div>
-            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
+            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel"
                 type="flex" justify="space-around" class="code-row-bg">
                 <Col span="5" v-if="detail.can_decide" style="text-align: center;">
                     <i-button type="success" @click="approveApplication">Approve</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_edit" style="text-align: center;">
-                    <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
                 </Col>
                 <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
                     <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
@@ -186,21 +183,6 @@ Vue.component('structure-export-application-preview', {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
-        goEditApplicationPage () {
-            const query = {
-                application_id: this.detail.application.applicationId,
-                title: this.detail.application.title,
-                description: this.detail.application.description,
-                database_id: this.detail.application.database.databaseId,
-                type: this.detail.application.type,
-                sql: this.detail.application.sql
-            }
-
-            this.$router.push({
-                name: 'editApplicationPage',
-                query
-            })
-        },
         downloadExportedContentAsCSV () {
             const api = API.downloadExportedContentAsCSV;
             const filename = this.detail.application.result_file.path.split('/').pop();
@@ -208,14 +190,6 @@ Vue.component('structure-export-application-preview', {
             let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
             console.log("downloadExportedContentAsCSV: ", url);
             window.location.href = (url);
-            /*
-            axios.post(SinriQF.config.ApiBase + api.url, {
-                application_id: this.applicationId,
-                token: SinriQF.api.getTokenFromCookie()
-            }).then(({data}) => {
-                exportCsv.download(filename, data);
-            });
-            */
         }
     }
 });

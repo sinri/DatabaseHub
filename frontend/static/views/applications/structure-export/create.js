@@ -5,7 +5,7 @@ const CreateStructureExportApplicationPage = {
             <h2 class="title">Structure Export Application</h2>
             <divider></divider>
             <i-form ref="form" style="width: 90%;"
-                :label-width="120"
+                :label-width="160"
                 :model="form.model" 
                 :rules="form.rules"
             >
@@ -42,10 +42,10 @@ const CreateStructureExportApplicationPage = {
                             TABLES
                             <div slot="content">
                                 <div style="margin-bottom: 8px;">
-                                    <i-button  @click="handleSelectAll('show_create_table', 'tables')">Select All</i-button> / <i-button @click="handleClear('show_create_table')">Clear</i-button>
+                                    <i-button  @click="handleSelectAll('show_create_table')">Select All</i-button> / <i-button @click="handleClear('show_create_table')">Clear</i-button>
                                 </div>
                                 <select size="10" multiple v-model="form.model.sql.show_create_table" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
-                                    <option v-for="item in databaseStructure.tables" :key="item" :value="item">{{ item }}</option>
+                                    <option v-for="item in databaseStructure.show_create_table" :key="item" :value="item">{{ item }}</option>
                                 </select>
                             </div>
                         </Panel>
@@ -53,10 +53,10 @@ const CreateStructureExportApplicationPage = {
                             FUNCTIONS
                             <div slot="content">
                                 <div style="margin-bottom: 8px;">
-                                    <i-button  @click="handleSelectAll('show_create_function', 'functions')">Select All</i-button> / <i-button @click="handleClear('show_create_function')">Clear</i-button>
+                                    <i-button  @click="handleSelectAll('show_create_function')">Select All</i-button> / <i-button @click="handleClear('show_create_function')">Clear</i-button>
                                 </div>
                                 <select size="10" multiple v-model="form.model.sql.show_create_function" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
-                                    <option v-for="item in databaseStructure.functions" :key="item" :value="item">{{ item }}</option>
+                                    <option v-for="item in databaseStructure.show_create_function" :key="item" :value="item">{{ item }}</option>
                                 </select>
                             </div>
                         </Panel>
@@ -64,10 +64,10 @@ const CreateStructureExportApplicationPage = {
                             PROCEDURES
                             <div slot="content">
                                 <div style="margin-bottom: 8px;">
-                                    <i-button  @click="handleSelectAll('show_create_procedure', 'procedures')">Select All</i-button> / <i-button @click="handleClear('show_create_procedure')">Clear</i-button>
+                                    <i-button  @click="handleSelectAll('show_create_procedure')">Select All</i-button> / <i-button @click="handleClear('show_create_procedure')">Clear</i-button>
                                 </div>
                                 <select size="10" multiple v-model="form.model.sql.show_create_procedure" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
-                                    <option v-for="item in databaseStructure.procedures" :key="item" :value="item">{{ item }}</option>
+                                    <option v-for="item in databaseStructure.show_create_procedure" :key="item" :value="item">{{ item }}</option>
                                 </select>
                             </div>
                         </Panel>
@@ -75,10 +75,10 @@ const CreateStructureExportApplicationPage = {
                             TRIGGERS
                             <div slot="content">
                                 <div style="margin-bottom: 8px;">
-                                    <i-button  @click="handleSelectAll('show_create_trigger', 'triggers')">Select All</i-button> / <i-button @click="handleClear('show_create_trigger')">Clear</i-button>
+                                    <i-button  @click="handleSelectAll('show_create_trigger')">Select All</i-button> / <i-button @click="handleClear('show_create_trigger')">Clear</i-button>
                                 </div>
                                 <select size="10" multiple v-model="form.model.sql.show_create_trigger" style="padding: 5px;width: 200px;border-radius: 4px;border: 1px solid #dcdee2;">
-                                    <option v-for="item in databaseStructure.triggers" :key="item" :value="item">{{ item }}</option>
+                                    <option v-for="item in databaseStructure.show_create_trigger" :key="item" :value="item">{{ item }}</option>
                                 </select>
                             </div>
                         </Panel>
@@ -128,10 +128,10 @@ const CreateStructureExportApplicationPage = {
                 }
             },
             databaseStructure: {
-                tables: [],
-                functions: [],
-                procedures: [],
-                triggers: []
+                show_create_table: [],
+                show_create_function: [],
+                show_create_procedure: [],
+                show_create_trigger: []
             },
             databaseList: []
         };
@@ -149,8 +149,20 @@ const CreateStructureExportApplicationPage = {
                }
            });
         },
+        convertSqlArray (data, name) {
+            if (data.sql[name].length !== 0 && data.sql[name].length === this.databaseStructure[name].length) {
+                data.sql[name] = 'ALL'
+            }
+
+            return data
+        },
         save () {
             const data = JSON.parse(JSON.stringify(this.form.model));
+
+            this.convertSqlArray(data, 'show_create_table')
+            this.convertSqlArray(data, 'show_create_function')
+            this.convertSqlArray(data, 'show_create_procedure')
+            this.convertSqlArray(data, 'show_create_trigger')
 
             data.sql = JSON.stringify(data.sql)
 
@@ -175,8 +187,8 @@ const CreateStructureExportApplicationPage = {
 
             this.getDatabaseStructure(database_id)
         },
-        handleSelectAll (name, val) {
-            this.form.model.sql[name] = this.databaseStructure[val]
+        handleSelectAll (name) {
+            this.form.model.sql[name] = this.databaseStructure[name]
         },
         handleClear (name) {
             this.form.model.sql[name] = []
@@ -188,13 +200,25 @@ const CreateStructureExportApplicationPage = {
             const databaseStructure = window._cache_databaseStructure[database_id]
 
             if (typeof databaseStructure !== 'undefined') {
-                this.setStructure(databaseStructure)
-                return
+                return this.setStructure(databaseStructure)
             }
 
             ajax('getDatabaseStructure', {database_id}).then(({result}) => {
-                this.setStructure(result)
-                window._cache_databaseStructure[database_id] = result
+                const {
+                    tables: show_create_table,
+                    functions: show_create_function,
+                    procedures: show_create_procedure,
+                    triggers: show_create_trigger
+                } = result
+                const structure = {
+                    show_create_table,
+                    show_create_function,
+                    show_create_procedure,
+                    show_create_trigger
+                }
+                
+                this.setStructure(structure)
+                window._cache_databaseStructure[database_id] = structure
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });

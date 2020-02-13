@@ -36,42 +36,40 @@ const DetailStructureExportApplicationPage = {
                 </form-item>
 
                 <form-item label="TABLES" v-if="detail.application.sql.show_create_table.length > 0">
-                    <template v-if="detail.application.sql.show_create_table[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_table === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_table" :key="item">{{ item }}</Tag>
                     </template>
                 </form-item>
 
                 <form-item label="FUNCTIONS" v-if="detail.application.sql.show_create_function.length > 0">
-                    <template v-if="detail.application.sql.show_create_function[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_function === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_function" :key="item">{{ item }}</Tag>
                     </template>
                 </form-item>
 
                 <form-item label="PROCEDURES" v-if="detail.application.sql.show_create_procedure.length > 0">
-                    <template v-if="detail.application.sql.show_create_procedure[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_procedure === 'ALL'">ALL</template>
                     <template v-else>    
                         <Tag v-for="item in detail.application.sql.show_create_procedure" :key="item">{{ item }}</Tag>
                     </template>
                 </form-item>
 
                 <form-item label="TRIGGERS" v-if="detail.application.sql.show_create_trigger.length > 0">
-                    <template v-if="detail.application.sql.show_create_trigger[0] === 'ALL'">ALL</template>
+                    <template v-if="detail.application.sql.show_create_trigger === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_trigger" :key="item">{{ item }}</Tag>
                     </template>
                 </form-item>
             </i-form>
-            <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
+            <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel">
                 <i-button type="success" v-if="detail.can_decide"
                     @click="approveApplication">Approve</i-button>
                 <i-button type="error" v-if="detail.can_decide" 
                     @click="denyApplication">Deny</i-button>
                 <i-button type="warn" v-if="detail.can_cancel"
                     @click="cancelApplication">Cancel</i-button>
-                <i-button v-if="detail.can_edit"
-                    @click="goEditApplicationPage">Edit</i-button>
             </div>            
             <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
@@ -172,21 +170,6 @@ const DetailStructureExportApplicationPage = {
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
-        },
-        goEditApplicationPage () {
-            const query = {
-                application_id: this.detail.application.applicationId,
-                title: this.detail.application.title,
-                description: this.detail.application.description,
-                database_id: this.detail.application.database.databaseId,
-                type: this.detail.application.type,
-                sql: this.detail.application.sql
-            };
-
-            this.$router.push({
-                name: 'editApplicationPage',
-                query
-            })
         },
         downloadExportedContentAsCSV () {
             const api = API.downloadExportedContentAsCSV;
