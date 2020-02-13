@@ -18,7 +18,7 @@
     "sinri/ark-pdo": "^1.0",
     "sinri/ark-mysqli": "^1.0",
     "sinri/ark-queue": "^2.0",
-    "phpmyadmin/sql-parser": "^4.3",
+    "phpmyadmin/sql-parser": "^5.2",
     "greenlion/php-sql-parser": "^4.1",
     "jdorn/sql-formatter": "^1.2",
     "sinri/ark-curl": "^2.0",
@@ -30,6 +30,11 @@
     "packagist": {
       "type": "composer",
       "url": "https://mirrors.aliyun.com/composer/"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "sinri\\databasehub\\": ""
     }
   }
 }

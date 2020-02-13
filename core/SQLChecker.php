@@ -15,6 +15,7 @@ use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
 use PhpMyAdmin\SqlParser\Statements\CallStatement;
 use PhpMyAdmin\SqlParser\Statements\TruncateStatement;
+use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\Utils\Query;
 use PHPSQLParser\PHPSQLParser;
 
@@ -66,6 +67,36 @@ class SQLChecker
         return $result;
     }
 
+    public static function splitRawSQLs($query)
+    {
+        $parser = new Parser($query);
+        $sqls = [];
+        for ($i = 0; $i < count($parser->statements); $i++) {
+            $statement = $parser->statements[$i];
+            $tokens = array_slice(
+                $parser->list->tokens,
+                $statement->first,
+                $statement->last - $statement->first + 1
+            );
+            $pieces = "";
+            foreach ($tokens as $token) {
+                if (
+                    strlen($pieces) == 0
+                    && (
+                        $token->type === Token::TYPE_DELIMITER
+                        || $token->type === Token::TYPE_WHITESPACE
+                    )
+                ) {
+                    continue;
+                }
+
+                $pieces .= $token->token;
+            }
+            $sqls[] = $pieces;
+        }
+        return $sqls;
+    }
+
     /**
      * @param Statement|mixed $statement
      * @return String
@@ -108,12 +139,12 @@ class SQLChecker
      */
     public static function processSqlForQuickQuery($sql, $max_limit = 512)
     {
-        $split_result = self::split($sql);
+        $split_result = self::splitRawSQLs($sql);
         if (empty($split_result)) {
             throw new Exception("The SQL seems have syntax problem.");
         }
         $sql = $split_result[0];
-        $parser = new Parser($sql);
+        $parser = new Parser($sql, true);
         if (
             !isset($parser->statements[0]->limit)
             || !$parser->statements[0]->limit
