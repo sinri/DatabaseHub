@@ -63,6 +63,8 @@
 <script src="static/views/applications/list.js"></script>
 <script src="static/views/applications/detail.js"></script>
 <script src="static/views/applications/preview.js"></script>
+<script src="static/views/applications/structure-export/create.js"></script>
+<script src="static/views/applications/structure-export/detail.js"></script>
 
 <script src="static/views/approvals/list.js"></script>
 
@@ -109,7 +111,17 @@ const routes = [
                 path: 'detail',
                 name: 'detailApplicationPage',
                 component: DetailApplicationPage
-            }
+            },
+            {
+                path: 'structureExport/create',
+                name: 'createStructureExportApplicationPage',
+                component: CreateStructureExportApplicationPage
+            },
+            {
+                path: 'structureExport/detail',
+                name: 'detailStructureExportApplicationPage',
+                component: DetailStructureExportApplicationPage
+            },
         ]
     },
     { path: '/approvals', name: 'approvalsPage', component: { template: `<router-view></router-view>`},

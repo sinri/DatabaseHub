@@ -184,7 +184,8 @@ const ApplicationListPage = {
                                     },
                                     props: {
                                         size: 'small',
-                                        type: 'success'
+                                        type: 'success',
+                                        disabled: row.type === 'EXPORT_STRUCTURE'
                                     }
                                 }, 'Preview')
                             ])
@@ -267,9 +268,9 @@ const ApplicationListPage = {
                 }
             });
         },
-        goDetailApplication ({applicationId}) {
+        goDetailApplication ({type, applicationId}) {
             const {href} = router.resolve({
-                name: 'detailApplicationPage',
+                name: type === 'EXPORT_STRUCTURE' ? 'detailStructureExportApplicationPage' : 'detailApplicationPage',
                 query: {
                     applicationId
                 }

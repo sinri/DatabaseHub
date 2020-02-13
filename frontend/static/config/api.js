@@ -64,6 +64,10 @@ const API = {
         desc: '',
         url: 'ApplicationController/downloadExportedContentAsCSV'
     },
+    getDatabaseStructure: {
+        desc: '根据数据库id获取数据库结构信息',
+        url: 'ApplicationController/getDatabaseStructure'
+    },
 
     // DatabaseManageController
     createDatabase: {
