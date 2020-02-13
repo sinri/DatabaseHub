@@ -7,26 +7,31 @@
  */
 
 use sinri\ark\io\ArkWebOutput;
-use sinri\ark\web\ArkRouteErrorHandler;
+use sinri\ark\web\implement\ArkRouteErrorHandlerAsCallback;
 use sinri\databasehub\filter\MainFilter;
 
 require_once __DIR__ . '/autoload.php';
 
 Ark()->webService()->getRouter()->setErrorHandler(
-    ArkRouteErrorHandler::buildWithCallback(
-        function ($error_message, $status_code) {
+    new class extends ArkRouteErrorHandlerAsCallback {
+
+        /**
+         * @inheritDoc
+         */
+        public function requestErrorCallback($errorMessage, $httpCode)
+        {
             // here status might be too large, such as from PDO exception with mysql error...
-            Ark()->webOutput()->sendHTTPCode($status_code ? $status_code : 200);
+            Ark()->webOutput()->sendHTTPCode($httpCode ? $httpCode : 200);
             Ark()->webOutput()->setContentTypeHeader("application/json");
             Ark()->webOutput()->jsonForAjax(
                 ArkWebOutput::AJAX_JSON_CODE_FAIL,
                 [
-                    "status" => $status_code,
-                    "error" => $error_message,
+                    "status" => $httpCode,
+                    "error" => $errorMessage,
                 ]
             );
         }
-    )
+    }
 );
 
 Ark()->webService()->getRouter()->loadAllControllersInDirectoryAsCI(

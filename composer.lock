@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0c26d761f4111a6eba8e70566a0b822",
+    "content-hash": "4565b8335ecf101a531c9a8d5aae69cd",
     "packages": [
         {
             "name": "greenlion/php-sql-parser",
@@ -582,16 +582,16 @@
         },
         {
             "name": "sinri/ark",
-            "version": "2.9.1",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sinri/Ark.git",
-                "reference": "891c1198d35e42f249d54abe281d9dae917b9841"
+                "reference": "76ab1152017349158e92b3007cf2eec2ac5058bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sinri/Ark/zipball/891c1198d35e42f249d54abe281d9dae917b9841",
-                "reference": "891c1198d35e42f249d54abe281d9dae917b9841",
+                "url": "https://api.github.com/repos/sinri/Ark/zipball/76ab1152017349158e92b3007cf2eec2ac5058bb",
+                "reference": "76ab1152017349158e92b3007cf2eec2ac5058bb",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -607,11 +607,12 @@
                 "ralouphie/getallheaders": "^2.0",
                 "ralouphie/mimey": "^1.0",
                 "sinri/ark-cache": "~2.0",
-                "sinri/ark-core": "~2.3"
+                "sinri/ark-core": "~2.5"
             },
             "require-dev": {
+                "ext-curl": "*",
                 "sinri/ark-curl": "~2.0",
-                "sinri/ark-pdo": "~1.6",
+                "sinri/ark-pdo": "~1.7",
                 "sinri/ark-queue": "~2.2"
             },
             "suggest": {
@@ -645,7 +646,7 @@
                 }
             ],
             "description": "A fundamental toolkit for PHP.",
-            "time": "2019-11-01T06:47:08+00:00"
+            "time": "2020-01-08T03:35:20+00:00"
         },
         {
             "name": "sinri/ark-cache",

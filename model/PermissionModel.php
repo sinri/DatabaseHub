@@ -27,7 +27,7 @@ class PermissionModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "permission";
     }

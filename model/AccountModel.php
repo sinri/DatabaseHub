@@ -20,7 +20,7 @@ class AccountModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "account";
     }

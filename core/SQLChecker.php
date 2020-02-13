@@ -152,8 +152,7 @@ class SQLChecker
         ) {
             $parser->statements[0]->limit = new Limit(30, 0);
             $statement = $parser->statements[0];
-            $sql2 = $statement->build();
-            return $sql2;
+            return $statement->build();
         }
         return $sql;
     }

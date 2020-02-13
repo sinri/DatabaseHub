@@ -222,6 +222,9 @@ class DatabaseManageController extends AbstractAuthController
 
     }
 
+    /**
+     * @throws Exception
+     */
     public function getDatabaseMaxSqlLength()
     {
         $database_id = $this->_readRequest("database_id", 0, '/^[\d]+$/');

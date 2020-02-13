@@ -28,7 +28,7 @@ class UserModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "user";
     }

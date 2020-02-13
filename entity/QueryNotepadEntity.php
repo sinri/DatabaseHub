@@ -60,7 +60,7 @@ class QueryNotepadEntity
     /**
      * @param $id
      * @param $user_id
-     * @return QueryNotepadEntity[]|null
+     * @return QueryNotepadEntity|null
      */
     public function getQueryNotepadDetail($id, $user_id)
     {

@@ -26,7 +26,7 @@ class UserPermittedApprovalModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "user_permitted_approval";
     }

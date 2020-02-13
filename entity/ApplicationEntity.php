@@ -133,7 +133,7 @@ class ApplicationEntity
      */
     public function getRecords()
     {
-        $rows = (new RecordModel())->selectRowsWithSort(['application_id' => $this->applicationId], "record_id desc");
+        $rows = (new RecordModel())->selectRowsForFieldsWithSort('*', ['application_id' => $this->applicationId], "record_id desc");
         $records = [];
         if (!empty($rows)) {
             foreach ($rows as $row) {
@@ -166,8 +166,7 @@ class ApplicationEntity
 
     public function getAbstractForList()
     {
-        $abstract = (array)$this;
-        return $abstract;
+        return (array)$this;
     }
 
     public function getDetail()
@@ -326,8 +325,7 @@ class ApplicationEntity
         HubCore::getLogger()->info("Begin SQL Export", ['application_id' => $this->applicationId]);
         HubCore::getLogger()->info($this->sql);
         $csv_path = $this->getExportedFilePath();
-        $written = $this->database->getWorkerEntity()->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'gbk');
-        return $written;
+        return $this->database->getWorkerEntity()->exportCSV($this->getRemarkedSQL(), $csv_path, $error, 'gbk');
     }
 
     /**
@@ -339,8 +337,7 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL CALL:");
         HubCore::getLogger()->info($this->sql);
-        $done = $this->database->getWorkerEntity()->executeCall($this->getRemarkedSQL(), $error);
-        return $done;
+        return $this->database->getWorkerEntity()->executeCall($this->getRemarkedSQL(), $error);
     }
 
     /**
@@ -353,8 +350,7 @@ class ApplicationEntity
     {
         HubCore::getLogger()->info("Begin SQL Query Remarked:");
         HubCore::getLogger()->info($this->getRemarkedSQL());
-        $ret = $this->database->getWorkerEntity()->executeMulti($this->getRemarkedSQL(), $this->type, $results, $error);
-        return $ret;
+        return $this->database->getWorkerEntity()->executeMulti($this->getRemarkedSQL(), $this->type, $results, $error);
     }
 
     private function getRemarkedSQL()
@@ -367,8 +363,7 @@ class ApplicationEntity
      */
     public function getExportedFilePath()
     {
-        $csv_path = HubCore::getConfig(['store', 'path'], __DIR__ . '/../store') . '/app_' . $this->applicationId . ".csv";
-        return $csv_path;
+        return HubCore::getConfig(['store', 'path'], __DIR__ . '/../store') . '/app_' . $this->applicationId . ".csv";
     }
 
     /**

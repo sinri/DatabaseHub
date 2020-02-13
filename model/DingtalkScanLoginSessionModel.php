@@ -19,7 +19,7 @@ class DingtalkScanLoginSessionModel extends ArkDatabaseTableModel
     /**
      * @return  string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "dingtalk_scan_login_session";
     }

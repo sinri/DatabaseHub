@@ -20,7 +20,7 @@ class RecordModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "record";
     }

@@ -34,8 +34,6 @@ class LoginPluginStandalone extends LoginPlugin
             throw new Exception("Password Error!");
         }
 
-        $session = $this->createSession(UserEntity::instanceByRow($row));
-
-        return $session;
+        return $this->createSession(UserEntity::instanceByRow($row));
     }
 }

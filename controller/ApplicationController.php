@@ -318,7 +318,7 @@ class ApplicationController extends AbstractAuthController
         $conditions = $this->buildFetchConditions();
 
         $total = (new ApplicationModel())->selectRowsForCount($conditions);
-        $rows = (new ApplicationModel())->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
+        $rows = (new ApplicationModel())->selectRowsForFieldsWithSort('*', $conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
 
         $list = [];
         if (!empty($rows)) {
@@ -350,7 +350,7 @@ class ApplicationController extends AbstractAuthController
         }
 
         $total = $model->selectRowsForCount($conditions);
-        $rows = $model->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
+        $rows = $model->selectRowsForFieldsWithSort('*', $conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
 
         $list = [];
         if (!empty($rows)) {
