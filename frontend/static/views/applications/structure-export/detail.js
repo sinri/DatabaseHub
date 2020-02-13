@@ -19,8 +19,9 @@ const DetailStructureExportApplicationPage = {
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Create time:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.createTime }}</span></div>
             </div>
             <p style="margin: 10px 0;padding: 5px;">{{ detail.application.description }}</p>
-            <i-form ref="form" style="width: 90%;"
-                :label-width="120"
+            <i-form ref="form"
+                style="padding: 10px;background-color: rgb(247, 247, 249);"
+                :label-width="160"
                 :model="detail.application.sql" 
             >
                 <form-item label="Show Create Database">

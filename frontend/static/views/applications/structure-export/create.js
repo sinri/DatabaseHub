@@ -136,9 +136,6 @@ const CreateStructureExportApplicationPage = {
             databaseList: []
         };
     },
-    computed: {
-        
-    },
     methods: {
         back () {
             this.$router.replace({
