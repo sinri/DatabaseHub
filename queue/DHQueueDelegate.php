@@ -261,9 +261,16 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
     /**
      * You can close all opened DB connection here
      * @param ApplicationExecuteTask $task
+     * @return bool
+     * @throws Exception
      */
     public function beforeFork($task = null)
     {
-        // DatabaseHub has considered it
+        if ($task) {
+            $canExecuteItNow = $task->beforeExecute();
+            HubCore::getLogger()->smartLogLite($canExecuteItNow, __METHOD__, ['task_id' => $task->getTaskReference()]);
+            return $canExecuteItNow;
+        }
+        return true;
     }
 }
