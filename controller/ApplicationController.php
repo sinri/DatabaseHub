@@ -56,6 +56,7 @@ class ApplicationController extends AbstractAuthController
         if ($data['type'] === ApplicationModel::TYPE_EXPORT_STRUCTURE) {
             $condtions = json_decode($data['sql'], true);
             $need_keys = [
+                'string' => ['schema'],
                 'bool' => [  // true or false
                     'show_create_database',
                     'drop_if_exist',
@@ -73,6 +74,9 @@ class ApplicationController extends AbstractAuthController
                     if (!array_key_exists($item, $condtions)) {
                         throw new Exception('Params ' . $item . ' Not Find');
                     }
+                    if ($type === 'string' && empty($condtions[$item])) {
+                        throw new Exception('Params ' . $item . ' Can not be Empty');
+                    }
                     if ($type === 'bool' && !is_bool($condtions[$item])) {
                         throw new Exception('Params ' . $item . ' Not Bool');
                     }
@@ -86,21 +90,15 @@ class ApplicationController extends AbstractAuthController
 
         // check TYPE_DATABASE_COMPARE
         if ($data['type'] === ApplicationModel::TYPE_DATABASE_COMPARE) {
-            $condtions = json_decode($data['sql'], true);
-            if (!array_key_exists('compare_database_config', $condtions)) {
-                throw new Exception('Params compare_database_config Not Find');
+            $conditions = json_decode($data['sql'], true);
+            if (!array_key_exists('compare_database_id', $conditions)) {
+                throw new Exception('Params compare_database Not Find');
             }
 
-            if (!array_key_exists('select_compare_databases', $condtions)) {
-                throw new Exception('Params select_compare_databases Not Find');
+            if (!array_key_exists('schema', $conditions)) {
+                throw new Exception('Params schema Not Find');
             }
 
-            $need_keys = ['host', 'port', 'engine', 'username', 'password'];
-            foreach ($need_keys as $item) {
-                if (!array_key_exists($item, $condtions['compare_database_config'])) {
-                    throw new Exception('Params ' . $item . ' Not Find');
-                }
-            }
             return $data;
         }
 

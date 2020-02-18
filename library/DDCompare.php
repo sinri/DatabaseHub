@@ -355,6 +355,64 @@ class DDCompare
     }
 
     /**
+     * @param $databaseName
+     * @param $triggerName
+     * @throws Exception
+     */
+    public function compareTriggerDDL($databaseName, $triggerName)
+    {
+//        PDOHelper::assertLegalName($databaseName);
+//        PDOHelper::assertLegalName($procedureName);
+
+        $sql = "show create trigger `{$databaseName}`.`{$triggerName}`;";
+
+        $this->fetchShowResultAndCompare("Trigger {$databaseName}.{$triggerName}", $sql, 2);
+    }
+
+    /**
+     * @param $databaseName
+     * @param null $triggerNames
+     * @throws Exception
+     */
+    public function compareTriggersDDL($databaseName, $triggerNames = null)
+    {
+//        PDOHelper::assertLegalName($databaseName);
+        if ($triggerNames === null) {
+            $sql = "SHOW TRIGGERS IN {$databaseName};";
+
+            try {
+                $functionsA = $this->workerEntityA->getCol($sql, 'Trigger');
+            } catch (Exception $exception) {
+                $functionsA = [];
+            }
+            if (empty($functionsA)) {
+                $this->result[] = "- " . $this->nickNameA . " does not contain triggers in Database {$databaseName}.";
+            }
+
+            try {
+                $functionsB = $this->workerEntityB->getCol($sql, 'Trigger');
+            } catch (Exception $exception) {
+                $functionsB = [];
+            }
+            if (empty($functionsB)) {
+                $this->result[] = "+ " . $this->nickNameB . " does not contain triggers in Database {$databaseName}.";
+            }
+
+            $triggerNames = array_merge($functionsA, $functionsB);
+            $triggerNames = array_unique($triggerNames);
+        }
+
+        if (empty($triggerNames)) {
+            $this->result[] = "! No trigger name found in both.";
+            return;
+        }
+
+        foreach ($triggerNames as $triggerName) {
+            $this->compareTriggerDDL($databaseName, $triggerName);
+        }
+    }
+
+    /**
      * @return string[]
      * @throws Exception
      */
@@ -362,7 +420,7 @@ class DDCompare
     {
         $databaseNames = $this->getMergedDatabaseNames();
         foreach ($databaseNames as $databaseName) {
-            if (in_array($databaseName, ["information_schema", "mysql", "performance_schema"])) {
+            if (in_array($databaseName, ["information_schema", "mysql", "performance_schema", "sys"])) {
                 continue;
             }
 
@@ -370,6 +428,7 @@ class DDCompare
             $this->compareTablesDDL($databaseName);
             $this->compareFunctionsDDL($databaseName);
             $this->compareProceduresDDL($databaseName);
+            $this->compareTriggersDDL($databaseName);
         }
         return $this->result;
     }
@@ -389,6 +448,7 @@ class DDCompare
             $this->compareTablesDDL($databaseName);
             $this->compareFunctionsDDL($databaseName);
             $this->compareProceduresDDL($databaseName);
+            $this->compareTriggersDDL($databaseName);
         }
         return $this->result;
     }

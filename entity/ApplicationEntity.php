@@ -368,7 +368,7 @@ class ApplicationEntity
         HubCore::getLogger()->info($this->sql);
         $conditions = json_decode($this->sql, true);
         $sql_path = $this->getExportedSqlPath();
-        $done = $this->database->getWorkerEntity()->executeExportStructure($this->database->databaseName, $conditions, $sql_path, $error);
+        $done = $this->database->getWorkerEntity()->executeExportStructure($conditions['schema'], $conditions, $sql_path, $error);
         return $done;
     }
 
@@ -465,10 +465,8 @@ class ApplicationEntity
         HubCore::getLogger()->info($this->sql);
         $conditions = json_decode($this->sql, true);
         $databaseA = DatabaseEntity::instanceById($this->database->databaseId);
-        $config = $conditions['compare_database_config'];
-        $config['database_name'] = current($conditions['select_compare_databases']);
-        $databaseB = DatabaseEntity::instanceByConfig($config);
-        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases($conditions['select_compare_databases']);
+        $databaseB = DatabaseEntity::instanceById($conditions['compare_database_id']);
+        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases($conditions['schema']);
         $snapshot = "";
         foreach ($result as $item) {
             $snapshot .= $item . "\r\n";

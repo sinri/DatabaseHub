@@ -489,6 +489,10 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     public function getStructureSimpleDetail($database)
     {
         $data = [];
+        // schemas
+        $sql = "show databases;";
+        $data['schemas'] = array_diff($this->getCol($sql), ["information_schema", "mysql", "performance_schema", "sys"]);
+
         // tables
         $sql = "show tables in `{$database}`;";
         $data['tables'] = $this->getCol($sql);
