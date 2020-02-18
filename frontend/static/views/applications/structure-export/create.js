@@ -1,4 +1,5 @@
 window._cache_databaseStructure = {} // 缓存数据库结构信息
+window._cache_databaseSchemas = {} // 缓存数据库Schema信息
 const CreateStructureExportApplicationPage = {
     template: `
         <layout>
@@ -26,8 +27,8 @@ const CreateStructureExportApplicationPage = {
                 </form-item>
                         
                 <form-item label="Schema" prop="sql.schema">
-                    <i-select clearable filterable v-model="form.model.sql.schema" style="width:200px">
-                        <i-option v-for="item in databaseStructure.schemas" 
+                    <i-select clearable filterable @on-change="handleDatabaseSchemaChange" v-model="form.model.sql.schema" style="width:200px">
+                        <i-option v-for="item in schemas" 
                             :key="item" 
                             :value="item">{{ item }}</i-option>
                     </i-select>
@@ -140,12 +141,12 @@ const CreateStructureExportApplicationPage = {
                 }
             },
             databaseStructure: {
-                schemas: {},
                 show_create_table: [],
                 show_create_function: [],
                 show_create_procedure: [],
                 show_create_trigger: []
             },
+            schemas: {},
             databaseList: []
         };
     },
@@ -196,9 +197,32 @@ const CreateStructureExportApplicationPage = {
             });
         },
         handleDatabaseChange (database_id) {
+            this.form.model.sql = Object.assign(this.form.model.sql, {
+                schema: '',
+                show_create_table: '', // array 全部传字符串'ALL',空数组表示全不选
+                show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
+            })
+
             if (typeof database_id === 'undefined') return
 
-            this.getDatabaseStructure(database_id)
+            this.getDatabaseSchemas(database_id)
+        },
+        handleDatabaseSchemaChange (schema) {
+            this.form.model.sql = Object.assign(this.form.model.sql, {
+                show_create_table: '', // array 全部传字符串'ALL',空数组表示全不选
+                show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
+            })
+
+            if (typeof schema === 'undefined') return
+
+            this.getDatabaseStructure({
+                database_id: this.form.model.database_id,
+                schema
+            })
         },
         handleSelectAll (name) {
             this.form.model.sql[name] = this.databaseStructure[name]
@@ -206,17 +230,37 @@ const CreateStructureExportApplicationPage = {
         handleClear (name) {
             this.form.model.sql[name] = []
         },
-        setStructure (databaseStructure) {
-            this.databaseStructure = databaseStructure
-        },
-        getDatabaseStructure (database_id) {
-            const databaseStructure = window._cache_databaseStructure[database_id]
+        getDatabaseSchemas (database_id) {
+            const schemas = window._cache_databaseSchemas[database_id]
 
-            if (typeof databaseStructure !== 'undefined') {
-                return this.setStructure(databaseStructure)
+            if (typeof schemas !== 'undefined') {
+                this.schemas = schemas
+
+                return
             }
 
             ajax('getDatabaseStructure', {database_id}).then(({result}) => {
+                const {
+                    schemas
+                } = result
+                
+                this.schemas = schemas
+                window._cache_databaseSchemas[database_id] = schemas
+            }).catch(({message}) => {
+                SinriQF.iview.showErrorMessage(message, 5);
+            });
+        },
+        getDatabaseStructure ({database_id, schema}) {
+            const databaseSchema = `${database_id}_${schema}`
+            const structure = window._cache_databaseStructure[databaseSchema]
+
+            if (typeof structure !== 'undefined') {
+                this.databaseStructure = structure
+
+                return
+            }
+
+            ajax('getDatabaseStructure', {database_id, schema}).then(({result}) => {
                 const {
                     schemas,
                     tables: show_create_table,
@@ -232,8 +276,8 @@ const CreateStructureExportApplicationPage = {
                     show_create_trigger
                 }
                 
-                this.setStructure(structure)
-                window._cache_databaseStructure[database_id] = structure
+                this.databaseStructure = structure
+                window._cache_databaseStructure[databaseSchema] = structure
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
