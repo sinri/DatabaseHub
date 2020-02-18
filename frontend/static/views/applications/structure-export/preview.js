@@ -23,6 +23,8 @@ Vue.component('structure-export-application-preview', {
                 :label-width="160"
                 :model="detail.application.sql" 
             >
+                <form-item label="Schema">{{ detail.application.sql.schema }}</form-item>
+
                 <form-item label="Show Create Database">
                     <i-switch disabled v-model="detail.application.sql.show_create_database" />
                 </form-item>

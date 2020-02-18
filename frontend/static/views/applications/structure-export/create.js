@@ -25,6 +25,14 @@ const CreateStructureExportApplicationPage = {
                     </i-select>
                 </form-item>
                         
+                <form-item label="Schema" prop="sql.schema">
+                    <i-select clearable filterable v-model="form.model.sql.schema" style="width:200px">
+                        <i-option v-for="item in databaseStructure.schemas" 
+                            :key="item" 
+                            :value="item">{{ item }}</i-option>
+                    </i-select>
+                </form-item>
+                
                 <form-item label="Show Create Database" required>
                     <i-switch v-model="form.model.sql.show_create_database" />
                 </form-item>
@@ -103,6 +111,7 @@ const CreateStructureExportApplicationPage = {
                     database_id: '',
                     type: 'EXPORT_STRUCTURE',
                     sql: {
+                        schema: '',
                         show_create_database: true, // bool
                         drop_if_exist: false, // bool
                         reset_auto_increment: true, // bool
@@ -124,10 +133,14 @@ const CreateStructureExportApplicationPage = {
                     ],
                     type: [
                         {required: true, message: '不能为空'}
+                    ],
+                    'sql.schema': [
+                        {required: true, message: '不能为空'}
                     ]
                 }
             },
             databaseStructure: {
+                schemas: {},
                 show_create_table: [],
                 show_create_function: [],
                 show_create_procedure: [],
@@ -205,12 +218,14 @@ const CreateStructureExportApplicationPage = {
 
             ajax('getDatabaseStructure', {database_id}).then(({result}) => {
                 const {
+                    schemas,
                     tables: show_create_table,
                     functions: show_create_function,
                     procedures: show_create_procedure,
                     triggers: show_create_trigger
                 } = result
                 const structure = {
+                    schemas,
                     show_create_table,
                     show_create_function,
                     show_create_procedure,
