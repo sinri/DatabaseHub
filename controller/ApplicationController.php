@@ -526,8 +526,9 @@ class ApplicationController extends AbstractAuthController
     public function getDatabaseStructure()
     {
         $database_id = $this->_readRequest('database_id', '', '/^\d+$/');
+        $schema = $this->_readRequest('schema', '');
         $database = DatabaseEntity::instanceById($database_id);
-        $result = $database->getWorkerEntity()->getStructureSimpleDetail($database->databaseName);
+        $result = $database->getWorkerEntity()->getStructureSimpleDetail($schema);
         $this->_sayOK(['result' => $result]);
     }
 
