@@ -372,7 +372,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
             $line = preg_replace('/\s+DEFINER=`[A-Za-z0-9_]+`@`[A-Za-z0-9_%]+`\s+/', ' ', $line);
             $sql .= $line . PHP_EOL;
         }
-        if ($drop_if_exist) {
+        if ($drop_if_exist && !empty($drop_type)) {
             if ($drop_type == 'TABLE') {
                 if (strpos($sql, 'CREATE TABLE') !== 0) {
                     $drop_type = 'VIEW';
@@ -408,7 +408,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
             $snapshot .= $this->fetchSQLResult('show create database `' . $database . '`;');
         }
 
-        $snapshot .= "use " . $database . ";" . PHP_EOL;
+        $snapshot .= "use `" . $database . "`;" . PHP_EOL;
 
         // tables
         if (!empty($conditions['show_create_table'])) {
