@@ -133,32 +133,4 @@ class DatabaseEntity
         $rows = $worker->selectRows("show variables like 'max_allowed_packet';");
         return $rows[0]['Value'];
     }
-
-    /**
-     * @param $config
-     * @return DatabaseEntity|null
-     */
-    public static function instanceByConfig($config)
-    {
-        if (empty($config)) {
-            return null;
-        }
-        $database = new DatabaseEntity();
-        $database->databaseId = 0;
-        $database->databaseName = $config['database_name'];
-        $database->host = $config['host'];
-        $database->port = $config['port'];
-        $database->status = 'NORMAL';
-        $database->engine = $config['engine'];
-
-        $database->defaultAccount = null;//$row['default_account_id'];
-
-        $database->accounts = [];
-
-        $account = AccountEntity::instanceByRow(['account_id' => 0, 'username' => $config['username'], 'password' => $config['password']]);
-        $database->accounts[] = $account;
-        $database->defaultAccount = $account;
-
-        return $database;
-    }
 }
