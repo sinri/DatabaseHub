@@ -285,6 +285,7 @@ const CreateStructureExportApplicationPage = {
     },
     mounted () {
         window._cache_databaseStructure = {}
+        window._cache_databaseSchemas = {}
         this.getDatabaseList()
     }
 };
