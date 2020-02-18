@@ -196,28 +196,45 @@ const CreateStructureExportApplicationPage = {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
-        handleDatabaseChange (database_id) {
-            // reset
+        resetAfterDatabaseChange () {
+            this.form.model.sql = Object.assign(this.form.model.sql, {
+                schema: '',
+                show_create_table: [], // array 全部传字符串'ALL',空数组表示全不选
+                show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
+                show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
+            })
+            this.databaseStructure = {
+                show_create_table: [],
+                show_create_function: [],
+                show_create_procedure: [],
+                show_create_trigger: []
+            }
+            this.schemas = []
+        },
+        resetAfterDatabaseSchemaChange () {
             this.form.model.sql = Object.assign(this.form.model.sql, {
                 show_create_table: [], // array 全部传字符串'ALL',空数组表示全不选
                 show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
                 show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
                 show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
             })
-            this.form.model.sql.schema = ''
-            this.schemas = []
+            this.databaseStructure = {
+                show_create_table: [],
+                show_create_function: [],
+                show_create_procedure: [],
+                show_create_trigger: []
+            }
+        },
+        handleDatabaseChange (database_id) {
+            this.resetAfterDatabaseChange()
 
             if (typeof database_id === 'undefined') return
 
             this.getDatabaseSchemas(database_id)
         },
         handleDatabaseSchemaChange (schema) {
-            this.form.model.sql = Object.assign(this.form.model.sql, {
-                show_create_table: [], // array 全部传字符串'ALL',空数组表示全不选
-                show_create_function: [], //array 全部传字符串'ALL',空数组表示全不选
-                show_create_procedure: [], //array 全部传字符串'ALL',空数组表示全不选
-                show_create_trigger: [] //array 全部传字符串'ALL',空数组表示全不选
-            })
+            this.resetAfterDatabaseSchemaChange()
 
             if (typeof schema === 'undefined') return
 
