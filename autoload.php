@@ -6,8 +6,8 @@
  * Time: 9:56 AM
  */
 
-use sinri\ark\core\ArkHelper;
-
 require_once __DIR__ . '/vendor/autoload.php';
 
-ArkHelper::registerAutoload("sinri\\databasehub", __DIR__);
+date_default_timezone_set("Asia/Shanghai");
+
+//ArkHelper::registerAutoload("sinri\\databasehub", __DIR__);

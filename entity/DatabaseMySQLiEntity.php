@@ -286,7 +286,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     }
 
     /**
-     * @param $tid
+     * @param int $tid
      * @return bool
      * @throws Exception
      */
@@ -296,7 +296,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     }
 
     /**
-     * @param $sql
+     * @param string $sql
      * @return array
      * @throws Exception
      */

@@ -186,8 +186,7 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
         $row = (new ApplicationModel())->selectRow(['status' => ApplicationModel::STATUS_APPROVED]);
         if (empty($row)) return false;
         try {
-            $task = ApplicationExecuteTask::createTask($row['application_id']);
-            return $task;
+            return ApplicationExecuteTask::createTask($row['application_id']);
         } catch (Exception $e) {
             HubCore::getLogger()->error("Error when checkNextTask: " . $e->getMessage());
             return false;
@@ -261,9 +260,17 @@ class DHQueueDelegate extends ParallelQueueDaemonDelegate
 
     /**
      * You can close all opened DB connection here
+     * @param ApplicationExecuteTask $task
+     * @return bool
+     * @throws Exception
      */
-    public function beforeFork()
+    public function beforeFork($task = null)
     {
-        // DatabaseHub has considered it
+        if ($task) {
+            $canExecuteItNow = $task->beforeExecute();
+            HubCore::getLogger()->smartLogLite($canExecuteItNow, __METHOD__, ['task_id' => $task->getTaskReference()]);
+            return $canExecuteItNow;
+        }
+        return true;
     }
 }

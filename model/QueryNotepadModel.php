@@ -9,6 +9,7 @@
 namespace sinri\databasehub\model;
 
 
+use Exception;
 use sinri\ark\database\model\ArkDatabaseTableModel;
 use sinri\ark\database\pdo\ArkPDO;
 use sinri\databasehub\core\HubCore;
@@ -19,13 +20,14 @@ class QueryNotepadModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return 'query_notepad';
     }
 
     /**
      * @return ArkPDO
+     * @throws Exception
      */
     public function db()
     {

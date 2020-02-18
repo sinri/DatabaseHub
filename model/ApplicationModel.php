@@ -37,7 +37,7 @@ class ApplicationModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "application";
     }

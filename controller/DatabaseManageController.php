@@ -94,9 +94,10 @@ class DatabaseManageController extends AbstractAuthController
         $databases = [];
         foreach ($list as $item) {
             $databaseEntity = DatabaseEntity::instanceByRow($item);
-            $databaseEntityAsArray = json_decode(json_encode($databaseEntity), true);
-            $databaseEntityAsArray['max_sql_length'] = $databaseEntity->getMaxSQLLength();
-            $databases[] = $databaseEntityAsArray;
+//            $databaseEntityAsArray = json_decode(json_encode($databaseEntity), true);
+//            $databaseEntityAsArray['max_sql_length'] = $databaseEntity->getMaxSQLLength();
+//            $databases[] = $databaseEntityAsArray;
+            $databases[] = $databaseEntity;
         }
         $this->_sayOK(['list' => $databases]);
     }
@@ -219,5 +220,15 @@ class DatabaseManageController extends AbstractAuthController
         $row = (new AccountModel())->selectRow(['account_id' => $account_id, 'database_id' => $database_id]);
         $this->_sayOK(['account' => AccountEntity::instanceByRow($row)]);
 
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getDatabaseMaxSqlLength()
+    {
+        $database_id = $this->_readRequest("database_id", 0, '/^[\d]+$/');
+        $row = (new DatabaseModel())->selectRow(['database_id' => $database_id]);
+        $this->_sayOK(['max_sql_length' => DatabaseEntity::instanceByRow($row)->getMaxSQLLength()]);
     }
 }

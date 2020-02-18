@@ -16,7 +16,6 @@ use sinri\databasehub\core\HubCore;
 use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
-use sinri\databasehub\library\DDCompare;
 use sinri\databasehub\model\ApplicationModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\UserModel;
@@ -373,7 +372,7 @@ class ApplicationController extends AbstractAuthController
         $conditions = $this->buildFetchConditions();
 
         $total = (new ApplicationModel())->selectRowsForCount($conditions);
-        $rows = (new ApplicationModel())->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
+        $rows = (new ApplicationModel())->selectRowsForFieldsWithSort('*', $conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
 
         $list = [];
         if (!empty($rows)) {
@@ -405,7 +404,7 @@ class ApplicationController extends AbstractAuthController
         }
 
         $total = $model->selectRowsForCount($conditions);
-        $rows = $model->selectRowsWithSort($conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
+        $rows = $model->selectRowsForFieldsWithSort('*', $conditions, "application_id desc", $pageSize, ($page - 1) * $pageSize);
 
         $list = [];
         if (!empty($rows)) {

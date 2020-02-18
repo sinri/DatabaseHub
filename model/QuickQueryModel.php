@@ -22,7 +22,7 @@ class QuickQueryModel extends ArkDatabaseTableModel
     /**
      * @return string
      */
-    protected function mappingTableName()
+    public function mappingTableName()
     {
         return "quick_query";
     }
