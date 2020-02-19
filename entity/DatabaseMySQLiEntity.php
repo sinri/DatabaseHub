@@ -341,6 +341,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
     public function getCol($sql, $field = null)
     {
         $stmt = $this->mysqliAgent->getInstanceOfMySQLi()->query($sql);
+        if (!$stmt) return  [];
         $rows = $stmt->fetch_all();
         if ($field === null) $field = 0;
         $col = array_column($rows, $field);
