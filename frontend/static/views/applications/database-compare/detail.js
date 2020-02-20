@@ -1,16 +1,15 @@
-Vue.component('application-preview', {
+const DetailDatabaseCompareApplicationPage = {
     template: `
         <spin fix v-if="isLoading"></spin>
         <layout-drawer v-else>
             <div slot="header" style="display: flex;align-items: center;">
                 <div style="flex: 1;overflow: hidden;margin-left: 10px;">
                     <h2 class="title">
-                        Application #{{ applicationId }}
+                        Database Compare Application #{{ applicationId }}
                         <tag :color="detail.application.status | getApplicationStatusTagColor">{{ detail.application.status }}</tag>
                     </h2>
                     <h3 class="sub-title text-ellipsis" :title="detail.application.title">{{ detail.application.title }}</h3>
                 </div>
-                <!--<avatar size="42" :username="detail.application.applyUser.username" :real-name="detail.application.applyUser.realname" :showUsername="true"></avatar>-->
                 <div>Applied by {{detail.application.applyUser.realname}}({{detail.application.applyUser.username}})</div>
             </div>
             <div style="display: flex;padding: 10px;background-color: rgb(247, 247, 249);text-transform: uppercase;">
@@ -19,62 +18,44 @@ Vue.component('application-preview', {
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Create time:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.createTime }}</span></div>
             </div>
             <p style="margin: 10px 0;padding: 5px;">{{ detail.application.description }}</p>
-            <codemirror style="font-size: 14px;"
-                        :options="codeMirrorOptions"
-                        v-model="detail.application.sql"></codemirror>
+            <i-form ref="form"
+                style="padding: 20px 10px 10px;background-color: rgb(247, 247, 249);"
+                :label-width="160"
+                :model="detail.application.sql" 
+            >
+                <form-item label="Schema">{{ detail.application.sql.schema }}</form-item>
+
+            </i-form>
+            <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel">
+                <i-button type="success" v-if="detail.can_decide"
+                    @click="approveApplication">Approve</i-button>
+                <i-button type="error" v-if="detail.can_decide" 
+                    @click="denyApplication">Deny</i-button>
+                <i-button type="warn" v-if="detail.can_cancel"
+                    @click="cancelApplication">Cancel</i-button>
+            </div>            
             <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
-                <h2 v-if="detail.application.result_file.should_have_file">Preview, up to 10 rows
-                    <i-button icon="md-cloud-download" type="success" size="small" style="float: right;"
+                <h2 style="text-align: right;" v-if="detail.application.result_file.should_have_file">
+                    <i-button icon="md-cloud-download" type="success" size="small"
                         @click="downloadExportedContentAsCSV"
                         :disabled="detail.application.result_file.error">Download ({{ (detail.application.result_file.size / 1024 / 1024).toFixed(2) }}M)</i-button>
                 </h2>
                 <span style="color: #ed4014;" v-if="detail.application.result_file.error">({{ detail.application.result_file.error }})</span>    
-                <native-table style="margin-bottom: 30px;border: 10px solid #ccc;"
-                    :columns="previewTableColumns"
-                    :data="detail.application.preview_table.slice(1)"
-                    v-if="detail.application.result_file.should_have_file && !detail.application.result_file.error"></native-table>        
             </div>
-            <div>
+            <div slot="footer" >
                 <h2>History</h2>
-                <!--<native-table-->
-                    <!--:columns="historyTableColumns"-->
-                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
                 <application-history :history="detail.application.history"></application-history>
-            </div>
-            <!--<div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">-->
-                <!--<i-button type="success" v-if="detail.can_decide"-->
-                    <!--@click="approveApplication">Approve</i-button>-->
-                <!--<i-button type="error" v-if="detail.can_decide" -->
-                    <!--@click="denyApplication">Deny</i-button>-->
-                <!--<i-button type="warn" v-if="detail.can_cancel"-->
-                    <!--@click="cancelApplication">Cancel</i-button>-->
-                <!--<i-button type="info" v-if="detail.can_edit"-->
-                    <!--@click="goEditApplicationPage">Edit</i-button>-->
-            <!--</div> -->
-            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
-                type="flex" justify="space-around" class="code-row-bg">
-                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
-                    <i-button type="success" @click="approveApplication">Approve</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_edit" style="text-align: center;">
-                    <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
-                    <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
-                    <i-button type="error"  @click="denyApplication">Deny</i-button>
-                </Col>
-            </Row>
+            </div> 
         </layout-drawer>
     `,
     data () {
         return {
+            applicationId: 0,
             isLoading: false,
-            applicationId: '',
             detail: {
                 application: {
+                    sql: {},
                     applyUser: {},
                     database: {},
                     history: [],
@@ -82,54 +63,12 @@ Vue.component('application-preview', {
                     preview_table: []
                 }
             },
-            codeMirrorOptions: {
-                tabSize: 4,
-                styleActiveLine: true,
-                lineNumbers: true,
-                line: true,
-                mode: 'text/x-mysql',
-                theme: 'panda-syntax',
-                readOnly: true,
-            },
             allUserMap: JSON.parse(localStorage.getItem('allUserMap'))
         };
     },
-    computed: {
-        previewTableColumns () {
-            const columns = [];
-
-            if (this.detail.application.preview_table &&
-                this.detail.application.preview_table.length > 0
-            ) {
-                this.detail.application.preview_table[0].forEach((key, index) => {
-                    columns.push({
-                        title: key,
-                        key: index
-                    });
-                });
-            }
-
-            return columns;
-        },
-        historyTableColumns () {
-            const columns = [];
-
-            if (this.detail.application.history.length > 0) {
-                Object.keys(this.detail.application.history[0]).forEach((key) => {
-                    columns.push({
-                        title: key,
-                        key
-                    });
-                });
-            }
-
-            return columns;
-        }
-    },
     methods: {
-        init (id) {
-            this.applicationId = id
-            this.getApplicationDetail()
+        init () {
+            this.getApplicationDetail();
         },
         updateLoading (bool) {
             this.isLoading = bool;
@@ -147,7 +86,8 @@ Vue.component('application-preview', {
 
                     return item;
                 });
-
+                res.application.sql = JSON.parse(res.application.sql)
+                
                 this.detail = res
             }).catch(({message}) => {
                 SinriQF.iview.showErrorMessage(message, 5);
@@ -189,21 +129,6 @@ Vue.component('application-preview', {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
-        goEditApplicationPage () {
-            const query = {
-                application_id: this.detail.application.applicationId,
-                title: this.detail.application.title,
-                description: this.detail.application.description,
-                database_id: this.detail.application.database.databaseId,
-                type: this.detail.application.type,
-                sql: this.detail.application.sql
-            }
-
-            this.$router.push({
-                name: 'editApplicationPage',
-                query
-            })
-        },
         downloadExportedContentAsCSV () {
             const api = API.downloadExportedContentAsCSV;
             const filename = this.detail.application.result_file.path.split('/').pop();
@@ -211,14 +136,10 @@ Vue.component('application-preview', {
             let url = SinriQF.config.ApiBase + api.url + "?application_id=" + this.applicationId + "&token=" + SinriQF.api.getTokenFromCookie()
             console.log("downloadExportedContentAsCSV: ", url);
             window.location.href = (url);
-            /*
-            axios.post(SinriQF.config.ApiBase + api.url, {
-                application_id: this.applicationId,
-                token: SinriQF.api.getTokenFromCookie()
-            }).then(({data}) => {
-                exportCsv.download(filename, data);
-            });
-            */
         }
+    },
+    mounted () {
+        this.applicationId = this.$route.query.applicationId;
+        this.init();
     }
-});
+};

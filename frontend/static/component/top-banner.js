@@ -78,6 +78,11 @@ Vue.component('top-banner', {
                             name: 'createStructureExportApplicationPage',
                             icon: 'logo-buffer',
                             text: 'Structure Export'
+                        },
+                        {
+                            name: 'createDatabaseCompareApplicationPage',
+                            icon: 'md-git-compare',
+                            text: 'Database Compare'
                         }
                     ]
                 },

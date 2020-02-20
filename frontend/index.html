@@ -66,6 +66,9 @@
 <script src="static/views/applications/structure-export/create.js"></script>
 <script src="static/views/applications/structure-export/detail.js"></script>
 <script src="static/views/applications/structure-export/preview.js"></script>
+<script src="static/views/applications/database-compare/create.js"></script>
+<script src="static/views/applications/database-compare/detail.js"></script>
+<script src="static/views/applications/database-compare/preview.js"></script>
 
 <script src="static/views/approvals/list.js"></script>
 
@@ -123,6 +126,16 @@ const routes = [
                 name: 'detailStructureExportApplicationPage',
                 component: DetailStructureExportApplicationPage
             },
+            {
+                path: 'databaseCompare/create',
+                name: 'createDatabaseCompareApplicationPage',
+                component: CreateDatabaseCompareApplicationPage
+            },
+            {
+                path: 'databaseCompare/detail',
+                name: 'detailDatabaseCompareApplicationPage',
+                component: DetailDatabaseCompareApplicationPage
+            }
         ]
     },
     { path: '/approvals', name: 'approvalsPage', component: { template: `<router-view></router-view>`},
