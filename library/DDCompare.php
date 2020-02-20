@@ -131,8 +131,6 @@ class DDCompare
                 $this->result[] = "  About " . $targetName . ": SAME";
             }
         }
-
-
     }
 
     /**
@@ -144,7 +142,6 @@ class DDCompare
         $sql = "show databases;";
         $colsA = $this->workerEntityA->getCol($sql);
         $colsB = $this->workerEntityB->getCol($sql);
-
         $cols = array_merge($colsA, $colsB);
         $cols = array_unique($cols);
         return $cols;
@@ -156,10 +153,7 @@ class DDCompare
      */
     public function compareDatabaseDDL($databaseName)
     {
-//        PDOHelper::assertLegalName($databaseName);
-
         $sql = "show create database `" . $databaseName . "`;";
-
         $this->fetchShowResultAndCompare("Database [{$databaseName}]", $sql);
     }
 
@@ -172,12 +166,10 @@ class DDCompare
         if ($databaseNames === null) {
             $databaseNames = $this->getMergedDatabaseNames();
         }
-
         if (empty($databaseNames)) {
             $this->result[] = "! No database name found in both.";
             return;
         }
-
         foreach ($databaseNames as $databaseName) {
             $this->compareDatabaseDDL($databaseName);
         }
@@ -190,9 +182,6 @@ class DDCompare
      */
     public function compareTableDDL($databaseName, $tableName)
     {
-//        PDOHelper::assertLegalName($databaseName);
-//        PDOHelper::assertLegalName($tableName);
-        //$this->result[] = $databaseName;
         $sql = "show create table `{$databaseName}`.`{$tableName}`;";
         $this->fetchShowResultAndCompare("Table {$databaseName}.{$tableName}", $sql);
     }
@@ -204,7 +193,6 @@ class DDCompare
      */
     public function compareTablesDDL($databaseName, $tableNames = null)
     {
-//        PDOHelper::assertLegalName($databaseName);
         if ($tableNames === null) {
             $sql = "show tables in `{$databaseName}`;";
             try {
@@ -245,9 +233,6 @@ class DDCompare
      */
     public function compareFunctionDDL($databaseName, $functionName)
     {
-//        PDOHelper::assertLegalName($databaseName);
-//        PDOHelper::assertLegalName($functionName);
-
         $sql = "show create function `{$databaseName}`.`{$functionName}`;";
 
         $this->fetchShowResultAndCompare("Function {$databaseName}.{$functionName}", $sql, 2);
@@ -260,7 +245,6 @@ class DDCompare
      */
     public function compareFunctionsDDL($databaseName, $functionNames = null)
     {
-//        PDOHelper::assertLegalName($databaseName);
         if ($functionNames === null) {
             $sql = "SHOW FUNCTION STATUS where db='{$databaseName}';";
 
@@ -303,11 +287,7 @@ class DDCompare
      */
     public function compareProcedureDDL($databaseName, $procedureName)
     {
-//        PDOHelper::assertLegalName($databaseName);
-//        PDOHelper::assertLegalName($procedureName);
-
         $sql = "show create procedure `{$databaseName}`.`{$procedureName}`;";
-
         $this->fetchShowResultAndCompare("Procedure {$databaseName}.{$procedureName}", $sql, 2);
     }
 
@@ -318,7 +298,6 @@ class DDCompare
      */
     public function compareProceduresDDL($databaseName, $procedureNames = null)
     {
-//        PDOHelper::assertLegalName($databaseName);
         if ($procedureNames === null) {
             $sql = "SHOW PROCEDURE STATUS where db='{$databaseName}';";
 
@@ -361,11 +340,7 @@ class DDCompare
      */
     public function compareTriggerDDL($databaseName, $triggerName)
     {
-//        PDOHelper::assertLegalName($databaseName);
-//        PDOHelper::assertLegalName($procedureName);
-
         $sql = "show create trigger `{$databaseName}`.`{$triggerName}`;";
-
         $this->fetchShowResultAndCompare("Trigger {$databaseName}.{$triggerName}", $sql, 2);
     }
 
@@ -376,10 +351,8 @@ class DDCompare
      */
     public function compareTriggersDDL($databaseName, $triggerNames = null)
     {
-//        PDOHelper::assertLegalName($databaseName);
         if ($triggerNames === null) {
             $sql = "SHOW TRIGGERS IN {$databaseName};";
-
             try {
                 $functionsA = $this->workerEntityA->getCol($sql, 'Trigger');
             } catch (Exception $exception) {
@@ -406,7 +379,6 @@ class DDCompare
             $this->result[] = "! No trigger name found in both.";
             return;
         }
-
         foreach ($triggerNames as $triggerName) {
             $this->compareTriggerDDL($databaseName, $triggerName);
         }
