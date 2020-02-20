@@ -92,7 +92,7 @@ class ApplicationController extends AbstractAuthController
         if ($data['type'] === ApplicationModel::TYPE_DATABASE_COMPARE) {
             $conditions = json_decode($data['sql'], true);
             if (!array_key_exists('compare_database_id', $conditions)) {
-                throw new Exception('Params compare_database Not Find');
+                throw new Exception('Params compare_database_id Not Find');
             }
 
             if (!array_key_exists('schema', $conditions)) {
