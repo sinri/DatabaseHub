@@ -14,7 +14,6 @@ const DetailDatabaseCompareApplicationPage = {
             </div>
             <div style="display: flex;padding: 10px;background-color: rgb(247, 247, 249);text-transform: uppercase;">
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Type:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.type }}</span></div>
-                <div style="flex: auto;"><strong style="margin-right: 5px;">Database:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.database.databaseName }} ({{ detail.application.database.engine }})</span></div>
                 <div style="flex: auto;"><strong style="margin-right: 5px;">Create time:</strong><span style="color: rgb(232, 62, 140);">{{ detail.application.createTime }}</span></div>
             </div>
             <p style="margin: 10px 0;padding: 5px;">{{ detail.application.description }}</p>
@@ -23,8 +22,9 @@ const DetailDatabaseCompareApplicationPage = {
                 :label-width="160"
                 :model="detail.application.sql" 
             >
-                <form-item label="Schema">{{ detail.application.sql.schema }}</form-item>
-
+                <form-item label="Database A:">{{ detail.application.database.databaseName }}</form-item>
+                <form-item label="Database B:">{{ detail.application.compare_database.databaseName }}</form-item>
+                <form-item label="Schema:">{{ detail.application.sql.schema }}</form-item>
             </i-form>
             <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel">
                 <i-button type="success" v-if="detail.can_decide"
@@ -58,6 +58,7 @@ const DetailDatabaseCompareApplicationPage = {
                     sql: {},
                     applyUser: {},
                     database: {},
+                    compare_database: {},
                     history: [],
                     result_file: [],
                     preview_table: []
