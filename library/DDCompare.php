@@ -82,7 +82,7 @@ class DDCompare
         }
         if (empty($strA)) {
             // does not exist in A
-            $this->result[] = "- " . ($this->nickNameA . " dos not contain {$targetName}.");
+            $this->result[] = "- " . ($this->nickNameA . " does not contain {$targetName}.");
         }
         try {
             $strB = $this->workerEntityB->getCol($sqlB, $columnIndex);
@@ -92,7 +92,7 @@ class DDCompare
         }
         if (empty($strB)) {
             // does not exist in B
-            $this->result[] = "+ " . ($this->nickNameB . " dos not contain {$targetName}.");
+            $this->result[] = "+ " . ($this->nickNameB . " does not contain {$targetName}.");
         }
 
         if (!empty($strA) && !empty($strB)) {
