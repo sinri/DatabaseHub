@@ -64,15 +64,15 @@ const ApplicationListPage = {
             
             <drawer width="700" :styles="{padding: 0}" :closable="false"
                 v-model="previewer.drawerVisible">
+                <structure-export-application-preview ref="EXPORT_STRUCTURE_applicationDetail"
+                    @update="onSearch"
+                    v-if="previewer.type === 'EXPORT_STRUCTURE'" />
+                <database-compare-application-preview ref="DATABASE_COMPARE_applicationDetail"
+                    @update="onSearch"
+                    v-else-if="previewer.type === 'DATABASE_COMPARE'" />
                 <application-preview ref="applicationDetail"
-                    :application-id="previewer.applicationId"
-                    @update="onSearch"></application-preview>
-            </drawer>
-            <drawer width="700" :styles="{padding: 0}" :closable="false"
-                v-model="structureExportPreviewer.drawerVisible">
-                <structure-export-application-preview ref="structureExportApplicationDetail"
-                    :application-id="structureExportPreviewer.applicationId"
-                    @update="onSearch"></structure-export-application-preview>
+                    @update="onSearch"
+                    v-else />
             </drawer>
             
             <Row slot="pagination">
@@ -203,11 +203,7 @@ const ApplicationListPage = {
             allUserList: [],
             databaseList: [],
             previewer: {
-                applicationId: 0,
-                drawerVisible: false
-            },
-            structureExportPreviewer: {
-                applicationId: 0,
+                type: '',
                 drawerVisible: false
             }
         };
@@ -278,8 +274,23 @@ const ApplicationListPage = {
             });
         },
         goDetailApplication ({type, applicationId}) {
+            let name = ''
+
+             switch (type) {
+                case 'EXPORT_STRUCTURE':
+                    name = 'detailStructureExportApplicationPage'
+        
+                    break
+                case 'DATABASE_COMPARE':
+                    name = 'detailDatabaseCompareApplicationPage'
+
+                    break
+                default:
+                    name = 'detailApplicationPage'
+            }
+
             const {href} = router.resolve({
-                name: type === 'EXPORT_STRUCTURE' ? 'detailStructureExportApplicationPage' : 'detailApplicationPage',
+                name,
                 query: {
                     applicationId
                 }
@@ -288,21 +299,27 @@ const ApplicationListPage = {
             window.open(href, '_blank');
         },
         previewApplication (item) {
-            if (item.type === 'EXPORT_STRUCTURE') {
-                this.structureExportPreviewer.applicationId = item.applicationId;
-                this.structureExportPreviewer.drawerVisible = true;
-    
-                this.$nextTick(() => {
-                    this.$refs.structureExportApplicationDetail.init()
-                })
-            } else {
-                this.previewer.applicationId = item.applicationId;
-                this.previewer.drawerVisible = true;
-    
-                this.$nextTick(() => {
-                    this.$refs.applicationDetail.init()
-                })
+            let ref = ''
+
+            switch (item.type) {
+                case 'EXPORT_STRUCTURE':
+                    ref = 'EXPORT_STRUCTURE_'
+        
+                    break
+                case 'DATABASE_COMPARE':
+                    ref = 'DATABASE_COMPARE_'
+
+                    break
+                default:
+                    ref = ''
             }
+
+            this.previewer.type = item.type
+            this.previewer.drawerVisible = true
+
+            this.$nextTick(() => {
+                this.$refs[`${ref}applicationDetail`].init(item.applicationId)
+            })
         },
         getAllUserList () {
             this.allUserList = JSON.parse(localStorage.getItem('allUserList'));

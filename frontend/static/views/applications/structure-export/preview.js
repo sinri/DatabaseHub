@@ -96,14 +96,10 @@ Vue.component('structure-export-application-preview', {
             </Row>
         </layout-drawer>
     `,
-    props: {
-        applicationId: {
-            type: [Number, String]
-        }
-    },
     data () {
         return {
             isLoading: false,
+            applicationId: '',
             detail: {
                 application: {
                     sql: {
@@ -123,7 +119,8 @@ Vue.component('structure-export-application-preview', {
         };
     },
     methods: {
-        init () {
+        init (id) {
+            this.applicationId = id
             this.getApplicationDetail()
         },
         updateLoading (bool) {
