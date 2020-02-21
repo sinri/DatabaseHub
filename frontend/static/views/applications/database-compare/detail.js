@@ -22,9 +22,14 @@ const DetailDatabaseCompareApplicationPage = {
                 :label-width="160"
                 :model="detail.application.sql" 
             >
-                <form-item label="Database A:">{{ detail.application.database.databaseName }}</form-item>
-                <form-item label="Database B:">{{ detail.application.compare_database.databaseName }}</form-item>
-                <form-item label="Schema:">{{ detail.application.sql.schema }}</form-item>
+                <Row type="flex">
+                    <form-item label="Database A:">{{ detail.application.database.databaseName }}</form-item>
+                    <form-item label="Schema:">{{ detail.application.sql.main_database_schema }}</form-item>
+                </Row>
+                <Row type="flex">
+                    <form-item label="Database B:">{{ detail.application.compare_database.databaseName }}</form-item>    
+                    <form-item label="Schema:">{{ detail.application.sql.compare_database_schema }}</form-item>
+                </Row>
             </i-form>
             <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel">
                 <i-button type="success" v-if="detail.can_decide"

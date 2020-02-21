@@ -21,10 +21,15 @@ Vue.component('database-compare-application-preview', {
                 style="padding: 20px 10px 10px;background-color: rgb(247, 247, 249);"
                 :label-width="160"
                 :model="detail.application.sql" 
-            >
-                <form-item label="Database A:">{{ detail.application.database.databaseName }}</form-item>
-                <form-item label="Database B:">{{ detail.application.compare_database.databaseName }}</form-item>    
-                <form-item label="Schema:">{{ detail.application.sql.schema }}</form-item>
+            >   
+                <Row type="flex">
+                    <form-item label="Database A:">{{ detail.application.database.databaseName }}</form-item>
+                    <form-item label="Schema:">{{ detail.application.sql.main_database_schema }}</form-item>
+                </Row>
+                <Row type="flex">
+                    <form-item label="Database B:">{{ detail.application.compare_database.databaseName }}</form-item>    
+                    <form-item label="Schema:">{{ detail.application.sql.compare_database_schema }}</form-item>
+                </Row>
             </i-form>
             <div v-if="detail.application.status === 'DONE'">
                 <divider>result</divider>
