@@ -70,8 +70,9 @@ class DDCompare
      * @param $sqlA
      * @param $sqlB
      * @param int|string $columnIndex
+     * @param array $filter_rules
      */
-    protected function fetchShowResultAndCompare($targetName, $sqlA, $sqlB, $columnIndex = 1)
+    protected function fetchShowResultAndCompare($targetName, $sqlA, $sqlB, $columnIndex = 1, $filter_rules = [])
     {
         try {
             $strA = $this->workerEntityA->getCol($sqlA, $columnIndex);
@@ -98,7 +99,6 @@ class DDCompare
             $strA = $strA[0];
             $strB = $strB[0];
 
-            // PREPROCESS
             if ($this->ignoreTableAutoIncrement) {
                 $strA = preg_replace('/\s+AUTO_INCREMENT=\d+\s+/', ' ', $strA);
                 $strB = preg_replace('/\s+AUTO_INCREMENT=\d+\s+/', ' ', $strB);
@@ -115,6 +115,12 @@ class DDCompare
                 $strA = preg_replace('/\s+ROW_FORMAT=[\w]+/', '', $strA);
                 $strB = preg_replace('/\s+ROW_FORMAT=[\w]+/', '', $strB);
             }
+            if (!empty($filter_rules)) {
+                foreach ($filter_rules as $filter_rule) {
+                    $strA = preg_replace($filter_rule['A']['rule'], $filter_rule['A']['value'], $strA);
+                    $strB = preg_replace($filter_rule['B']['rule'], $filter_rule['B']['value'], $strB);
+                }
+            }
 
             $diff = MBDiff::compare($strA, $strB);
 
@@ -127,7 +133,7 @@ class DDCompare
             }
             if ($hasDifference) {
                 $this->result[] = "! DIFF of " . $targetName . ": ";
-                $this->result[] = PHP_EOL . MBDiff::toString($diff, PHP_EOL, $this->showSameLinesInDiffDetails);
+                $this->result[] = PHP_EOL . MBDiff::toString($diff, "\r\n", $this->showSameLinesInDiffDetails);
             } elseif ($this->showSameCompareResults) {
                 $this->result[] = "  About " . $targetName . ": SAME";
             }
@@ -188,7 +194,11 @@ class DDCompare
     {
         $sqlA = "show create table `{$databaseNameA}`.`{$tableName}`;";
         $sqlB = "show create table `{$databaseNameB}`.`{$tableName}`;";
-        $this->fetchShowResultAndCompare("Table {$tableName}", $sqlA, $sqlB);
+        $filter_rules = [[
+            'A' => ['rule' => '/`' . $databaseNameA . '`.`([a-zA-z0-9_-]+)`/', 'value' => '`${1}`'],
+            'B' => ['rule' => '/`' . $databaseNameB . '`.`([a-zA-z0-9_-]+)`/', 'value' => '`${1}`']
+            ]];
+        $this->fetchShowResultAndCompare("Table {$tableName}", $sqlA, $sqlB, 1, $filter_rules);
     }
 
     /**
