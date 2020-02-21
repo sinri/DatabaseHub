@@ -23,21 +23,21 @@ Vue.component('structure-export-application-preview', {
                 :label-width="160"
                 :model="detail.application.sql" 
             >
-                <form-item label="Schema">{{ detail.application.sql.schema }}</form-item>
+                <form-item label="Schema:">{{ detail.application.sql.schema }}</form-item>
 
-                <form-item label="Show Create Database">
+                <form-item label="Show Create Database:">
                     <i-switch disabled v-model="detail.application.sql.show_create_database" />
                 </form-item>
 
-                <form-item label="Drop If Exist">
+                <form-item label="Drop If Exist:">
                     <i-switch disabled v-model="detail.application.sql.drop_if_exist" />
                 </form-item>
 
-                <form-item label="Reset Auto Increment">
+                <form-item label="Reset Auto Increment:">
                     <i-switch disabled v-model="detail.application.sql.reset_auto_increment" />
                 </form-item>
 
-                <form-item label="TABLES" v-if="detail.application.sql.show_create_table.length > 0">
+                <form-item label="TABLES:" v-if="detail.application.sql.show_create_table.length > 0">
                     <template v-if="detail.application.sql.show_create_table === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_table.slice(0, 20)" :key="item">{{ item }}</Tag>
@@ -45,7 +45,7 @@ Vue.component('structure-export-application-preview', {
                     </template>
                 </form-item>
 
-                <form-item label="FUNCTIONS" v-if="detail.application.sql.show_create_function.length > 0">
+                <form-item label="FUNCTIONS:" v-if="detail.application.sql.show_create_function.length > 0">
                     <template v-if="detail.application.sql.show_create_function === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_function.slice(0, 20)" :key="item">{{ item }}</Tag>
@@ -53,7 +53,7 @@ Vue.component('structure-export-application-preview', {
                     </template>
                 </form-item>
 
-                <form-item label="PROCEDURES" v-if="detail.application.sql.show_create_procedure.length > 0">
+                <form-item label="PROCEDURES:" v-if="detail.application.sql.show_create_procedure.length > 0">
                     <template v-if="detail.application.sql.show_create_procedure === 'ALL'">ALL</template>
                     <template v-else>    
                         <Tag v-for="item in detail.application.sql.show_create_procedure.slice(0, 20)" :key="item">{{ item }}</Tag>
@@ -61,7 +61,7 @@ Vue.component('structure-export-application-preview', {
                     </template>
                 </form-item>
 
-                <form-item label="TRIGGERS" v-if="detail.application.sql.show_create_trigger.length > 0">
+                <form-item label="TRIGGERS:" v-if="detail.application.sql.show_create_trigger.length > 0">
                     <template v-if="detail.application.sql.show_create_trigger === 'ALL'">ALL</template>
                     <template v-else>
                         <Tag v-for="item in detail.application.sql.show_create_trigger.slice(0, 20)" :key="item">{{ item }}</Tag>
