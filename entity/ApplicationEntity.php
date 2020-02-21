@@ -474,8 +474,8 @@ class ApplicationEntity
         HubCore::getLogger()->info($this->sql);
         $conditions = json_decode($this->sql, true);
         $databaseA = DatabaseEntity::instanceById($this->database->databaseId);
-        $databaseB = DatabaseEntity::instanceById($conditions['compare_database_id']);
-        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabases($conditions['schema']);
+        $databaseB = $this->database->databaseId == $conditions['compare_database_id'] ? $databaseA : DatabaseEntity::instanceById($conditions['compare_database_id']);
+        $result = (new DDCompare($databaseA, 'A', $databaseB, 'B'))->quickCompareDatabase($conditions['main_database_schema'], $conditions['compare_database_schema']);
         $snapshot = "";
         foreach ($result as $item) {
             $snapshot .= $item . "\r\n";

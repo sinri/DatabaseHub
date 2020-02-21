@@ -94,9 +94,11 @@ class ApplicationController extends AbstractAuthController
             if (!array_key_exists('compare_database_id', $conditions)) {
                 throw new Exception('Params compare_database_id Not Find');
             }
-
-            if (!array_key_exists('schema', $conditions)) {
-                throw new Exception('Params schema Not Find');
+            if (!array_key_exists('main_database_schema', $conditions)) {
+                throw new Exception('Params main_database_schema Not Find');
+            }
+            if (!array_key_exists('compare_database_schema', $conditions)) {
+                throw new Exception('Params compare_database_schema Not Find');
             }
 
             return $data;

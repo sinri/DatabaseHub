@@ -67,13 +67,14 @@ class DDCompare
 
     /**
      * @param $targetName
-     * @param $sql
+     * @param $sqlA
+     * @param $sqlB
      * @param int|string $columnIndex
      */
-    protected function fetchShowResultAndCompare($targetName, $sql, $columnIndex = 1)
+    protected function fetchShowResultAndCompare($targetName, $sqlA, $sqlB, $columnIndex = 1)
     {
         try {
-            $strA = $this->workerEntityA->getCol($sql, $columnIndex);
+            $strA = $this->workerEntityA->getCol($sqlA, $columnIndex);
         } catch (Exception $exception) {
             $this->result[] = $this->nickNameA."  ".$exception->getMessage();
             $strA = [];
@@ -83,7 +84,7 @@ class DDCompare
             $this->result[] = "- " . ($this->nickNameA . " dos not contain {$targetName}.");
         }
         try {
-            $strB = $this->workerEntityB->getCol($sql, $columnIndex);
+            $strB = $this->workerEntityB->getCol($sqlB, $columnIndex);
         } catch (Exception $exception) {
             $this->result[] = $this->nickNameA."  ".$exception->getMessage();
             $strB = [];
@@ -148,13 +149,15 @@ class DDCompare
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @throws Exception
      */
-    public function compareDatabaseDDL($databaseName)
+    public function compareDatabaseDDL($databaseNameA, $databaseNameB)
     {
-        $sql = "show create database `" . $databaseName . "`;";
-        $this->fetchShowResultAndCompare("Database [{$databaseName}]", $sql);
+        $sqlA = "show create database `" . $databaseNameA . "`;";
+        $sqlB = "show create database `" . $databaseNameB . "`;";
+        $this->fetchShowResultAndCompare("Database", $sqlA, $sqlB);
     }
 
     /**
@@ -171,45 +174,49 @@ class DDCompare
             return;
         }
         foreach ($databaseNames as $databaseName) {
-            $this->compareDatabaseDDL($databaseName);
+            $this->compareDatabaseDDL($databaseName, $databaseName);
         }
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param $tableName
      * @throws Exception
      */
-    public function compareTableDDL($databaseName, $tableName)
+    public function compareTableDDL($databaseNameA, $databaseNameB, $tableName)
     {
-        $sql = "show create table `{$databaseName}`.`{$tableName}`;";
-        $this->fetchShowResultAndCompare("Table {$databaseName}.{$tableName}", $sql);
+        $sqlA = "show create table `{$databaseNameA}`.`{$tableName}`;";
+        $sqlB = "show create table `{$databaseNameB}`.`{$tableName}`;";
+        $this->fetchShowResultAndCompare("Table {$tableName}", $sqlA, $sqlB);
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param null $tableNames
      * @throws Exception
      */
-    public function compareTablesDDL($databaseName, $tableNames = null)
+    public function compareTablesDDL($databaseNameA, $databaseNameB, $tableNames = null)
     {
         if ($tableNames === null) {
-            $sql = "show tables in `{$databaseName}`;";
             try {
+                $sql = "show tables in `{$databaseNameA}`;";
                 $tableNamesA = $this->workerEntityA->getCol($sql, 0);
             } catch (Exception $exception) {
                 $tableNamesA = [];
             }
             if (empty($tableNamesA)) {
-                $this->result[] = "- " . $this->nickNameA . " does not contain tables in Database {$databaseName}.";
+                $this->result[] = "- " . $this->nickNameA . " does not contain tables in Database {$databaseNameA}.";
             }
             try {
+                $sql = "show tables in `{$databaseNameB}`;";
                 $tableNamesB = $this->workerEntityB->getCol($sql, 0);
             } catch (Exception $exception) {
                 $tableNamesB = [];
             }
             if (empty($tableNamesB)) {
-                $this->result[] = "+ " . $this->nickNameB . " does not contain tables in Database {$databaseName}.";
+                $this->result[] = "+ " . $this->nickNameB . " does not contain tables in Database {$databaseNameB}.";
             }
 
             $tableNames = array_merge($tableNamesA, $tableNamesB);
@@ -222,48 +229,50 @@ class DDCompare
         }
 
         foreach ($tableNames as $tableName) {
-            $this->compareTableDDL($databaseName, $tableName);
+            $this->compareTableDDL($databaseNameA, $databaseNameB, $tableName);
         }
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param $functionName
      * @throws Exception
      */
-    public function compareFunctionDDL($databaseName, $functionName)
+    public function compareFunctionDDL($databaseNameA, $databaseNameB, $functionName)
     {
-        $sql = "show create function `{$databaseName}`.`{$functionName}`;";
-
-        $this->fetchShowResultAndCompare("Function {$databaseName}.{$functionName}", $sql, 2);
+        $sqlA = "show create function `{$databaseNameA}`.`{$functionName}`;";
+        $sqlB = "show create function `{$databaseNameB}`.`{$functionName}`;";
+        $this->fetchShowResultAndCompare("Function {$functionName}", $sqlA, $sqlB, 2);
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param null $functionNames
      * @throws Exception
      */
-    public function compareFunctionsDDL($databaseName, $functionNames = null)
+    public function compareFunctionsDDL($databaseNameA, $databaseNameB, $functionNames = null)
     {
         if ($functionNames === null) {
-            $sql = "SHOW FUNCTION STATUS where db='{$databaseName}';";
-
             try {
+                $sql = "SHOW FUNCTION STATUS where db='{$databaseNameA}';";
                 $functionsA = $this->workerEntityA->getCol($sql, 'name');
             } catch (Exception $exception) {
                 $functionsA = [];
             }
             if (empty($functionsA)) {
-                $this->result[] = "- " . $this->nickNameA . " does not contain functions in Database {$databaseName}.";
+                $this->result[] = "- " . $this->nickNameA . " does not contain functions in Database {$databaseNameA}.";
             }
 
             try {
+                $sql = "SHOW FUNCTION STATUS where db='{$databaseNameB}';";
                 $functionsB = $this->workerEntityB->getCol($sql, 'name');
             } catch (Exception $exception) {
                 $functionsB = [];
             }
             if (empty($functionsB)) {
-                $this->result[] = "+ " . $this->nickNameB . " does not contain functions in Database {$databaseName}.";
+                $this->result[] = "+ " . $this->nickNameB . " does not contain functions in Database {$databaseNameB}.";
             }
 
             $functionNames = array_merge($functionsA, $functionsB);
@@ -276,47 +285,50 @@ class DDCompare
         }
 
         foreach ($functionNames as $functionName) {
-            $this->compareFunctionDDL($databaseName, $functionName);
+            $this->compareFunctionDDL($databaseNameA, $databaseNameB, $functionName);
         }
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param $procedureName
      * @throws Exception
      */
-    public function compareProcedureDDL($databaseName, $procedureName)
+    public function compareProcedureDDL($databaseNameA, $databaseNameB, $procedureName)
     {
-        $sql = "show create procedure `{$databaseName}`.`{$procedureName}`;";
-        $this->fetchShowResultAndCompare("Procedure {$databaseName}.{$procedureName}", $sql, 2);
+        $sqlA = "show create procedure `{$databaseNameA}`.`{$procedureName}`;";
+        $sqlB = "show create procedure `{$databaseNameB}`.`{$procedureName}`;";
+        $this->fetchShowResultAndCompare("Procedure {$procedureName}", $sqlA, $sqlB, 2);
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param null $procedureNames
      * @throws Exception
      */
-    public function compareProceduresDDL($databaseName, $procedureNames = null)
+    public function compareProceduresDDL($databaseNameA, $databaseNameB, $procedureNames = null)
     {
         if ($procedureNames === null) {
-            $sql = "SHOW PROCEDURE STATUS where db='{$databaseName}';";
-
             try {
+                $sql = "SHOW PROCEDURE STATUS where db='{$databaseNameA}';";
                 $functionsA = $this->workerEntityA->getCol($sql, 'name');
             } catch (Exception $exception) {
                 $functionsA = [];
             }
             if (empty($functionsA)) {
-                $this->result[] = "- " . $this->nickNameA . " does not contain procedures in Database {$databaseName}.";
+                $this->result[] = "- " . $this->nickNameA . " does not contain procedures in Database {$databaseNameA}.";
             }
 
             try {
+                $sql = "SHOW PROCEDURE STATUS where db='{$databaseNameB}';";
                 $functionsB = $this->workerEntityB->getCol($sql, 'name');
             } catch (Exception $exception) {
                 $functionsB = [];
             }
             if (empty($functionsB)) {
-                $this->result[] = "+ " . $this->nickNameB . " does not contain procedures in Database {$databaseName}.";
+                $this->result[] = "+ " . $this->nickNameB . " does not contain procedures in Database {$databaseNameB}.";
             }
 
             $procedureNames = array_merge($functionsA, $functionsB);
@@ -329,46 +341,50 @@ class DDCompare
         }
 
         foreach ($procedureNames as $functionName) {
-            $this->compareProcedureDDL($databaseName, $functionName);
+            $this->compareProcedureDDL($databaseNameA, $databaseNameB, $functionName);
         }
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param $triggerName
      * @throws Exception
      */
-    public function compareTriggerDDL($databaseName, $triggerName)
+    public function compareTriggerDDL($databaseNameA, $databaseNameB, $triggerName)
     {
-        $sql = "show create trigger `{$databaseName}`.`{$triggerName}`;";
-        $this->fetchShowResultAndCompare("Trigger {$databaseName}.{$triggerName}", $sql, 2);
+        $sqlA = "show create trigger `{$databaseNameA}`.`{$triggerName}`;";
+        $sqlB = "show create trigger `{$databaseNameB}`.`{$triggerName}`;";
+        $this->fetchShowResultAndCompare("Trigger {$triggerName}", $sqlA, $sqlB, 2);
     }
 
     /**
-     * @param $databaseName
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @param null $triggerNames
      * @throws Exception
      */
-    public function compareTriggersDDL($databaseName, $triggerNames = null)
+    public function compareTriggersDDL($databaseNameA, $databaseNameB, $triggerNames = null)
     {
         if ($triggerNames === null) {
-            $sql = "SHOW TRIGGERS IN {$databaseName};";
             try {
+                $sql = "SHOW TRIGGERS IN {$databaseNameA};";
                 $functionsA = $this->workerEntityA->getCol($sql, 'Trigger');
             } catch (Exception $exception) {
                 $functionsA = [];
             }
             if (empty($functionsA)) {
-                $this->result[] = "- " . $this->nickNameA . " does not contain triggers in Database {$databaseName}.";
+                $this->result[] = "- " . $this->nickNameA . " does not contain triggers in Database {$databaseNameA}.";
             }
 
             try {
+                $sql = "SHOW TRIGGERS IN {$databaseNameB};";
                 $functionsB = $this->workerEntityB->getCol($sql, 'Trigger');
             } catch (Exception $exception) {
                 $functionsB = [];
             }
             if (empty($functionsB)) {
-                $this->result[] = "+ " . $this->nickNameB . " does not contain triggers in Database {$databaseName}.";
+                $this->result[] = "+ " . $this->nickNameB . " does not contain triggers in Database {$databaseNameB}.";
             }
 
             $triggerNames = array_merge($functionsA, $functionsB);
@@ -380,7 +396,7 @@ class DDCompare
             return;
         }
         foreach ($triggerNames as $triggerName) {
-            $this->compareTriggerDDL($databaseName, $triggerName);
+            $this->compareTriggerDDL($databaseNameA, $databaseNameB, $triggerName);
         }
     }
 
@@ -396,32 +412,28 @@ class DDCompare
                 continue;
             }
 
-            $this->compareDatabaseDDL($databaseName);
-            $this->compareTablesDDL($databaseName);
-            $this->compareFunctionsDDL($databaseName);
-            $this->compareProceduresDDL($databaseName);
-            $this->compareTriggersDDL($databaseName);
+            $this->compareDatabaseDDL($databaseName, $databaseName);
+            $this->compareTablesDDL($databaseName, $databaseName);
+            $this->compareFunctionsDDL($databaseName, $databaseName);
+            $this->compareProceduresDDL($databaseName, $databaseName);
+            $this->compareTriggersDDL($databaseName, $databaseName);
         }
         return $this->result;
     }
 
     /**
-     * @param $databaseNames
+     * @param $databaseNameA
+     * @param $databaseNameB
      * @return string[]
      * @throws Exception
      */
-    public function quickCompareDatabases($databaseNames)
+    public function quickCompareDatabase($databaseNameA, $databaseNameB)
     {
-        if (!is_array($databaseNames)) {
-            $databaseNames = [$databaseNames];
-        }
-        foreach ($databaseNames as $databaseName) {
-            $this->compareDatabaseDDL($databaseName);
-            $this->compareTablesDDL($databaseName);
-            $this->compareFunctionsDDL($databaseName);
-            $this->compareProceduresDDL($databaseName);
-            $this->compareTriggersDDL($databaseName);
-        }
+       // $this->compareDatabaseDDL($databaseNameA, $databaseNameB);
+        $this->compareTablesDDL($databaseNameA, $databaseNameB);
+        $this->compareFunctionsDDL($databaseNameA, $databaseNameB);
+        $this->compareProceduresDDL($databaseNameA, $databaseNameB);
+        $this->compareTriggersDDL($databaseNameA, $databaseNameB);
         return $this->result;
     }
 

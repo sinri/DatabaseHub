@@ -36,7 +36,7 @@ class DatabasePDOEntity implements DatabaseWorkerEntity
         ];
 
         if ($database->engine === DatabaseModel::ENGINE_ALIYUN_ADB) {
-            $dict[ArkPDOConfig::CONFIG_DATABASE] = $database->databaseName;
+           // $dict[ArkPDOConfig::CONFIG_DATABASE] = $database->databaseName;
             $dict[ArkPDOConfig::CONFIG_OPTIONS] = [];
         }
         HubCore::getLogger()->debug(__METHOD__ . '@' . __LINE__, ['dict' => $dict]);
