@@ -178,12 +178,21 @@ class ApplicationEntity
         return (array)$this;
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getDetail()
     {
         $detail = $this->getAbstractForList();
         $detail['preview_table'] = $this->getExportedContentPreview();
         $detail['history'] = $this->getRecords();
         $detail['result_file'] = $this->getExportedFileInfo();
+        if ($this->type === ApplicationModel::TYPE_DATABASE_COMPARE) {
+            $conditions = json_decode($this->sql, true);
+            $detail['compare_database'] = DatabaseEntity::instanceById($conditions['compare_database_id']);
+        }
+
         return $detail;
     }
 
