@@ -440,6 +440,10 @@ class DDCompare
     public function quickCompareDatabase($databaseNameA, $databaseNameB)
     {
        // $this->compareDatabaseDDL($databaseNameA, $databaseNameB);
+        $this->result[] = 'Compare Date:' . date('Y-m-d');
+        $this->result[] = 'A: ' . $this->databaseA->databaseName . '.' . $databaseNameA;
+        $this->result[] = 'B: ' . $this->databaseB->databaseName . '.' . $databaseNameB;
+        $this->result[] = '';
         $this->compareTablesDDL($databaseNameA, $databaseNameB);
         $this->compareFunctionsDDL($databaseNameA, $databaseNameB);
         $this->compareProceduresDDL($databaseNameA, $databaseNameB);
