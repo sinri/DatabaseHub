@@ -25,7 +25,7 @@ Vue.component('top-banner', {
                         :key="item.name"
                         :name="item.name"
                         :style="item.style"
-                        @click="refreshQueueDaemonStatus"
+                        @click.native="refreshQueueDaemonStatus"
                     >
                         Daemon:
                         <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
