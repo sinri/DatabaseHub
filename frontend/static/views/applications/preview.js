@@ -129,16 +129,16 @@ Vue.component('application-preview', {
     methods: {
         init (id) {
             this.applicationId = id
-            this.getApplicationDetail()
+            this.getApplicationDetail(id)
         },
         updateLoading (bool) {
             this.isLoading = bool;
         },
-        getApplicationDetail () {
+        getApplicationDetail (application_id) {
             this.updateLoading(true);
 
             ajax('getApplicationDetail', {
-                application_id: this.applicationId
+                application_id
             }).then((res) => {
                 res.application.history = res.application.history.map((item) => {
                     const user = this.allUserMap[item.actUser];
@@ -149,7 +149,7 @@ Vue.component('application-preview', {
                 });
 
                 this.detail = res
-            }).catch(({message}) => {
+            }).catch(({ message }) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             }).finally(() => {
                 this.updateLoading(false);
@@ -161,8 +161,8 @@ Vue.component('application-preview', {
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Approve Application Success!', 2);
                 this.$emit('update')
-                this.getApplicationDetail();
-            }).catch(({message}) => {
+                this.getApplicationDetail(this.applicationId);
+            }).catch(({ message }) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
@@ -172,8 +172,8 @@ Vue.component('application-preview', {
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Cancel Application Success!', 2);
                 this.$emit('update')
-                this.getApplicationDetail();
-            }).catch(({message}) => {
+                this.getApplicationDetail(this.applicationId);
+            }).catch(({ message }) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
@@ -184,8 +184,8 @@ Vue.component('application-preview', {
             }).then(() => {
                 SinriQF.iview.showSuccessMessage('Deny Application Success!', 2);
                 this.$emit('update')
-                this.getApplicationDetail();
-            }).catch(({message}) => {
+                this.getApplicationDetail(this.applicationId);
+            }).catch(({ message }) => {
                 SinriQF.iview.showErrorMessage(message, 5);
             });
         },
