@@ -25,16 +25,15 @@ Vue.component('top-banner', {
                         :key="item.name"
                         :name="item.name"
                         :style="item.style"
+                        @click="refreshQueueDaemonStatus"
                     >
-                        <!--<Tooltip :content="queue_status_tooltip" max-width="400">-->
-                            Daemon:
-                            <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
-                            <Icon type="ios-done-all" v-if="queue_status==='active' && queue_worker_count==0"></Icon>
-                            <Icon type="ios-eye" v-if="queue_status==='active' && queue_worker_count>0"></Icon>
-                            <Icon type="ios-loading" v-if="queue_status==='unknown'"></Icon>
-                            <span style="width: 60px;display: inline-block;">{{ queue_status }}</span>
-                            <span style="width: 80px;display: inline-block;">{{queue_worker_count}} workers</span>
-                        <!--</Tooltip>-->
+                        Daemon:
+                        <Icon type="ios-warning" v-if="queue_status==='inactive'"></Icon>
+                        <Icon type="ios-done-all" v-if="queue_status==='active' && queue_worker_count==0"></Icon>
+                        <Icon type="ios-eye" v-if="queue_status==='active' && queue_worker_count>0"></Icon>
+                        <Icon type="ios-loading" v-if="queue_status==='unknown'"></Icon>
+                        <span style="width: 60px;display: inline-block;">{{ queue_status }}</span>
+                        <span style="width: 80px;display: inline-block;">{{queue_worker_count}} workers</span>
                     </menu-item>
                 </template>
                 <template v-else>
@@ -49,7 +48,7 @@ Vue.component('top-banner', {
             </template>
         </i-menu>
     `,
-    data() {
+    data () {
         return {
             activeMenuName: 'DatabaseHub',
             menuItems: [
@@ -158,15 +157,15 @@ Vue.component('top-banner', {
         };
     },
     computed: {
-        isAdmin() {
+        isAdmin () {
             return JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).userType === 'ADMIN'
         },
-        isKiller() {
+        isKiller () {
             return !!(JSON.parse(SinriQF.cookies.getCookie('DatabaseHubUser')).asKiller)
         }
     },
     methods: {
-        onMenuItemSelected(name) {
+        onMenuItemSelected (name) {
             this.activeMenuName = name;
 
             switch (name) {
@@ -177,7 +176,7 @@ Vue.component('top-banner', {
 
                     break;
                 case 'quickQueryPage':
-                    const {href} = router.resolve({name});
+                    const { href } = router.resolve({ name });
 
                     window.open(href, '_blank');
 
@@ -185,28 +184,28 @@ Vue.component('top-banner', {
                 case 'daemon-status':
                     break;
                 default:
-                    router.push({name});
+                    router.push({ name });
             }
         },
-        updateActiveMenuName(to) {
+        updateActiveMenuName (to) {
             this.activeMenuName = to.name
         },
-        refreshQueueDaemonStatus: function () {
-            this.queue_status_tooltip = "Loading";
-            ajax("checkWorkerStatus", {type: 'status'}).then(({status, worker_count, output}) => {
-                console.log("output", output);
+        refreshQueueDaemonStatus () {
+            this.queue_status_tooltip = 'Loading';
+            ajax('checkWorkerStatus', { type: 'status' }).then(({ status, worker_count, output }) => {
+                console.log('output', output);
                 this.queue_status = status;
                 this.queue_worker_count = worker_count;
                 this.queue_status_refresh_time = (new Date());
-                this.queue_status_tooltip = "Updated: " + this.queue_status_refresh_time;
+                this.queue_status_tooltip = 'Updated: ' + this.queue_status_refresh_time;
                 if (output && output.length > 0) {
-                    this.queue_status_tooltip += "\n" + output.join("\n")
+                    this.queue_status_tooltip += '\n' + output.join('\n')
                 }
-            }).catch(({message}) => {
+            }).catch(({ message }) => {
                 //SinriQF.iview.showErrorMessage(message, 5);
-                this.queue_status = "unknown";
+                this.queue_status = 'unknown';
                 this.queue_worker_count = '?';
-                this.queue_status_tooltip = "Load Error: " + message;
+                this.queue_status_tooltip = 'Load Error: ' + message;
             });
         }
     },
@@ -217,9 +216,6 @@ Vue.component('top-banner', {
         }
     },
     mounted: function () {
-        this.refreshQueueDaemonStatus();
-        setInterval(() => {
-            this.refreshQueueDaemonStatus();
-        }, 10000);
+        this.refreshQueueDaemonStatus()
     }
 });
