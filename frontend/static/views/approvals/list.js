@@ -246,11 +246,13 @@ const ApprovalListPage = {
             });
         },
         previewApplication (item) {
+            console.log('here is approval-list::previewApplication initialization', item)
+
             this.previewer.applicationId = item.applicationId;
             this.previewer.drawerVisible = true;
 
             this.$nextTick(() => {
-                this.$refs.applicationDetail.init()
+                this.$refs.applicationDetail.init(item.applicationId)
             })
         },
         getAllUserList () {
