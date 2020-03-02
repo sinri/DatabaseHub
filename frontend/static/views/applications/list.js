@@ -299,12 +299,14 @@ const ApplicationListPage = {
             window.open(href, '_blank');
         },
         previewApplication (item) {
+            console.log('here is list::previewApplication initialization', item)
+
             let ref = ''
 
             switch (item.type) {
                 case 'EXPORT_STRUCTURE':
                     ref = 'EXPORT_STRUCTURE_'
-        
+
                     break
                 case 'DATABASE_COMPARE':
                     ref = 'DATABASE_COMPARE_'
@@ -318,6 +320,7 @@ const ApplicationListPage = {
             this.previewer.drawerVisible = true
 
             this.$nextTick(() => {
+                console.log('here list::previewApplication ref', `${ref}applicationDetail`, 'init with', item.applicationId)
                 this.$refs[`${ref}applicationDetail`].init(item.applicationId)
             })
         },

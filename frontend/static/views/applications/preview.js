@@ -128,6 +128,7 @@ Vue.component('application-preview', {
     },
     methods: {
         init (id) {
+            console.log('application preview init with id', id)
             this.applicationId = id
             this.getApplicationDetail(id)
         },
