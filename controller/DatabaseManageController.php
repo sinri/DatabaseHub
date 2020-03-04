@@ -11,6 +11,7 @@ namespace sinri\databasehub\controller;
 
 use Exception;
 use sinri\databasehub\core\AbstractAuthController;
+use sinri\databasehub\core\HubCore;
 use sinri\databasehub\entity\AccountEntity;
 use sinri\databasehub\entity\DatabaseEntity;
 use sinri\databasehub\model\AccountModel;
@@ -53,9 +54,10 @@ class DatabaseManageController extends AbstractAuthController
         $database_info = $this->parseAndCheckDatabaseInfo($database_info);
         $database_id = (new DatabaseModel())->insert($database_info);
         if (empty($database_id)) {
-            throw new Exception("Cannot add database item.");
+            throw new Exception("Cannot add database item. " . json_encode($database_id) . " -> PDO: " . HubCore::getDB()->getPDOErrorDescription());
         }
         $this->_sayOK(['database_id' => $database_id]);
+
     }
 
     /**
