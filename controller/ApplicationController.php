@@ -511,7 +511,11 @@ class ApplicationController extends AbstractAuthController
         if (!empty($http_refer)) {
             $url_parser = parse_url($http_refer);
             if (isset($url_parser['scheme']) && isset($url_parser['host']) && isset($url_parser['path'])) {
-                if ($url_parser['scheme'] == 'https' and in_array($url_parser['host'], ['database-hub-test.leqee.com','databasehub.leqee.com'])) {
+                if ($url_parser['scheme'] == 'https' and in_array($url_parser['host'], [
+                        'database-hub-test.leqee.com',
+                        'databasehub.leqee.com',
+                        'databasehub.guanyc.cn',
+                    ])) {
                     if (empty($path) || (!empty($path) && $path == $url_parser['path'])) {
                         return true;
                     }
