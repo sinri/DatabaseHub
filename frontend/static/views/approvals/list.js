@@ -49,9 +49,15 @@ const ApprovalListPage = {
             
             <drawer width="700" :styles="{padding: 0}" :closable="false"
                 v-model="previewer.drawerVisible">
+                <structure-export-application-preview ref="EXPORT_STRUCTURE_applicationDetail"
+                    @update="onSearch"
+                    v-if="previewer.type === 'EXPORT_STRUCTURE'" />
+                <database-compare-application-preview ref="DATABASE_COMPARE_applicationDetail"
+                    @update="onSearch"
+                    v-else-if="previewer.type === 'DATABASE_COMPARE'" />
                 <application-preview ref="applicationDetail"
-                    :application-id="previewer.applicationId"
-                    @update="search"></application-preview>
+                    @update="onSearch"
+                    v-else />
             </drawer>
             
             <div style="text-align: right" slot="pagination">
@@ -227,9 +233,24 @@ const ApprovalListPage = {
                 this.setLoading(false);
             });
         },
-        goDetailApplication ({applicationId}) {
+        goDetailApplication ({type, applicationId}) {
+            let name = ''
+
+             switch (type) {
+                case 'EXPORT_STRUCTURE':
+                    name = 'detailStructureExportApplicationPage'
+        
+                    break
+                case 'DATABASE_COMPARE':
+                    name = 'detailDatabaseCompareApplicationPage'
+
+                    break
+                default:
+                    name = 'detailApplicationPage'
+            }
+
             const {href} = router.resolve({
-                name: 'detailApplicationPage',
+                name,
                 query: {
                     applicationId
                 }
@@ -246,13 +267,29 @@ const ApprovalListPage = {
             });
         },
         previewApplication (item) {
-            console.log('here is approval-list::previewApplication initialization', item)
+            console.log('here is list::previewApplication initialization', item)
 
-            this.previewer.applicationId = item.applicationId;
-            this.previewer.drawerVisible = true;
+            let ref = ''
+
+            switch (item.type) {
+                case 'EXPORT_STRUCTURE':
+                    ref = 'EXPORT_STRUCTURE_'
+
+                    break
+                case 'DATABASE_COMPARE':
+                    ref = 'DATABASE_COMPARE_'
+
+                    break
+                default:
+                    ref = ''
+            }
+
+            this.previewer.type = item.type
+            this.previewer.drawerVisible = true
 
             this.$nextTick(() => {
-                this.$refs.applicationDetail.init(item.applicationId)
+                console.log('here list::previewApplication ref', `${ref}applicationDetail`, 'init with', item.applicationId)
+                this.$refs[`${ref}applicationDetail`].init(item.applicationId)
             })
         },
         getAllUserList () {
