@@ -22,6 +22,21 @@ const DetailApplicationPage = {
             <codemirror style="font-size: 14px;"
                         :options="codeMirrorOptions"
                         v-model="detail.application.sql"></codemirror>
+            <template v-if="detail.can_decide">
+                <template v-if="detail.application.type === 'READ'">
+                    <Alert show-icon type="warning" style="margin-top: 20px;" v-if="containsWords.length > 0">
+                        此 SQL 导出申请存在敏感字段
+                        <Tag color="warning" v-for="word in containsWords" :key="word" style="height: inherit;line-height: inherit;margin: 0 4px 0 0;">{{ word }}</Tag>
+                        ，请注意检查
+                    </Alert>
+                </template>
+                <template v-if="detail.application.type === 'MODIFY'">
+                    <Alert show-icon type="warning" style="margin-top: 20px;" v-if="missesWords.length > 0">
+                        请注意SQL更新语句的条件，缺失
+                        <Tag color="warning" v-for="word in missesWords" :key="word" style="height: inherit;line-height: inherit;margin: 0 4px 0 0;">{{ word }}</Tag>
+                    </Alert>
+                </template>
+            </template>
             <div style="margin: 10px 0;padding: 5px;text-align: right" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
                 <i-button type="success" v-if="detail.can_decide"
                     @click="approveApplication">Approve</i-button>
@@ -47,9 +62,6 @@ const DetailApplicationPage = {
             </div>
             <div slot="footer" >
                 <h2>History</h2>
-                <!--<native-table-->
-                    <!--:columns="historyTableColumns"-->
-                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
                 <application-history :history="detail.application.history"></application-history>
             </div> 
         </layout-drawer>
@@ -109,6 +121,42 @@ const DetailApplicationPage = {
             }
 
             return columns;
+        },
+        containsWords () {
+            const {sql = ''} = this.detail.application
+            const words = [
+                'receiver_address',
+                'receiver_mobile',
+                'receiver_name',
+                'receiver_street',
+                'receiver_district',
+                'receiver_city',
+                'receiver_province',
+                'shipping_address',
+                'district_name',
+                'mobile_number',
+                'receive_name',
+                '\\*'
+            ]
+            const containsWords = words.filter(word => {
+                const reg = new RegExp(`(?<!\\w)(${word})(?!\\w)`, 'i')
+
+                return reg.test(sql)
+            })
+
+            return containsWords.map(word => word === '\\*' ? '*' : word)
+        },
+        missesWords () {
+            const {sql = ''} = this.detail.application
+            const words = [
+                'WHERE'
+            ]
+
+            return words.filter(word => {
+                const reg = new RegExp(`(?<!\\w)(${word})(?!\\w)`, 'i')
+
+                return !reg.test(sql)
+            })
         }
     },
     methods: {

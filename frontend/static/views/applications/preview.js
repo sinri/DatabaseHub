@@ -37,36 +37,39 @@ Vue.component('application-preview', {
             </div>
             <div>
                 <h2>History</h2>
-                <!--<native-table-->
-                    <!--:columns="historyTableColumns"-->
-                    <!--:data="detail.application.history.slice(0, 100)"></native-table>-->
                 <application-history :history="detail.application.history"></application-history>
             </div>
-            <!--<div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">-->
-                <!--<i-button type="success" v-if="detail.can_decide"-->
-                    <!--@click="approveApplication">Approve</i-button>-->
-                <!--<i-button type="error" v-if="detail.can_decide" -->
-                    <!--@click="denyApplication">Deny</i-button>-->
-                <!--<i-button type="warn" v-if="detail.can_cancel"-->
-                    <!--@click="cancelApplication">Cancel</i-button>-->
-                <!--<i-button type="info" v-if="detail.can_edit"-->
-                    <!--@click="goEditApplicationPage">Edit</i-button>-->
-            <!--</div> -->
-            <Row slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit"
-                type="flex" justify="space-around" class="code-row-bg">
-                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
-                    <i-button type="success" @click="approveApplication">Approve</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_edit" style="text-align: center;">
-                    <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
-                    <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
-                </Col>
-                <Col span="5" v-if="detail.can_decide" style="text-align: center;">
-                    <i-button type="error"  @click="denyApplication">Deny</i-button>
-                </Col>
-            </Row>
+            <div slot="footer" v-if="detail.can_decide || detail.can_cancel || detail.can_edit">
+                <template v-if="detail.can_decide">
+                    <template v-if="detail.application.type === 'READ'">
+                        <Alert show-icon type="warning" style="margin-bottom: 10px;" v-if="containsWords.length > 0">
+                            此 SQL 导出申请存在敏感字段
+                            <Tag color="warning" v-for="word in containsWords" :key="word" style="height: inherit;line-height: inherit;margin: 0 4px 0 0;">{{ word }}</Tag>
+                            ，请注意检查
+                        </Alert>
+                    </template>
+                    <template v-if="detail.application.type === 'MODIFY'">
+                        <Alert show-icon type="warning" style="margin-bottom: 10px;" v-if="missesWords.length > 0">
+                            请注意SQL更新语句的条件，缺失
+                            <Tag color="warning" v-for="word in missesWords" :key="word" style="height: inherit;line-height: inherit;margin: 0 4px 0 0;">{{ word }}</Tag>
+                        </Alert>
+                    </template>
+                </template>
+                <Row ype="flex" justify="space-around" class="code-row-bg">
+                    <Col span="5" v-if="detail.can_decide" style="text-align: center;">
+                        <i-button type="success" @click="approveApplication">Approve</i-button>
+                    </Col>
+                    <Col span="5" v-if="detail.can_edit" style="text-align: center;">
+                        <i-button type="info"  @click="goEditApplicationPage">Edit</i-button>
+                    </Col>
+                    <Col span="5" v-if="detail.can_cancel" style="text-align: center;">
+                        <i-button type="warn"  @click="cancelApplication">Cancel</i-button>
+                    </Col>
+                    <Col span="5" v-if="detail.can_decide" style="text-align: center;">
+                        <i-button type="error"  @click="denyApplication">Deny</i-button>
+                    </Col>
+                </Row>
+            </div>
         </layout-drawer>
     `,
     data () {
@@ -124,6 +127,42 @@ Vue.component('application-preview', {
             }
 
             return columns;
+        },
+        containsWords () {
+            const {sql = ''} = this.detail.application
+            const words = [
+                'receiver_address',
+                'receiver_mobile',
+                'receiver_name',
+                'receiver_street',
+                'receiver_district',
+                'receiver_city',
+                'receiver_province',
+                'shipping_address',
+                'district_name',
+                'mobile_number',
+                'receive_name',
+                '\\*'
+            ]
+            const containsWords = words.filter(word => {
+                const reg = new RegExp(`(?<!\\w)(${word})(?!\\w)`, 'i')
+
+                return reg.test(sql)
+            })
+
+            return containsWords.map(word => word === '\\*' ? '*' : word)
+        },
+        missesWords () {
+            const {sql = ''} = this.detail.application
+            const words = [
+                'WHERE'
+            ]
+
+            return words.filter(word => {
+                const reg = new RegExp(`(?<!\\w)(${word})(?!\\w)`, 'i')
+
+                return !reg.test(sql)
+            })
         }
     },
     methods: {
