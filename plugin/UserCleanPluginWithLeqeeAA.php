@@ -13,6 +13,7 @@ class UserCleanPluginWithLeqeeAA extends UserCleanPlugin
 
     public function cleanUsers()
     {
+        // TODO Scan AA table is not a good idea, AA TP API needed
         $sql = "SELECT du.`user_id` ,du.`username` ,du.`realname` 
             FROM `databasehub`.`user` du
             inner join `account_auth`.`aa_user` au on du.`username` =au.`user_name` 
