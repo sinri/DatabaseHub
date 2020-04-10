@@ -27,6 +27,7 @@ $config = [
     ],
     "plugins" => [
         "login" => "LoginPluginStandalone",
+        //'user_clean'=>'UserCleanPluginWithLeqeeAA',
     ],
     "queue" => [
         "max_worker" => 5,
