@@ -42,7 +42,7 @@ class DatabaseMySQLiEntity implements DatabaseWorkerEntity
             ArkMySQLiConfig::CONFIG_HOST => $database->host,
             ArkMySQLiConfig::CONFIG_PORT => $database->port,
             ArkMySQLiConfig::CONFIG_USERNAME => $account->username,
-            ArkMySQLiConfig::CONFIG_PASSWORD => $account->getPassword(),
+            ArkMySQLiConfig::CONFIG_PASSWORD => ($account ? $account->getPassword() : null),
             //ArkMySQLiConfig::CONFIG_DATABASE => "",
             //ArkMySQLiConfig::CONFIG_CHARSET => "",
         ]);
