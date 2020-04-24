@@ -19,4 +19,11 @@ class BatchApplicationMappingModel extends ArkDatabaseTableModel
     {
         return HubCore::getDB();
     }
+
+    public function getMappedSubApplicationIdList($batch_application_id)
+    {
+        $rows = $this->selectRows(['batch_id' => $batch_application_id]);
+        if (empty($rows)) return [];
+        return array_column($rows, 'application_id');
+    }
 }

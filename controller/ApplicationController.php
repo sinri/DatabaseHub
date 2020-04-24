@@ -305,6 +305,21 @@ class ApplicationController extends AbstractAuthController
     /**
      * @throws Exception
      */
+    public function batchCancel()
+    {
+        $batch_application_id = $this->_readIndispensableRequest('batch_application_id', '/^\d+$/');
+        $sub_application_id_list = (new BatchApplicationMappingModel())->getMappedSubApplicationIdList($batch_application_id);
+        $afx = (new ApplicationModel())->update([
+            'application_id' => $sub_application_id_list,
+            'status' => ApplicationModel::STATUS_APPLIED,
+            'apply_user' => $this->session->user->userId,
+        ], ['status' => ApplicationModel::STATUS_CANCELLED,]);
+        $this->_sayOK(['afx' => $afx]);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function cancel()
     {
         $application_id = $this->_readRequest('application_id', '', '/^\d+$/');
@@ -323,6 +338,56 @@ class ApplicationController extends AbstractAuthController
         $applicationEntity->writeRecord($this->session->user->userId, "CANCEL", "");
 
         $this->_sayOK(['afx' => $afx]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function batchDeny()
+    {
+        $reason = $this->_readRequest("reason", 'Who knows?');
+        $batch_application_id = $this->_readIndispensableRequest('batch_application_id', '/^\d+$/');
+
+        $applicationEntity = ApplicationEntity::instanceById($batch_application_id);
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+            $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+            $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+            if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                throw new Exception("You have not approval permission on this application");
+            }
+        }
+
+        $result_list = [];
+
+        $sub_application_id_list = (new BatchApplicationMappingModel())->getMappedSubApplicationIdList($batch_application_id);
+        foreach ($sub_application_id_list as $sub_application_id) {
+            $subApplicationEntity = ApplicationEntity::instanceById($sub_application_id);
+            if ($subApplicationEntity->status !== ApplicationModel::STATUS_APPLIED) continue;
+
+            $afx = (new ApplicationModel())->update(
+                [
+                    'application_id' => $sub_application_id,
+                    'status' => ApplicationModel::STATUS_APPLIED,
+                ],
+                [
+                    'status' => ApplicationModel::STATUS_DENIED,
+                    'approve_user' => $this->session->user->userId,
+                    'approve_time' => ApplicationModel::now(),
+                ]
+            );
+
+            $news = ['afx' => $afx];
+            if (empty($afx)) {
+                $news['error'] = "Cannot deny application [{$sub_application_id}], afx is " . json_encode($afx);
+            }
+
+            $result_list[] = $news;
+
+            $subApplicationEntity->refresh();
+            $subApplicationEntity->writeRecord($this->session->user->userId, "DENY", $reason);
+        }
+
+        $this->_sayOK(['result_list' => $result_list]);
     }
 
     /**
@@ -363,6 +428,56 @@ class ApplicationController extends AbstractAuthController
         $applicationEntity->writeRecord($this->session->user->userId, "DENY", $reason);
 
         $this->_sayOK(['afx' => $afx]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function batchApprove()
+    {
+        $batch_application_id = $this->_readIndispensableRequest('batch_application_id', '/^\d+$/');
+
+        $applicationEntity = ApplicationEntity::instanceById($batch_application_id);
+        if ($this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+            $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+            $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+            if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                throw new Exception("You have not approval permission on this application");
+            }
+        }
+
+        $result_list = [];
+
+        $sub_application_id_list = (new BatchApplicationMappingModel())->getMappedSubApplicationIdList($batch_application_id);
+        foreach ($sub_application_id_list as $sub_application_id) {
+            $subApplicationEntity = ApplicationEntity::instanceById($sub_application_id);
+            if ($subApplicationEntity->status !== ApplicationModel::STATUS_APPLIED) continue;
+
+            $afx = (new ApplicationModel())->update(
+                [
+                    'application_id' => $sub_application_id,
+                    'status' => ApplicationModel::STATUS_APPLIED,
+                ],
+                [
+                    'status' => ApplicationModel::STATUS_APPROVED,
+                    'approve_user' => $this->session->user->userId,
+                    'approve_time' => ApplicationModel::now(),
+                ]
+            );
+
+            $news = ['afx' => $afx];
+            if (empty($afx)) {
+                $news['error'] = "Cannot deny application [{$sub_application_id}], afx is " . json_encode($afx);
+            }
+
+            $result_list[] = $news;
+
+            $applicationEntity->refresh();
+            $applicationEntity->writeRecord($this->session->user->userId, "APPROVE", "");
+
+        }
+
+        $this->_sayOK(['result_list' => $result_list]);
     }
 
     /**
