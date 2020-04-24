@@ -16,6 +16,7 @@ use sinri\databasehub\core\HubCore;
 
 class ApplicationModel extends ArkDatabaseTableModel
 {
+    const TYPE_BATCH = "BATCH";// for Issue OC 842
     const TYPE_READ = "READ";
     const TYPE_MODIFY = "MODIFY";
     const TYPE_EXECUTE = "EXECUTE";
@@ -30,6 +31,7 @@ class ApplicationModel extends ArkDatabaseTableModel
     const STATUS_EXECUTING = "EXECUTING";
     const STATUS_DONE = "DONE";
     const STATUS_ERROR = "ERROR";
+    const STATUS_STATIC = "STATIC";// for Issue OC 842
 
     const PARALLELABLE_YES = "YES";
     const PARALLELABLE_NO = "NO";

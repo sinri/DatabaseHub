@@ -17,6 +17,7 @@ use sinri\databasehub\core\SQLChecker;
 use sinri\databasehub\entity\ApplicationEntity;
 use sinri\databasehub\entity\DatabaseEntity;
 use sinri\databasehub\model\ApplicationModel;
+use sinri\databasehub\model\BatchApplicationMappingModel;
 use sinri\databasehub\model\DatabaseModel;
 use sinri\databasehub\model\UserModel;
 use sinri\databasehub\model\UserPermittedApprovalModel;
@@ -41,6 +42,7 @@ class ApplicationController extends AbstractAuthController
         if (DatabaseEntity::instanceById($data['database_id'])->status !== DatabaseModel::STATUS_NORMAL) {
             throw new Exception("Target database is not normal");
         }
+        // BATCH is not allowed here
         if (!in_array($data['type'], [
             ApplicationModel::TYPE_DDL,
             ApplicationModel::TYPE_EXECUTE,
@@ -161,6 +163,75 @@ class ApplicationController extends AbstractAuthController
 
 
         return $data;
+    }
+
+    /**
+     * Input Parameters:
+     * > `title`
+     * > `description`
+     * > `database_id`
+     * > `sub_applications` is an array, item in which each contains:
+     *   > `sql`
+     *   > `type`
+     * @throws Exception
+     */
+    public function createBatchApplication(){
+        $this->checkAjaxHttpRefer();
+
+        $batchApplication=[
+            'type'=>ApplicationModel::TYPE_BATCH,
+            'title'=>$this->_readIndispensableRequest('title','/^.+$/'),
+            'description'=>$this->_readIndispensableRequest('description','/^.+$/'),
+            'database_id'=>$this->_readIndispensableRequest('database_id','/^.+$/'),
+            'apply_user'=>$this->session->user->userId,
+            'create_time'=>ApplicationModel::now(),
+            'status'=>ApplicationModel::STATUS_STATIC,
+        ];
+        if (DatabaseEntity::instanceById($batchApplication['database_id'])->status !== DatabaseModel::STATUS_NORMAL) {
+            throw new Exception("Target database is not normal");
+        }
+
+        $subApplications=$this->_readRequest('sub_applications',[]);
+        ArkHelper::assertItem(is_array($subApplications) && !empty($subApplications),'sub application is empty');
+
+        $batchApplicationId=HubCore::getDB()->executeInTransaction(function () use ($subApplications, $batchApplication) {
+            $model=new ApplicationModel();
+
+            $batchApplicationId=$model->insert($batchApplication);
+            ArkHelper::assertItem($batchApplicationId,'Cannot create batch application');
+
+            $applicationEntity = ApplicationEntity::instanceById($batchApplicationId);
+            $applicationEntity->writeRecord($this->session->user->userId, "BATCH_APPLY", "");
+
+            $mappingCache=[];
+            foreach ($subApplications as $saIndex => $subApplication) {
+                $subApplication['title'] = 'Batch-' . $batchApplicationId . '-' . ($saIndex + 1) . '-' . $batchApplication['title'];
+                $subApplication['description'] = 'Batch-' . $batchApplicationId . '-' . ($saIndex + 1) . PHP_EOL . $batchApplication['description'];
+                $subApplication['database_id'] = $batchApplication['database_id'];
+                $this->verifyApplication($subApplication);
+                $subApplication['apply_user'] = $this->session->user->userId;
+                $subApplication['create_time'] = ApplicationModel::now();
+                $subApplication['status'] = ApplicationModel::STATUS_APPLIED;
+                $subApplicationId=$model->insert($subApplication);
+                ArkHelper::assertItem($subApplicationId,'Cannot create sub application');
+
+                $applicationEntity = ApplicationEntity::instanceById($subApplicationId);
+                $applicationEntity->writeRecord($this->session->user->userId, "APPLY", "");
+
+                $mappingCache[]=[
+                    'batch_id'=>$batchApplicationId,
+                    'application_id'=>$subApplicationId,
+                    'update_time'=>BatchApplicationMappingModel::now(),
+                ];
+            }
+
+            $afx=(new BatchApplicationMappingModel())->batchInsert($mappingCache);
+            ArkHelper::assertItem($afx,'Cannot register mapping relationship');
+
+            return $batchApplicationId;
+        });
+
+        $this->_sayOK(['batch_application_id' => $batchApplicationId]);
     }
 
     /**
@@ -429,27 +500,46 @@ class ApplicationController extends AbstractAuthController
                 throw new Exception('not find application');
             }
 
-            $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
-                    ApplicationModel::STATUS_DENIED,
-                    ApplicationModel::STATUS_CANCELLED,
-                    ApplicationModel::STATUS_ERROR,
-                ]);
-            $canCancel = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
+            if($applicationEntity->type===ApplicationModel::TYPE_BATCH){
+                $canEdit=false;
+                $canCancel=false;
+                $canDecide=false;
+
+                $rows=(new BatchApplicationMappingModel())->selectRows(['batch_id'=>$application_id]);
+                $sub_application_id_list=array_column($rows,'application_id');
+
+                $detail = $applicationEntity->getAbstractForList();
+                $detail['sub_application_id_list']=$sub_application_id_list;
+            }else {
+                $canEdit = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
+                        ApplicationModel::STATUS_DENIED,
+                        ApplicationModel::STATUS_CANCELLED,
+                        ApplicationModel::STATUS_ERROR,
+                    ]);
+                $canCancel = $applicationEntity->applyUser->userId === $this->session->user->userId && in_array($applicationEntity->status, [
+                        ApplicationModel::STATUS_APPLIED
+                    ]);
+
+                $canDecide = in_array($applicationEntity->status, [
                     ApplicationModel::STATUS_APPLIED
                 ]);
-
-            $canDecide = in_array($applicationEntity->status, [
-                ApplicationModel::STATUS_APPLIED
-            ]);
-            if ($canDecide && $this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
-                $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
-                $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
-                if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
-                    $canDecide = false;
+                if ($canDecide && $this->session->user->userType != UserModel::USER_TYPE_ADMIN) {
+                    $permissions = $this->session->user->getPermissionDictionary([$applicationEntity->database->databaseId]);
+                    $permissions = ArkHelper::readTarget($permissions, [$applicationEntity->database->databaseId, 'permissions']);
+                    if (empty($permissions) || !in_array($applicationEntity->type, $permissions)) {
+                        $canDecide = false;
+                    }
                 }
+
+                $detail = $applicationEntity->getDetail();
             }
-            $detail = $applicationEntity->getDetail();
-            $this->_sayOK(['application' => $detail, 'can_edit' => $canEdit, 'can_cancel' => $canCancel, 'can_decide' => $canDecide]);
+
+            $this->_sayOK([
+                'application' => $detail,
+                'can_edit' => $canEdit,
+                'can_cancel' => $canCancel,
+                'can_decide' => $canDecide
+            ]);
         } catch (Exception $e) {
             $this->_sayFail($e->getMessage());
         }
